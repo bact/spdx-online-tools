@@ -1,6 +1,13 @@
+# -*- coding: utf-8 -*-
+# SPDX-FileCopyrightText: 2019-2025 SPDX Contributors
+# SPDX-License-Identifier: Apache-2.0
+
+"""
+Generate SPDX license XML from license text and metadata.
+"""
+
 import re
 import xml.etree.ElementTree as ET
-from xml.dom import minidom
 from itertools import chain, tee
 
 entityMap = {
@@ -14,7 +21,7 @@ letterBullets = r"^(\s*)([^\s\w]?(?!(v|V) ?\.)(?:[a-zA-Z]|[MDCLXVImdclxvi]+)[^\s
 numberBullets = r"^(\s*)([^\s\w]?[0-9]+[^\s\w]|[^\s\w]?[0-9]+(?:\.[0-9]+)[^\s\w]?)(\s)"
 symbolBullets = r"^(\s*)([*\u2022\-])(\s)"
 
-    
+
 def previous_and_current(some_iterable):
     prevs, items = tee(some_iterable, 2)
     prevs = chain([None], prevs)
@@ -97,13 +104,13 @@ def getTextElement(points):
     for pp,point in previous_and_current(points):
         if point.get('isStart'):
             elements.append(ET.Element("list"))
-        
+
         elif point.get('isStart') is False:
             n = len(elements)
             if elements[n-2].findall('item'):
                 elements[n-2].findall('item')[-1].append(elements[n-1])
             else:
-                 elements[n-2].append(elements[n-1])
+                elements[n-2].append(elements[n-1])
             elements.pop()
         else:
             if pp:
@@ -116,7 +123,7 @@ def getTextElement(points):
                 p = ET.Element("p")
                 p.text = point.get('data')
                 elements[-1].append(p)
-        
+
             elif point.get('tagType') == "item":
                 item = ET.Element("item")
                 ET.SubElement(item, "p").text = wrapBullets(point.get('data'), item)
