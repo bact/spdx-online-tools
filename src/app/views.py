@@ -3,16 +3,39 @@
 # SPDX-FileCopyrightText: 2025 SPDX Contributors
 # SPDX-License-Identifier: Apache-2.0
 
-from django.shortcuts import render
-from django.http import HttpResponse, HttpResponseRedirect
-from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
+import codecs
+import datetime
+import json
+import logging
+import os
+import subprocess
+import uuid
+from json import dumps
+from time import time
+from traceback import format_exc
+from urllib.parse import urljoin
+from wsgiref.util import FileWrapper
+
+import jpype
+import requests
 from django.conf import settings
-from django.core.files.storage import FileSystemStorage
-from django.urls import reverse
+from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.models import User
-from django.contrib.auth.decorators import login_required
-from django.http import JsonResponse
+from django.core.files.storage import FileSystemStorage
+from django.forms import model_to_dict
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
+from django.shortcuts import render
+from django.urls import reverse
+from lxml import etree
+from spdx_license_matcher.utils import get_spdx_license_text
+from social_django.models import UserSocialAuth
+
+from app import core, utils
+from app.forms import InfoForm, OrgInfoForm, UserProfileForm, UserRegisterForm
+from app.generateXml import generateLicenseXml
+from app.models import LicenseNames, UserID
 from src.version import (
     java_tools_version,
     ntia_conformance_checker_version,
@@ -22,38 +45,11 @@ from src.version import (
     spdx_online_tools_version,
 )
 
-import codecs
-import jpype
-import requests
-from lxml import etree
-import os
-import logging
-import json
-from traceback import format_exc
-from json import dumps
-from time import time
-from urllib.parse import urljoin
-import datetime
-import uuid
-from wsgiref.util import FileWrapper
-import os
-import subprocess
-
-from social_django.models import UserSocialAuth
-from app.models import UserID, LicenseNames
-from app.forms import UserRegisterForm,UserProfileForm,InfoForm,OrgInfoForm
-import app.utils as utils
-import app.core as core
-from django.forms import model_to_dict
-from app.generateXml import generateLicenseXml
-
+from .forms import LicenseNamespaceRequestForm, LicenseRequestForm
+from .models import LicenseNamespace, LicenseRequest
 
 logging.basicConfig(filename="error.log", format="%(levelname)s : %(asctime)s : %(message)s")
 logger = logging.getLogger()
-from .forms import LicenseRequestForm, LicenseNamespaceRequestForm
-from .models import LicenseRequest, LicenseNamespace
-from spdx_license_matcher.utils import get_spdx_license_text
-
 
 def index(request):
     """ View for index
