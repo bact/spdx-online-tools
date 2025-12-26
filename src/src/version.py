@@ -57,7 +57,6 @@ def get_spdx_license_list_version():
             continue
     return "Unknown"
 
-spdx_online_tools_version = "1.3.3" # Update this when releasing new version
 
 java_tools_version = get_tools_version("tool.jar")
 ntia_conformance_checker_version = version("ntia-conformance-checker")

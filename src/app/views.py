@@ -13,13 +13,14 @@ from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
+
+from src import __version__ as spdx_online_tools_version
 from src.version import (
     java_tools_version,
     ntia_conformance_checker_version,
     python_tools_version,
     spdx_license_list_version,
     spdx_license_matcher_version,
-    spdx_online_tools_version,
 )
 
 import codecs
