@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2020-2025 SPDX Contributors
+# SPDX-FileCopyrightText: 2020-present SPDX Contributors
 # SPDX-License-Identifier: Apache-2.0
 
 """
@@ -7,6 +7,7 @@ the tools and online-tools repositories.
 """
 
 import json
+import platform
 from importlib.metadata import version
 from os.path import abspath, dirname, exists, join
 from re import search
@@ -62,6 +63,9 @@ def get_spdx_license_list_version() -> str:
 
 
 spdx_online_tools_version = "1.3.3"  # Update this when releasing new version
+
+jpype_version = version("jpype1")
+python_version = f"{platform.python_implementation()} {platform.python_version()}"
 
 java_tools_version = get_tools_version("tool.jar")
 ntia_conformance_checker_version = version("ntia-conformance-checker")

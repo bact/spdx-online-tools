@@ -39,11 +39,13 @@
     </form>
 <hr>
     <button id="validatebutton" name="validatebutton" class="btn btn-md btn-info" type="submit" disabled="true">Validate</button>
-  {% include "app/modal.html" %} 
+  {% include "app/modal.html" %}
   <!--
   <output id="list"></output>
   -->
 </div>
+</div>
+{% include "app/_tool_versions.html" with show_java_tools=True %}
 
 {% endblock %}
 
