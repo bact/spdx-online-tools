@@ -8,7 +8,7 @@ class RelatedFieldWidgetCanAdd(widgets.Select):
 
     def __init__(self, related_model, related_url=None, *args, **kw):
 
-        super(RelatedFieldWidgetCanAdd, self).__init__(*args, **kw)
+        super().__init__(*args, **kw)
 
         if not related_url:
             rel_to = related_model
@@ -20,7 +20,7 @@ class RelatedFieldWidgetCanAdd(widgets.Select):
 
     def render(self, name, value, *args, **kwargs):
         self.related_url = reverse(self.related_url)
-        output = [super(RelatedFieldWidgetCanAdd, self).render(name, value, *args, **kwargs)]
+        output = [super().render(name, value, *args, **kwargs)]
         output.append('<a href="%s" class="add-another" id="add_id_%s" onclick="return showAddAnotherPopup(this);"> ' % \
         (self.related_url, name))
         output.append('<img src="%simg/editor/add.svg" width="12" height="12"/> %s</a>' % (settings.STATIC_URL, _('Add Another')))

@@ -1,7 +1,8 @@
-# -*- coding: utf-8 -*-
 # SPDX-FileCopyrightText: 2017 Rohit Lodha
 # Copyright (c) 2017 Rohit Lodha
 # SPDX-License-Identifier: Apache-2.0
+
+import re
 
 from rest_framework import status
 
@@ -14,7 +15,7 @@ def get_json_response_data(response):
     contextDict = response.get('context', None)
     result = response.get('response', None)
     message = response.get('message', 'Success')
-    
+
     if contextDict:
         medialink = contextDict.get('medialink', None)
         error = contextDict.get('error', None)
@@ -34,7 +35,7 @@ def get_return_code(statusCode):
         returnStatus = status.HTTP_400_BAD_REQUEST
     else:
         returnStatus = status.HTTP_404_NOT_FOUND
-    
+
     return returnStatus
 
 

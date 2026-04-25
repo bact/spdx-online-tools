@@ -551,7 +551,7 @@ class SubmitLicenseModelsTests(APITestCase):
             user=self.user, application=app, expires=expires, token=token, scope=scope
         )
         access_token.save()
-        self.auth = "Bearer {0}".format(access_token.token)
+        self.auth = f"Bearer {access_token.token}"
         resp2 = self.client.get(
             reverse("submit_license-api"), HTTP_AUTHORIZATION=self.auth
         )

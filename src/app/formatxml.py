@@ -119,22 +119,22 @@ def pretty(node, level):
     if node.attrib and tag in ATTRS_SEQ:
         for a in ATTRS_SEQ[tag]:
             if a in node.attrib:
-                start_tag += ' {}="{}"'.format(a, node.attrib[a])
+                start_tag += f' {a}="{node.attrib[a]}"'
                 del node.attrib[a]
         if node.attrib:
-            logger.error('more attrs remaining in {}: {}'.format(tag, list(node.attrib.keys())))
+            logger.error('more attrs remaining in %s: %s', tag, list(node.attrib.keys()))
     start_tag += ">"
     end_tag = "</" + tag + ">"
     if tag in config['block']:
         child_level = level + 1
-        before = '{0}{1}#{2}{0}{3}#'.format(NL, level, start_tag, child_level)
-        after = '{0}{1}#{2}{0}'.format(NL, level, end_tag)
+        before = f'{NL}{level}#{start_tag}{NL}{child_level}#'
+        after = f'{NL}{level}#{end_tag}{NL}'
     elif tag in config['inline']:
         child_level = level
         before = start_tag
-        after = '{1}{0}{2}#'.format(NL, end_tag, level)
+        after = f'{end_tag}{NL}{level}#'
     else:
-        logger.error('Tag "{}" neither block nor inline!'.format(tag))
+        logger.error('Tag "%s" neither block nor inline!', tag)
         child_level = level
         before = start_tag
         after = end_tag
@@ -163,7 +163,7 @@ def fmt(blocks):
         if m.group('level'):
             l = int(m.group('level'))
         else:
-            logger.error('Block without level: "{}"'.format(line))
+            logger.error('Block without level: "%s"', line)
 
         par = m.group('paragraph')
         if par == '':
@@ -217,9 +217,9 @@ def singlespaceline(txt):
 # main program
 
 if NAMESPACE:
-    full_TAGS_inline = list(NAMESPACE+e for e in TAGS_inline)
-    full_TAGS_block = list(NAMESPACE+e for e in TAGS_block)
-    full_ATTRS_SEQ = dict((NAMESPACE+k, v) for k,v in list(ATTRS_SEQ.items()))
+    full_TAGS_inline = [NAMESPACE + e for e in TAGS_inline]
+    full_TAGS_block = [NAMESPACE + e for e in TAGS_block]
+    full_ATTRS_SEQ = {NAMESPACE + k: v for k, v in ATTRS_SEQ.items()}
 
 if __name__ == '__main__':
 

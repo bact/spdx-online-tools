@@ -699,11 +699,11 @@ class LicenseXMLEditorTestCase(StaticLiveServerTestCase):
         self.selenium.set_window_size(1920, 1080)
         self.initialXML = '<?xml version="1.0" encoding="UTF-8"?>\n<SPDXLicenseCollection xmlns="http://www.spdx.org/license">\n   <license>\n   </license>\n</SPDXLicenseCollection>'
         self.invalidXML = '<?xml version="1.0" encoding="UTF-8"?><SPDXLicenseCollection xmlns="http://www.spdx.org/license"><license></license>'
-        super(LicenseXMLEditorTestCase, self).setUp()
+        super().setUp()
 
     def tearDown(self):
         self.selenium.quit()
-        super(LicenseXMLEditorTestCase, self).tearDown()
+        super().tearDown()
 
     def test_tree_editor_attributes(self):
         """ Test for adding, editing and deleting attributes using tree editor """
@@ -1232,11 +1232,11 @@ class ArchiveLicenseRequestsSeleniumTestCase(StaticLiveServerTestCase):
             self.selenium = webdriver.Firefox(service=service, options=options)
         except Exception as e:
             self.skipTest(f"geckodriver not available or not working: {e}")
-        super(ArchiveLicenseRequestsSeleniumTestCase, self).setUp()
+        super().setUp()
 
     def tearDown(self):
         self.selenium.quit()
-        super(ArchiveLicenseRequestsSeleniumTestCase, self).tearDown()
+        super().tearDown()
 
     @skipIf(not getAccessToken() and not getGithubUserId() and not getGithubUserName(), "You need to set gihub parameters in the secret.py file for this test to be executed properly.")
     def test_archive_license_requests_feature(self):
@@ -1405,11 +1405,11 @@ class PromoteLicenseNamespaceViewsTestCase(StaticLiveServerTestCase):
             self.skipTest(f"geckodriver not available or not working: {e}")
         login = TestUtil.gitHubLogin(self)
         self.assertTrue(login)
-        super(PromoteLicenseNamespaceViewsTestCase, self).setUp()
+        super().setUp()
 
     def tearDown(self):
         self.selenium.quit()
-        super(PromoteLicenseNamespaceViewsTestCase, self).tearDown()
+        super().tearDown()
 
 
     @skipIf(not getAccessToken() and not getGithubUserId() and not getGithubUserName(), "You need to set gihub parameters in the secret.py file for this test to be executed properly.")
@@ -1481,11 +1481,11 @@ class ArchiveLicenseNamespaceSeleniumTestCase(StaticLiveServerTestCase):
         except Exception as e:
             self.skipTest(f"geckodriver not available or not working: {e}")
         self.selenium.set_window_size(1920, 1080)
-        super(ArchiveLicenseNamespaceSeleniumTestCase, self).setUp()
+        super().setUp()
 
     def tearDown(self):
         self.selenium.quit()
-        super(ArchiveLicenseNamespaceSeleniumTestCase, self).tearDown()
+        super().tearDown()
 
     def test_archive_license_namespace_feature(self):
         """Check if the license namespace is shifted to archive namespace when archive button is pressed"""

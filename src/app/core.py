@@ -13,7 +13,7 @@ from urllib.parse import urljoin
 import jpype
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
-from django.utils.datastructures import MultiValueDictKeyError
+from django.utils.datastructures import MultiValueDictKeyError  # subclass of KeyError, raised by QueryDict
 from ntia_conformance_checker import SbomChecker
 from spdx_license_matcher.utils import get_spdx_license_text
 
@@ -36,7 +36,7 @@ def initialise_jpype():
             "-ea", "-Djava.awt.headless=true", classpath=settings.JAR_ABSOLUTE_PATH
         )
     # Attach a thread to JVM and start processing
-    jpype.attachThreadToJVM()
+    jpype.JClass('java.lang.Thread').attach()
     jpype.JPackage("org.spdx.library").SpdxModelFactory.init()
 
 
@@ -136,7 +136,7 @@ def license_compare_helper(request):
                         result['response'] = response
                         return result
                     context_dict["Content-Type"] = "application/vnd.ms-excel"
-                    context_dict['Content-Disposition'] = 'attachment; filename="{}"'.format(rfilename)
+                    context_dict['Content-Disposition'] = f'attachment; filename="{rfilename}"'
                     context_dict["medialink"] = folder_url + rfilename
                     result['status'] = 200
                     result['context'] = context_dict
@@ -152,7 +152,7 @@ def license_compare_helper(request):
                         result['response'] = response
                         return result
                     context_dict["Content-Type"] = "application/vnd.ms-excel"
-                    context_dict['Content-Disposition'] = 'attachment; filename="{}"'.format(rfilename)
+                    context_dict['Content-Disposition'] = f'attachment; filename="{rfilename}"'
                     context_dict["type"] = "warning"
                     context_dict["medialink"] = folder_url + rfilename
                     result['status'] = 406
@@ -530,7 +530,7 @@ def license_convert_helper(request):
                     response = dumps(ajaxdict)
                     result['response'] = response
                     return result
-                context_dict['Content-Disposition'] = 'attachment; filename="{}"'.format(convertfile)
+                context_dict['Content-Disposition'] = f'attachment; filename="{convertfile}"'
                 context_dict["medialink"] = folder_url + convertfile
                 context_dict["Content-Type"] = content_type
                 result['context'] = context_dict
@@ -548,7 +548,7 @@ def license_convert_helper(request):
                     return result
                 context_dict["error"] = str(warnings)
                 context_dict["type"] = "warning"
-                context_dict['Content-Disposition'] = 'attachment; filename="{}"'.format(convertfile)
+                context_dict['Content-Disposition'] = f'attachment; filename="{convertfile}"'
                 context_dict["Content-Type"] = content_type
                 context_dict["medialink"] = folder_url + convertfile
                 result['context'] = context_dict

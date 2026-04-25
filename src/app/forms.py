@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # SPDX-FileCopyrightText: 2017 Rohit Lodha
 # Copyright (c) 2017 Rohit Lodha
 # SPDX-License-Identifier: Apache-2.0
@@ -88,7 +87,7 @@ class LicenseRequestForm(forms.Form):
             self.email = kwargs.pop('email')
         else:
             self.email = ""
-        super(LicenseRequestForm, self).__init__(*args,**kwargs)
+        super().__init__(*args, **kwargs)
         self.fields["userEmail"] = forms.EmailField(label='Email', initial=self.email, max_length=35, required=False)
 
     licenseAuthorName = forms.CharField(label="License Author name", max_length=100, required=False, widget=TooltipTextInput(tooltip='License Author name goes here'))
@@ -115,7 +114,7 @@ class LicenseNamespaceRequestForm(forms.ModelForm):
             self.email = kwargs.pop('email')
         else:
             self.email = ""
-        super(LicenseNamespaceRequestForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.fields['shortIdentifier'].required = False
         self.fields['url'].required = True
         self.fields['license_list_url'].required = False
@@ -127,6 +126,9 @@ class LicenseNamespaceRequestForm(forms.ModelForm):
        required=False,
        queryset=OrganisationName.objects.all(),
        widget=RelatedFieldWidgetCanAdd(OrganisationName))
+
+    license_list_url = forms.URLField(max_length=250, required=False, assume_scheme='https')
+    github_repo_url = forms.URLField(max_length=250, required=False, assume_scheme='https')
 
     class Meta:
         model = LicenseNamespace

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # SPDX-FileCopyrightText: 2017 Rohit Lodha
 # SPDX-FileCopyrightText: 2025 SPDX Contributors
 # SPDX-License-Identifier: Apache-2.0
@@ -482,7 +481,7 @@ def validate(request):
         if request.method == 'POST':
             core.initialise_jpype()
             result = core.license_validate_helper(request)
-            jpype.detachThreadFromJVM()
+            jpype.JClass('java.lang.Thread').detach()
             context_dict = result.get('context', None)
             status = result.get('status', None)
             response = result.get('response', None)
@@ -591,7 +590,7 @@ def compare(request):
         if request.method == 'POST':
             core.initialise_jpype()
             result = core.license_compare_helper(request)
-            jpype.detachThreadFromJVM()
+            jpype.JClass('java.lang.Thread').detach()
             context_dict = result.get('context', None)
             status = result.get('status', None)
             response = result.get('response', None)
@@ -619,7 +618,7 @@ def convert(request):
         if request.method == 'POST':
             core.initialise_jpype()
             result = core.license_convert_helper(request)
-            jpype.detachThreadFromJVM()
+            jpype.JClass('java.lang.Thread').detach()
             context_dict = result.get('context', None)
             status = result.get('status', None)
             response = result.get('response', None)
@@ -651,7 +650,7 @@ def check_license(request):
             core.initialise_jpype()
             result = core.license_check_helper(request)
             try:
-                jpype.detachThreadFromJVM()
+                jpype.JClass('java.lang.Thread').detach()
             except Exception:
                 pass
             context_dict = result.get('context', None)
@@ -687,7 +686,7 @@ def license_diff(request):
             core.initialise_jpype()
             result = core.license_diff_helper(request)
             try:
-                jpype.detachThreadFromJVM()
+                jpype.JClass('java.lang.Thread').detach()
             except Exception:
                 pass
             return JsonResponse(result)
@@ -906,7 +905,7 @@ def get_context_dict_for_license_xml(request, license_obj, license_id):
 def edit_license_xml(request, license_id=None):
     """View for editing the XML file corresponsing to a license entry
     returns editor.html"""
-    if license_id:
+    if license_id is not None:
         if not LicenseRequest.objects.filter(id=license_id).exists():
             return render(request, "404.html", {}, status=404)
         license_obj = LicenseRequest.objects.get(id=license_id)
@@ -919,7 +918,7 @@ def edit_license_xml(request, license_id=None):
 def edit_license_namespace_xml(request, license_id=None):
     """View for editing the XML file corresponsing to a license namespace entry
     returns editor.html"""
-    if license_id:
+    if license_id is not None:
         if not LicenseNamespace.objects.filter(id=license_id).exists():
             return render(request, "404.html", {}, status=404)
         license_obj = LicenseNamespace.objects.get(id=license_id)
@@ -1493,9 +1492,8 @@ def post_to_github(request):
                 else :
                     data["error_message"] = jsonResponse["message"]
                     raise Exception(
-                        "Post to GitHub returned {0} status code - message {1}".format(
-                            statusCode, jsonResponse["message"]
-                        )
+                        f"Post to GitHub returned {statusCode} status code"
+                        f" - message {jsonResponse['message']}"
                     )
                 return JsonResponse(data)
             except Exception:

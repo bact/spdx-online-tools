@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # SPDX-FileCopyrightText: 2017 Rohit Lodha
 # Copyright (c) 2017 Rohit Lodha
 # SPDX-License-Identifier: Apache-2.0
@@ -18,7 +17,7 @@ OSI_CHOICES = (
 
 def user_directory_path(instance, filename):
     # file will be uploaded to MEDIA_ROOT/<username>/<filename>
-    return 'apifiles/{0}/{1}/{2}'.format(instance.owner.username, int(time()), filename)
+    return f'apifiles/{instance.owner.username}/{int(time())}/{filename}'
 
 class ValidateFileUpload(models.Model):
 
