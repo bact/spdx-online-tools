@@ -6,7 +6,6 @@ from __future__ import annotations
 import datetime
 from typing import TYPE_CHECKING, Any
 
-import jpype
 import redis
 
 from app.core import initialise_jpype
@@ -16,7 +15,6 @@ from src.version import (
     jpype_version,
     ntia_conformance_checker_version,
     python_tools_version,
-    python_version,
     spdx_license_matcher_version,
     spdx_online_tools_version,
     spdx_python_model_version,
@@ -24,28 +22,6 @@ from src.version import (
 
 if TYPE_CHECKING:
     from django.http import HttpRequest
-
-
-def _compute_java_version() -> str:
-    try:
-        initialise_jpype()
-        System = jpype.java.lang.System
-        vendor_ver = str(System.getProperty("java.vendor.version") or "")
-        java_ver = str(System.getProperty("java.version") or "Unknown")
-        if vendor_ver:
-            # "Temurin-25.0.2+10" -> "25.0.2 (Temurin)"
-            # "GraalVM CE 21.0.1+12.1" -> "21.0.1 (GraalVM CE)"
-            no_build = vendor_ver.rsplit("+", 1)[0].replace("-", " ", 1)
-            name, ver = no_build.rsplit(" ", 1)
-            return f"{ver} ({name})"
-        vm_vendor = str(System.getProperty("java.vm.vendor") or "")
-        return f"{java_ver} ({vm_vendor})".strip()
-    except Exception:
-        return "Unknown"
-
-
-# Computed once at startup — Java version doesn't change while the server runs
-java_version: str = _compute_java_version()
 
 
 def _get_license_metadata() -> dict[str, str]:
@@ -87,9 +63,7 @@ def _get_license_metadata() -> dict[str, str]:
 def tool_versions(request: HttpRequest) -> dict[str, Any]:
     return {
         "java_tools_version": java_tools_version,
-        "java_version": java_version,
         "jpype_version": jpype_version,
-        "python_version": python_version,
         "ntia_conformance_checker_version": ntia_conformance_checker_version,
         "python_tools_version": python_tools_version,
         "spdx_license_matcher_version": spdx_license_matcher_version,
