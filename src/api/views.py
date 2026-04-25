@@ -80,7 +80,7 @@ def validate(request):
             core.initialise_jpype()
             response = core.license_validate_helper(request)
             httpstatus, _, result = utils.get_json_response_data(response)
-            jpype.detachThreadFromJVM()
+            jpype.JClass('java.lang.Thread').detach()
             returnstatus = utils.get_return_code(httpstatus)
             uploaded_file_obj = request.FILES.get("file") or request.data.get("file")
             query = ValidateFileUpload.objects.create(
@@ -113,7 +113,7 @@ def convert(request):
         if serializer.is_valid():
             core.initialise_jpype()
             response = core.license_convert_helper(request)
-            jpype.detachThreadFromJVM()
+            jpype.JClass('java.lang.Thread').detach()
             httpstatus, result, message = utils.get_json_response_data(response)
             returnstatus = utils.get_return_code(httpstatus)
             
@@ -165,6 +165,7 @@ def compare(request):
             request.FILES.setlist('files', files)
             response = core.license_compare_helper(request)
             httpstatus, result, message = utils.get_json_response_data(response)
+            jpype.JClass('java.lang.Thread').detach()
             returnstatus = utils.get_return_code(httpstatus)
 
             if httpstatus != 200:
@@ -202,7 +203,7 @@ def check_license(request):
         license_text = serializer.validated_data['file'].read().decode('utf8')
         core.initialise_jpype()
         matching_id, matching_type, all_matches = check_spdx_license(license_text)
-        jpype.detachThreadFromJVM()
+        jpype.JClass('java.lang.Thread').detach()
         response = {
             "matched_license": matching_id,
             "match_type": matching_type,

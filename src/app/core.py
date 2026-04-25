@@ -36,7 +36,7 @@ def initialise_jpype():
             "-ea", "-Djava.awt.headless=true", classpath=settings.JAR_ABSOLUTE_PATH
         )
     # Attach a thread to JVM and start processing
-    jpype.attachThreadToJVM()
+    jpype.JClass('java.lang.Thread').attach()
     jpype.JPackage("org.spdx.library").SpdxModelFactory.init()
 
 

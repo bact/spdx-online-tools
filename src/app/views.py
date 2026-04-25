@@ -482,7 +482,7 @@ def validate(request):
         if request.method == 'POST':
             core.initialise_jpype()
             result = core.license_validate_helper(request)
-            jpype.detachThreadFromJVM()
+            jpype.JClass('java.lang.Thread').detach()
             context_dict = result.get('context', None)
             status = result.get('status', None)
             response = result.get('response', None)
@@ -591,7 +591,7 @@ def compare(request):
         if request.method == 'POST':
             core.initialise_jpype()
             result = core.license_compare_helper(request)
-            jpype.detachThreadFromJVM()
+            jpype.JClass('java.lang.Thread').detach()
             context_dict = result.get('context', None)
             status = result.get('status', None)
             response = result.get('response', None)
@@ -619,7 +619,7 @@ def convert(request):
         if request.method == 'POST':
             core.initialise_jpype()
             result = core.license_convert_helper(request)
-            jpype.detachThreadFromJVM()
+            jpype.JClass('java.lang.Thread').detach()
             context_dict = result.get('context', None)
             status = result.get('status', None)
             response = result.get('response', None)
@@ -651,7 +651,7 @@ def check_license(request):
             core.initialise_jpype()
             result = core.license_check_helper(request)
             try:
-                jpype.detachThreadFromJVM()
+                jpype.JClass('java.lang.Thread').detach()
             except Exception:
                 pass
             context_dict = result.get('context', None)
@@ -687,7 +687,7 @@ def license_diff(request):
             core.initialise_jpype()
             result = core.license_diff_helper(request)
             try:
-                jpype.detachThreadFromJVM()
+                jpype.JClass('java.lang.Thread').detach()
             except Exception:
                 pass
             return JsonResponse(result)
