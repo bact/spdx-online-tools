@@ -164,6 +164,7 @@ def compare(request):
             request.FILES.setlist('files', files)
             response = core.license_compare_helper(request)
             httpstatus, result, message = utils.get_json_response_data(response)
+            jpype.JClass('java.lang.Thread').detach()
             returnstatus = utils.get_return_code(httpstatus)
 
             if httpstatus != 200:
