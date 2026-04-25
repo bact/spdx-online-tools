@@ -3,16 +3,23 @@
 
 {% block head_block %}
 <style>
+.starter-template {
+    padding-top: 6px;
+}
 .home-wrap {
     max-width: 900px;
     margin: 0 auto;
-    padding: 16px 12px 40px;
+    padding: 4px 12px 40px;
 }
 .home-tagline {
-    color: #0097c4;
-    font-weight: 600;
-    margin-bottom: 28px;
-    font-size: 1.0em;
+    color: #3d3d3d;
+    font-weight: 400;
+    font-size: 1.15em;
+    margin: 0 0 28px 2px;
+    line-height: 1.5;
+    letter-spacing: 0.01em;
+    border-left: 3px solid #0097c4;
+    padding-left: 12px;
 }
 .cat-section {
     margin-bottom: 20px;
@@ -128,9 +135,7 @@
 
     <!-- SBOM Tools -->
     <div class="cat-section">
-        <div class="cat-label cat-sbom">
-            <span class="glyphicon glyphicon-hdd"></span> SBOM Tools
-        </div>
+        <div class="cat-label cat-sbom">SBOM Tools</div>
         <div class="tool-grid">
 
             <a href="/app/validate/" class="tool-btn btn-validate">
@@ -168,9 +173,7 @@
 
     <!-- License Tools -->
     <div class="cat-section">
-        <div class="cat-label cat-lic">
-            <span class="glyphicon glyphicon-scale"></span> License Tools
-        </div>
+        <div class="cat-label cat-lic">License Tools</div>
         <div class="tool-grid">
 
             <a href="/app/check_license/" class="tool-btn btn-lic-check">
@@ -196,9 +199,7 @@
 
     <!-- About -->
     <div class="cat-section">
-        <div class="cat-label cat-about">
-            <span class="glyphicon glyphicon-info-sign"></span> About
-        </div>
+        <div class="cat-label cat-about">About</div>
         <div class="tool-grid">
 
             <a href="/app/about/" class="tool-btn btn-about">
