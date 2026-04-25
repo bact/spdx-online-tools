@@ -6,7 +6,6 @@ Version file for displaying the respective version of
 the tools and online-tools repositories.
 """
 
-import platform
 from importlib.metadata import version
 from os.path import abspath, dirname, join
 from re import search
@@ -35,8 +34,6 @@ def get_tools_version(jar_name: str) -> str:
 
 
 spdx_online_tools_version = "1.3.3"  # Update this when releasing new version
-
-jpype_version = version("jpype1")
 
 java_tools_version = get_tools_version("tool.jar")
 ntia_conformance_checker_version = version("ntia-conformance-checker")

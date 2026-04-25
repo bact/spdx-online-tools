@@ -12,7 +12,6 @@ from app.core import initialise_jpype
 from src.secret import getRedisHost
 from src.version import (
     java_tools_version,
-    jpype_version,
     ntia_conformance_checker_version,
     python_tools_version,
     spdx_license_matcher_version,
@@ -63,7 +62,6 @@ def _get_license_metadata() -> dict[str, str]:
 def tool_versions(request: HttpRequest) -> dict[str, Any]:
     return {
         "java_tools_version": java_tools_version,
-        "jpype_version": jpype_version,
         "ntia_conformance_checker_version": ntia_conformance_checker_version,
         "python_tools_version": python_tools_version,
         "spdx_license_matcher_version": spdx_license_matcher_version,
