@@ -28,8 +28,9 @@ in the [wiki][gsoc2017].
 
 ## Requirements
 
-* Python 3.13+
 * Java 17+
+* Python 3.13 (JPype 1.7.0 doesn't yet fully support Python 3.14)
+* Redis 5.0+
 
 ## Installation
 
