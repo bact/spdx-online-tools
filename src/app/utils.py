@@ -88,16 +88,15 @@ def makePullRequest(username, token, branchName, updateUpstream, fileName, commi
         "Content-Type":"application/json",
     }
 
-    """ Making a fork """
-
+    # Making a fork
     _repo_url = TYPE_TO_URL_NAMESPACE[NORMAL] if is_ns else TYPE_TO_URL_LICENSE[NORMAL]
     _repo_name = settings.NAMESPACE_REPO_NAME if is_ns else settings.LICENSE_REPO_NAME
     fork_url = f"{_repo_url}/forks"
     response = requests.get(fork_url, headers=headers)
     data = json.loads(response.text)
     forks = [fork["owner"]["login"] for fork in data]
-    if not username in forks:
-        """ If user has not forked the repo """
+    if username not in forks:
+        # If user has not forked the repo
         response = requests.post(fork_url, headers=headers)
         if response.status_code != 202:
             logger.error("[Pull Request] Error occured while creating fork, for %s user. %s", username, response.text)
