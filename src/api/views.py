@@ -6,9 +6,8 @@
 
 from django.http import JsonResponse
 from rest_framework import serializers as drf_serializers, status
-from rest_framework.decorators import api_view, permission_classes, renderer_classes
+from rest_framework.decorators import api_view, renderer_classes
 from rest_framework.parsers import FormParser, MultiPartParser
-from rest_framework.permissions import BasePermission, IsAuthenticated
 from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
@@ -43,14 +42,6 @@ from app.utils import check_spdx_license, createIssue
 from os.path import join
 
 
-class PostAllowAny(BasePermission):
-    """Allow unauthenticated POST (GitHub OAuth code in body); require auth for all other methods."""
-    def has_permission(self, request, view):
-        if request.method == 'POST':
-            return True
-        return IsAuthenticated().has_permission(request, view)
-
-
 NORMAL = "normal"
 TESTS = "tests"
 
@@ -61,25 +52,29 @@ TYPE_TO_URL = {
 
 
 
-# /api2/ ViewSets
+# --- start /api2/ ViewSets -----
+
 class ValidateViewSet(ModelViewSet):
+    """Returns all validate API request"""
     queryset = ValidateFileUpload.objects.all()
     serializer_class = ValidateSerializerReturn
     parser_classes = (MultiPartParser, FormParser,)
 
 
 class ConvertViewSet(ModelViewSet):
+    """Returns all convert API request"""
     queryset = ConvertFileUpload.objects.all()
     serializer_class = ConvertSerializerReturn
     parser_classes = (MultiPartParser, FormParser,)
 
 
 class CompareViewSet(ModelViewSet):
+    """Returns all compare API request"""
     queryset = CompareFileUpload.objects.all()
     serializer_class = CompareSerializerReturn
     parser_classes = (MultiPartParser, FormParser,)
 
-# ----- end /api2/ ViewSets -----
+# --- end /api2/ ViewSets -----
 
 _FORMAT_CHOICES = ['TAG', 'RDFXML', 'RDFTTL', 'JSON', 'XML', 'YAML', 'XLS', 'XLSX', 'JSONLD']
 _FORMAT_HELP = (
@@ -121,12 +116,12 @@ _FORMAT_HELP = (
 )
 @api_view(['GET', 'POST'])
 @renderer_classes((JSONRenderer,))
-@permission_classes((PostAllowAny,))
+
 def validate(request):
     """Handle Validate API request"""
     if request.method == 'GET':
         # Return all validate API requests
-        query = ValidateFileUpload.objects.filter(owner=request.user)
+        query = ValidateFileUpload.objects.all()
         serializer = ValidateSerializer(query, many=True)
         return Response(serializer.data)
 
@@ -194,12 +189,12 @@ def validate(request):
 )
 @api_view(['GET', 'POST'])
 @renderer_classes((JSONRenderer,))
-@permission_classes((PostAllowAny,))
+
 def convert(request):
     """Handle Convert API request"""
     if request.method == 'GET':
         # Return all convert API requests
-        query = ConvertFileUpload.objects.filter(owner=request.user)
+        query = ConvertFileUpload.objects.all()
         serializer = ConvertSerializer(query, many=True)
         return Response(serializer.data)
 
@@ -276,12 +271,12 @@ def convert(request):
 )
 @api_view(['GET', 'POST'])
 @renderer_classes((JSONRenderer,))
-@permission_classes((PostAllowAny,))
+
 def compare(request):
     """Handle Compare API request"""
     if request.method == 'GET':
         # Return all compare API requests
-        query = CompareFileUpload.objects.filter(owner=request.user)
+        query = CompareFileUpload.objects.all()
         serializer = CompareSerializerReturn(query, many=True)
         return Response(serializer.data)
 
@@ -463,12 +458,11 @@ def check_license(request):
 )
 @api_view(['GET', 'POST'])
 @renderer_classes((JSONRenderer,))
-@permission_classes((PostAllowAny, ))
 def submit_license(request):
     """Handle submit license API request"""
     if request.method == 'GET':
         # Return all check license API requests
-        query = SubmitLicenseModel.objects.filter(owner=request.user)
+        query = SubmitLicenseModel.objects.all()
         serializer = SubmitLicenseSerializer(query, many=True)
         return Response(serializer.data)
 
