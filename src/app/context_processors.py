@@ -39,13 +39,13 @@ def _get_license_metadata() -> dict[str, str]:
         if release_val:
             dt_str = release_val.decode().replace("Z", "+00:00")
             dt = datetime.datetime.fromisoformat(dt_str)
-            release_date = dt.strftime("%Y-%m-%d %H:%M:%S %Z").strip()
+            release_date = dt.strftime("%Y-%m-%d").strip()
         else:
             release_date = "Unknown"
 
         if synced_val:
             dt = datetime.datetime.fromisoformat(synced_val.decode())
-            last_synced = dt.strftime("%Y-%m-%d %H:%M:%S %Z").strip()
+            last_synced = dt.strftime("%Y-%m-%d %H:%M %Z").strip()
         else:
             last_synced = "Unknown"
 

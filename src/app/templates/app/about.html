@@ -233,24 +233,29 @@
         </tbody>
       </table>
       <p class="about-note">
-        The SPDX 3 visual editor (<a href="https://github.com/condots/dots/">dots</a>) is an external tool hosted by
-        Ilan Schifter at
-        <a href="https://condots.duckdns.org">condots.duckdns.org</a>.
+        The SPDX 3 visual editor (<a href="https://github.com/condots/dots/">dots</a>)
+        is an external tool hosted by Ilan Schifter at
+        <a href="https://condots.duckdns.org" target="_blank" rel="noreferrer">condots.duckdns.org</a>.
       </p>
-      <h3 class="about-section-title">System information</h3>
+      <p class="about-note">
+        <a href="https://github.com/spdx/spdx-license-diff">SPDX License Diff</a>,
+        a Chrome/Firefox browser extension to compare text against licenses in SPDX License List,
+        uses an API endpoint provided by SPDX Online Tools.
+      </p>
+      <h3 class="about-section-title">SPDX License List</h3>
       <table class="version-table">
         <tbody>
           <tr>
-            <td><a href="https://github.com/spdx/license-list-XML">SPDX License List</a> (in db)</td>
+            <td><a href="https://github.com/spdx/license-list-XML/releases">License list version</a></td>
             <td>{{ license_list_version }}</td>
-          </tr>
-          <tr>
-            <td>License list last synced (in db)</td>
-            <td>{{ license_list_last_synced }}</td>
           </tr>
           <tr>
             <td>License list release date</td>
             <td>{{ license_list_release_date }}</td>
+          </tr>
+          <tr>
+            <td>License list last synced to db</td>
+            <td>{{ license_list_last_synced }}</td>
           </tr>
         </tbody>
       </table>
