@@ -121,6 +121,7 @@ _FORMAT_HELP = (
 )
 @api_view(['GET', 'POST'])
 @renderer_classes((JSONRenderer,))
+@permission_classes((PostAllowAny,))
 def validate(request):
     """Handle Validate API request"""
     if request.method == 'GET':
@@ -193,6 +194,7 @@ def validate(request):
 )
 @api_view(['GET', 'POST'])
 @renderer_classes((JSONRenderer,))
+@permission_classes((PostAllowAny,))
 def convert(request):
     """Handle Convert API request"""
     if request.method == 'GET':
@@ -274,6 +276,7 @@ def convert(request):
 )
 @api_view(['GET', 'POST'])
 @renderer_classes((JSONRenderer,))
+@permission_classes((PostAllowAny,))
 def compare(request):
     """Handle Compare API request"""
     if request.method == 'GET':
