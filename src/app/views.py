@@ -15,7 +15,6 @@ from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 
 import codecs
-import jpype
 import requests
 from lxml import etree
 import os
@@ -463,8 +462,8 @@ def validate(request):
         context_dict={}
         if request.method == 'POST':
             core.initialise_jpype()
-            result = core.license_validate_helper(request)
-            jpype.JClass('java.lang.Thread').detach()
+            with core._jvm_thread():
+                result = core.license_validate_helper(request)
             context_dict = result.get('context', None)
             status = result.get('status', None)
             response = result.get('response', None)
@@ -572,8 +571,8 @@ def compare(request):
         context_dict = {}
         if request.method == 'POST':
             core.initialise_jpype()
-            result = core.license_compare_helper(request)
-            jpype.JClass('java.lang.Thread').detach()
+            with core._jvm_thread():
+                result = core.license_compare_helper(request)
             context_dict = result.get('context', None)
             status = result.get('status', None)
             response = result.get('response', None)
@@ -600,8 +599,8 @@ def convert(request):
         context_dict={}
         if request.method == 'POST':
             core.initialise_jpype()
-            result = core.license_convert_helper(request)
-            jpype.JClass('java.lang.Thread').detach()
+            with core._jvm_thread():
+                result = core.license_convert_helper(request)
             context_dict = result.get('context', None)
             status = result.get('status', None)
             response = result.get('response', None)
@@ -631,11 +630,8 @@ def check_license(request):
             # If we do not initialise JPype here, spdx_license_matcher will
             # start its own JVM with its own CLASSPATH which may cause issues.
             core.initialise_jpype()
-            result = core.license_check_helper(request)
-            try:
-                jpype.JClass('java.lang.Thread').detach()
-            except Exception:
-                pass
+            with core._jvm_thread():
+                result = core.license_check_helper(request)
             context_dict = result.get('context', None)
             status = result.get('status', None)
             response = result.get('response', None)
@@ -667,11 +663,8 @@ def license_diff(request):
             # If we do not initialise JPype here, spdx_license_matcher will
             # start its own JVM with its own CLASSPATH which may cause issues.
             core.initialise_jpype()
-            result = core.license_diff_helper(request)
-            try:
-                jpype.JClass('java.lang.Thread').detach()
-            except Exception:
-                pass
+            with core._jvm_thread():
+                result = core.license_diff_helper(request)
             return JsonResponse(result)
         else:
             return render(request,

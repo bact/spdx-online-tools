@@ -22,7 +22,6 @@ from django.urls import reverse
 from django.conf import settings
 from django.contrib.auth.models import User
 
-import jpype
 import datetime
 
 import app.core as core
@@ -78,9 +77,9 @@ def validate(request):
 
         if serializer.is_valid():
             core.initialise_jpype()
-            response = core.license_validate_helper(request)
+            with core._jvm_thread():
+                response = core.license_validate_helper(request)
             httpstatus, _, result = utils.get_json_response_data(response)
-            jpype.JClass('java.lang.Thread').detach()
             returnstatus = utils.get_return_code(httpstatus)
             uploaded_file_obj = request.FILES.get("file") or request.data.get("file")
             query = ValidateFileUpload.objects.create(
@@ -112,8 +111,8 @@ def convert(request):
         serializer = ConvertSerializer(data=request.data)
         if serializer.is_valid():
             core.initialise_jpype()
-            response = core.license_convert_helper(request)
-            jpype.JClass('java.lang.Thread').detach()
+            with core._jvm_thread():
+                response = core.license_convert_helper(request)
             httpstatus, result, message = utils.get_json_response_data(response)
             returnstatus = utils.get_return_code(httpstatus)
             
@@ -163,9 +162,9 @@ def compare(request):
             file2 = request.data.get('file2')
             files = [file1, file2]
             request.FILES.setlist('files', files)
-            response = core.license_compare_helper(request)
+            with core._jvm_thread():
+                response = core.license_compare_helper(request)
             httpstatus, result, message = utils.get_json_response_data(response)
-            jpype.JClass('java.lang.Thread').detach()
             returnstatus = utils.get_return_code(httpstatus)
 
             if httpstatus != 200:
@@ -202,8 +201,8 @@ def check_license(request):
         serializer.is_valid(raise_exception=True)
         license_text = serializer.validated_data['file'].read().decode('utf8')
         core.initialise_jpype()
-        matching_id, matching_type, all_matches = check_spdx_license(license_text)
-        jpype.JClass('java.lang.Thread').detach()
+        with core._jvm_thread():
+            matching_id, matching_type, all_matches = check_spdx_license(license_text)
         response = {
             "matched_license": matching_id,
             "match_type": matching_type,
