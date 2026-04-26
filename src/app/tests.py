@@ -771,10 +771,12 @@ class LicenseXMLEditorTestCase(StaticLiveServerTestCase):
             EC.presence_of_element_located((By.CLASS_NAME, "CodeMirror"))
         )
         driver.find_element(By.ID, "tabSplitView").click()
-        WebDriverWait(driver, 10).until(
+        # Set wait time to 30 seconds to compensate the cold browser start
+        # (test_split_tree_editor_attributes is currently the first test)
+        WebDriverWait(driver, 30).until(
             EC.presence_of_element_located((By.CSS_SELECTOR, "#split.in"))
         )
-        WebDriverWait(driver, 10).until(
+        WebDriverWait(driver, 30).until(
             EC.presence_of_element_located((By.CSS_SELECTOR, "#splitTreeView li.addChild"))
         )
         """ Adding attribute """
