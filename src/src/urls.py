@@ -36,7 +36,10 @@ from django.conf.urls.static import static
 from rest_framework import routers
 from api import views
 
+
 router = routers.DefaultRouter()
+#router.register(r'users', views.UserViewSet)
+#router.register(r'groups', views.GroupViewSet)
 router.register(r'validate', views.ValidateViewSet)
 router.register(r'convert', views.ConvertViewSet)
 router.register(r'compare', views.CompareViewSet)
