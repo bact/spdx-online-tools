@@ -1,8 +1,9 @@
 # SPDX-FileCopyrightText: 2018 Tushar Mittal
-# SPDX-FileCopyrightText: 2025 SPDX Contributors
+# SPDX-FileCopyrightText: 2025-present SPDX Contributors
 # SPDX-License-Identifier: Apache-2.0
 
 import base64
+import datetime
 import json
 import logging
 import re
@@ -404,6 +405,7 @@ def postToGithub(message, encodedContent, filename):
 def removeSpecialCharacters(filename):
     return re.sub(r'[#%&{}<>*?/$!\'":@+`|=]', "-", filename)
 
+
 def parseXmlString(xmlString):
     """ View for generating a spdx license xml
     returns a dictionary with the xmlString license fields values
@@ -573,14 +575,88 @@ def check_new_licenses_and_rejected_licenses(inputLicenseText, urlType):
     return matches, issueUrl
 
 
+def _fetch_remote_license_info() -> tuple[str, str]:
+    """Download licenses.json from spdx.org. Return (licenseListVersion, releaseDate)."""
+    try:
+        resp = requests.get("https://spdx.org/licenses/licenses.json", timeout=30)
+        data = resp.json()
+        return str(data.get("licenseListVersion", "")), str(data.get("releaseDate", ""))
+    except Exception:
+        return "", ""
+
+
+def _parse_version(v: str) -> tuple[int, ...]:
+    """Parse a version string into a tuple of integers."""
+    try:
+        return tuple(int(x) for x in v.split("."))
+    except Exception:
+        return (0,)
+
+
+def _write_license_db_metadata(
+    r_meta: "redis.StrictRedis[bytes]", version: str, release_date: str
+) -> None:
+    """Writes license list metadata to the database to track data freshness."""
+    r_meta.set(
+        "license_db_last_updated",
+        datetime.datetime.now(datetime.timezone.utc).isoformat(),
+    )
+    if version:
+        r_meta.set("license_list_version", version)
+    if release_date:
+        r_meta.set("license_list_release_date", release_date)
+
+
+def _ensure_license_db_current(
+    r: "redis.StrictRedis[bytes]", r_meta: "redis.StrictRedis[bytes]"
+) -> None:
+    """Rebuild the license db when needed and keep metadata in sync."""
+    metadata_complete = (
+        r_meta.get("license_list_version")
+        and r_meta.get("license_list_release_date")
+        and r_meta.get("license_db_last_updated")
+    )
+
+    if not r.keys('*') or not metadata_complete:
+        remote_version, remote_release_date = _fetch_remote_license_info()
+        build_spdx_licenses()
+        _write_license_db_metadata(r_meta, remote_version, remote_release_date)
+        return
+
+    # Periodic upstream version check (at most once per week)
+    needs_check = False
+    last_checked_val = r_meta.get("license_db_last_checked")
+    if not last_checked_val:
+        needs_check = True
+    else:
+        try:
+            last_checked = datetime.datetime.fromisoformat(last_checked_val.decode())
+            if datetime.datetime.now(datetime.timezone.utc) - last_checked >= datetime.timedelta(weeks=1):
+                needs_check = True
+        except Exception:
+            needs_check = True
+
+    if needs_check:
+        r_meta.set(
+            "license_db_last_checked",
+            datetime.datetime.now(datetime.timezone.utc).isoformat(),
+        )
+        remote_version, remote_release_date = _fetch_remote_license_info()
+        if remote_version:
+            stored_val = r_meta.get("license_list_version")
+            stored_version = stored_val.decode() if stored_val else ""
+            if _parse_version(remote_version) > _parse_version(stored_version):
+                build_spdx_licenses()
+                _write_license_db_metadata(r_meta, remote_version, remote_release_date)
+
+
 def check_spdx_license(licenseText):
     """Check the license text against the SPDX License List.
     """
     r = redis.StrictRedis(host=getRedisHost(), port=6379, db=0)
-    
-    # if redis is empty build the SPDX License List in the redis database
-    if r.keys('*') == []:
-        build_spdx_licenses()
+    r_meta = redis.StrictRedis(host=getRedisHost(), port=6379, db=1)
+    _ensure_license_db_current(r, r_meta)
+
     spdxLicenseIds = list(r.keys())
     spdxLicenseTexts = r.mget(spdxLicenseIds)
     licenseData = dict(list(zip(spdxLicenseIds, spdxLicenseTexts)))
