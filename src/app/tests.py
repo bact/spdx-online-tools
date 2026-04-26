@@ -1240,7 +1240,7 @@ class ArchiveLicenseRequestsSeleniumTestCase(StaticLiveServerTestCase):
         self.selenium.quit()
         super(ArchiveLicenseRequestsSeleniumTestCase, self).tearDown()
 
-    @skipIf(not getAccessToken() and not getGithubUserId() and not getGithubUserName(), "You need to set gihub parameters in the secret.py file for this test to be executed properly.")
+    @skipIf(not getAccessToken() and not getGithubUserId() and not getGithubUserName(), "You need to set GitHub parameters in the secret.py file for this test to be executed properly.")
     def test_archive_license_requests_feature(self):
         """Check if the license is shifted to archive requests when archive button is pressed"""
         login = TestUtil.gitHubLogin(self)
@@ -1266,7 +1266,7 @@ class ArchiveLicenseRequestsSeleniumTestCase(StaticLiveServerTestCase):
             )
             self.assertEqual(LicenseRequest.objects.get(id=license_obj.id).archive, True)
 
-    @skipIf(not getAccessToken() and not getGithubUserId() and not getGithubUserName(), "You need to set gihub parameters in the secret.py file for this test to be executed properly.")
+    @skipIf(not getAccessToken() and not getGithubUserId() and not getGithubUserName(), "You need to set GitHub parameters in the secret.py file for this test to be executed properly.")
     def test_unarchive_license_requests_feature(self):
         """Check if license is shifted back to license requests when unarchive button is pressed"""
         login = TestUtil.gitHubLogin(self)
@@ -1305,23 +1305,7 @@ class SubmitNewLicenseViewsTestCase(TestCase):
         self.comments = "Test Comment"
         self.notes = ""
         self.licenseHeader = ""
-        self.text = """
-        <text>
-        <copyrightText>
-        <p>Copyright (C) 2026 by Quom Glimp-Noodle &lt;qgn@example.com&gt;</p>
-        </copyrightText>
-        <p>This is a fictional test license text XYZ-UNIQUE-9a3f2b created solely
-        for automated testing. It does not correspond to any real open source
-        license. Permission is granted for testing purposes only.</p>
-        <p>The heavy cast-iron skillet hissed loudly as the diced onions hit the
-        shimmering oil. A fragrant cloud of steam billowed toward the ceiling,
-        carrying hints of crushed garlic and smoky paprika. Outside the kitchen
-        window, a lone blue jay perched on the weathered fence, chirping at the
-        morning sun.</p>
-        <p>Beneath the rolling turquoise waves, a vibrant coral reef
-        teemed with rhythmic life.</p>
-        </text>
-        """
+        self.text = "<text> <copyrightText> <p>Copyright (C) 2026 by Quom Glimp-Noodle &lt;qgn@example.com&gt;</p> </copyrightText> <p>This is a fictional test license text XYZ-UNIQUE-9a3f2b created solely for automated testing. It does not correspond to any real open source license. Permission is granted for testing purposes only.</p> <p>The heavy cast-iron skillet hissed loudly as the diced onions hit the shimmering oil. A fragrant cloud of steam billowed toward the ceiling, carrying hints of crushed garlic and smoky paprika. Outside the kitchen window, a lone blue jay perched on the weathered fence, chirping at the morning sun.</p> <p>Beneath the rolling turquoise waves, a vibrant coral reef teemed with rhythmic life.</p> </text>"
         self.userEmail = "test@mail.com"
         self.licenseAuthorName = ""
         self.listVersionAdded = ""
