@@ -2,97 +2,272 @@
 {% load static %}
 {% block head_block %}
 <style>
+  .about-wrap {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 0 8px;
+  }
+
+  .about-logos {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2.5em;
+    flex-wrap: wrap;
+    margin-bottom: 1.8em;
+  }
+
+  .about-logos img {
+    max-height: 56px;
+    width: auto;
+  }
+
   @media (min-width: 768px) {
-    .logo-vcenter {
+    .about-cols {
       display: flex;
-      align-items: center;
+      gap: 2em;
+      align-items: flex-start;
     }
+
+    .about-col-main {
+      flex: 1.2;
+    }
+
+    .about-col-side {
+      flex: 1;
+    }
+  }
+
+  .about-section-title {
+    color: #0097c4;
+    font-size: 1em;
+    font-weight: 600;
+    margin-top: 1.2em;
+    margin-bottom: 0.4em;
+  }
+
+  .about-contributors {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    font-size: 0.9em;
+    text-align: left;
+  }
+
+  .about-links {
+    padding-left: 1.2em;
+    margin: 0;
+    font-size: 0.9em;
+    text-align: left;
+  }
+
+  .version-table {
+    width: auto;
+    border-collapse: collapse;
+    font-size: 0.88em;
+  }
+
+  .version-table td {
+    padding: 3px 16px 3px 0;
+    vertical-align: top;
+    border-bottom: 1px solid #f0f0f0;
+    text-align: left;
+    white-space: nowrap;
+  }
+
+  .version-table td:last-child {
+    color: #0097c4;
+    padding-right: 0;
+  }
+
+  .version-table tr:last-child td {
+    border-bottom: none;
+  }
+
+  .about-note {
+    font-size: 0.82em;
+    color: #666;
+    margin-top: 0.8em;
   }
 </style>
 {% endblock %}
+
 {% block body1 %}
-<div class="container">
-  <div class="row text-center logo-vcenter">
-    <div class="col-sm-6">
-      <a href="https://spdx.dev/" id="spdxhome" target="_blank" title="SPDX"><img
-          src="{% static 'img/spdx.png' %}" alt="SPDX logo" class="img-responsive center-block" /></a>
-    </div>
-    <div class="col-sm-6">
-      <a href="https://summerofcode.withgoogle.com/" id="gsochome" target="_blank" title="Google Summer of Code"><img
-          src="{% static 'img/gsoc-h.png' %}" alt="Google Summer of Code logo"
-          class="img-responsive center-block" /></a>
-    </div>
+<div class="about-wrap">
+
+  <div class="about-logos">
+    <a href="https://spdx.dev/" target="_blank" title="SPDX">
+      <img src="{% static 'img/spdx.png' %}" alt="SPDX logo" class="img-responsive" />
+    </a>
+    <a href="https://summerofcode.withgoogle.com/" target="_blank" title="Google Summer of Code">
+      <img src="{% static 'img/gsoc-h.png' %}" alt="Google Summer of Code logo" class="img-responsive" />
+    </a>
   </div>
-</div>
 
-<div class="row">
-  <div class="col-md-8 col-md-offset-2">
-    <h3 class="lead" style="color:#0097c4;">What is SPDX?</h3>
-    <p>The <a href="https://spdx.dev/">System Package Data Exchange (SPDX)</a> (formerly "Software Package Data Exchange") specification is a standard
-      format for communicating the components, licenses and copyrights associated with a software package.</p>
+  <div class="about-cols">
 
-    <h3 class="lead" style="color:#0097c4;">What is this about?</h3>
-    <p>Providing an all-in-one portal to upload and parse SPDX documents for
-      validation, conformance check, comparison, conversion and SPDX License List search.</p>
+    <div class="about-col-main">
+      <h3 class="about-section-title">What is SPDX?</h3>
+      <p><a href="https://spdx.dev/">System Package Data Exchange (SPDX)</a> is a standard
+        format for communicating the components, licenses, and copyrights
+        associated with a software package.</p>
 
-    <h3 class="lead" style="color:#0097c4;">Contributors</h3>
-    <ul class="list-unstyled">
-      <li>Rohit Lodha, GSoC 2017</li>
-      <li>Tushar Mittal, GSoC 2018</li>
-      <li>Galo Castillo, GSoC 2018</li>
-      <li>Umang Taneja, GSoC 2019</li>
-      <li>Tanjong Agbor Smith, GSoC 2019</li>
-      <li>Joshua Lin, GSoC 2022</li>
-      <li>Arthit Suriyawongkul, GSoC 2025</li>
-      <li>Sujal Bhor, GSoC 2025</li>
-      <li>Ilan Schifter</li>
-      <li>Gary O'Neall</li>
-      <li>and <a href="https://github.com/spdx/">SPDX contributors</a></li>
-    </ul>
+      <h3 class="about-section-title">What is SPDX Online Tools?</h3>
+      <p>A portal for SPDX SBOM and license management.
+        Validate, convert, compare, and edit SPDX documents.
+        Identify an SPDX License ID from license text and a submit new license to the        
+        <a href="https://spdx.org/licenses/">SPDX License List</a>.</p>
 
-    <h3 class="lead" style="color:#0097c4;">Version information</h3>
-    <p>SPDX Online Tools is built using several components. The version information of these components is as follows:</p>
-    <ul class="list-unstyled">
-      <li>
-        <a href="https://github.com/spdx/spdx-online-tools">SPDX Online Tools</a>:
-        <span style="color:#0097c4;">{{ spdx_online_tools_version }}</span>
-      </li>
-      <li>
-        <a href="https://github.com/spdx/license-list-XML">SPDX License List</a>:
-        <span style="color:#0097c4;">{{ spdx_license_list_version }}</span>
-      </li>
-      <li>
-        <a href="https://github.com/spdx/tools-java">SPDX Java Tools</a>:
-        <span style="color:#0097c4;">{{ java_tools_version }}</span>
-      </li>
-      <li>
-        <a href="https://github.com/spdx/tools-python">SPDX Python Tools</a>:
-        <span style="color:#0097c4;">{{ python_tools_version }}</span>
-      </li>
-      <li>
-        <a href="https://github.com/spdx/spdx-python-model">SPDX Python Model</a>:
-        <span style="color:#0097c4;">{{ spdx_python_model_version }}</span>
-      </li>
-      <li>
-        <a href=https://github.com/spdx/spdx-license-matcher>SPDX License Matcher</a>:
-        <span style="color:#0097c4;">{{ spdx_license_matcher_version }}</span>
-      </li>
-      <li>
-        <a href="https://github.com/spdx/ntia-conformance-checker">NTIA Conformance Checker</a>:
-        <span style="color:#0097c4;">{{ ntia_conformance_checker_version }}</span>
-      </li>
-      <li>
-        The SPDX 3 visual editor (dots) is an external tool hosted by Ilan Schifter at<br />
-        <a href="https://condots.duckdns.org">https://condots.duckdns.org</a>.
-      </li>
-    </ul>
+      <h3 class="about-section-title">Get involved</h3>
+      <ul class="about-links">
+        <li><a href="https://github.com/spdx/spdx-online-tools/blob/main/CONTRIBUTING.md">Read the contributing
+            guide</a></li>
+        <li><a href="https://github.com/spdx/spdx-online-tools/issues">Report a bug or request a feature</a></li>
+        <li><a href="https://github.com/spdx/spdx-online-tools/issues?q=state%3Aopen%20label%3Agood-first-issue">Pick up
+            a good first issue</a></li>
+        <li><a href="https://lists.spdx.org/g/spdx-implementers">Join the mailing list</a></li>
+        <li><a href="https://github.com/spdx/meetings#implementers">Join the SPDX Implementers call</a></li>
+      </ul>
+    </div>
+
+    <div class="about-col-side">
+      <h3 class="about-section-title">Contributors</h3>
+      <table class="version-table">
+        <tbody>
+          <tr>
+            <td><a href="https://github.com/rtgdk">Rohit Lodha</a></td>
+            <td><a
+                href="https://github.com/spdx/spdx-online-tools/wiki/Online-SPDX-Tool%2C-Google-Summer-of-Code-2017">GSoC
+                2017</a></td>
+          </tr>
+          <tr>
+            <td><a href="https://github.com/gaalocastillo">Galo Castillo</a></td>
+            <td><a
+                href="https://github.com/spdx/spdx-online-tools/wiki/Online-SPDX-New-License-Requests-Submittal%2C-Google-Summer-of-Code-2018">GSoC
+                2018</a></td>
+          </tr>
+          <tr>
+            <td><a href="https://github.com/techytushar">Tushar Mittal</a></td>
+            <td><a
+                href="https://github.com/spdx/spdx-online-tools/wiki/Online-XML-Editor-for-SPDX-Licenses%2C-Google-Summer-of-Code-2018">GSoC
+                2018</a></td>
+          </tr>
+          <tr>
+            <td><a href="https://github.com/tjasmith">Tanjong Agbor Smith</a></td>
+            <td><a
+                href="https://github.com/spdx/spdx-online-tools/wiki/Registry-and-repository-of-License-List-Namespaces%3A-GSOC-2019">GSoC
+                2019</a></td>
+          </tr>
+          <tr>
+            <td><a href="https://github.com/Ugtan">Umang Taneja</a></td>
+            <td><a
+                href="https://github.com/spdx/spdx-online-tools/wiki/Enhance-the-workflow-of-License-Submittal-feature%2C-Google-Summer-of-Code-2019">GSoC
+                2019</a>, <a
+                href="https://github.com/spdx/spdx-online-tools/wiki/Migrate-online-tools-to-Django-3-and-add-additional-features-to-python3-branch">2021</a>
+            </td>
+          </tr>
+          <tr>
+            <td><a href="https://github.com/linynjosh">Joshua Lin</a></td>
+            <td><a href="https://github.com/spdx/ntia-conformance-checker/wiki/Project-Origin">GSoC 2022</a></td>
+          </tr>
+          <tr>
+            <td><a href="https://github.com/BassCoder2808">Vedant Jolly</a></td>
+            <td><a
+                href="https://github.com/spdx/spdx-online-tools/wiki/Enhancing-the-SPDX-License-Submission-Online-Tool%3A-Improving-Streamlined-License-Compliance%2C-Google-Summer-of-Code-2023">GSoC
+                2023</a></td>
+          </tr>
+          <tr>
+            <td><a href="https://github.com/bact">Arthit Suriyawongkul</a></td>
+            <td><a href="https://github.com/spdx/ntia-conformance-checker/wiki/Adding-SPDX-3.0-Support">GSoC 2025</a>
+            </td>
+          </tr>
+          <tr>
+            <td><a href="https://github.com/bhorsujal">Sujal Bhor</a></td>
+            <td><a href="https://summerofcode.withgoogle.com/archive/2025/projects/TwtGeZ4X">GSoC 2025</a></td>
+          </tr>
+          <tr>
+            <td><a href="https://github.com/ilans">Ilan Schifter</a></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td><a href="https://github.com/goneall">Gary O'Neall</a></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>and <a href="https://github.com/spdx/">SPDX contributors</a></td>
+            <td></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="about-col-side">
+      <h3 class="about-section-title">Core components</h3>
+      <p style="font-size:0.88em;">Versions deployed here and links to upstream source code.</p>
+      <table class="version-table">
+        <tbody>
+          <tr>
+            <td><a href="https://github.com/spdx/spdx-online-tools">SPDX Online Tools</a></td>
+            <td>{{ spdx_online_tools_version }}</td>
+          </tr>
+          <tr>
+            <td><a href="https://github.com/spdx/tools-java">SPDX Java Tools</a></td>
+            <td>{{ java_tools_version }}</td>
+          </tr>
+          <tr>
+            <td><a href="https://github.com/spdx/tools-python">SPDX Python Tools</a></td>
+            <td>{{ python_tools_version }}</td>
+          </tr>
+          <tr>
+            <td><a href="https://github.com/spdx/spdx-python-model">SPDX Python Model</a></td>
+            <td>{{ spdx_python_model_version }}</td>
+          </tr>
+          <tr>
+            <td><a href="https://github.com/spdx/spdx-license-matcher">SPDX License Matcher</a></td>
+            <td>{{ spdx_license_matcher_version }}</td>
+          </tr>
+          <tr>
+            <td><a href="https://github.com/spdx/ntia-conformance-checker">NTIA Conformance Checker</a></td>
+            <td>{{ ntia_conformance_checker_version }}</td>
+          </tr>
+        </tbody>
+      </table>
+      <p class="about-note">
+        The SPDX 3 visual editor (<a href="https://github.com/condots/dots/">dots</a>)
+        is an external tool hosted by Ilan Schifter at
+        <a href="https://condots.duckdns.org" target="_blank" rel="noreferrer">condots.duckdns.org</a>.
+      </p>
+      <p class="about-note">
+        <a href="https://github.com/spdx/spdx-license-diff">SPDX License Diff</a>,
+        a Chrome/Firefox browser extension to compare text against licenses in SPDX License List,
+        uses an API endpoint provided by SPDX Online Tools.
+      </p>
+      <h3 class="about-section-title">SPDX License List</h3>
+      <table class="version-table">
+        <tbody>
+          <tr>
+            <td><a href="https://github.com/spdx/license-list-XML/releases">License list version</a></td>
+            <td>{{ license_list_version }}</td>
+          </tr>
+          <tr>
+            <td>License list release date</td>
+            <td>{{ license_list_release_date }}</td>
+          </tr>
+          <tr>
+            <td>License list last synced to db</td>
+            <td>{{ license_list_last_synced }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
   </div>
 </div>
 {% endblock %}
 
 {% block script_block %}
 <script type="text/javascript">
-$(document).ready(function () {
+  $(document).ready(function () {
     $("#aboutpage").addClass('linkactive');
   });
 </script>
