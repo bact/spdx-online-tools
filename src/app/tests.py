@@ -1306,15 +1306,21 @@ class SubmitNewLicenseViewsTestCase(TestCase):
         self.notes = ""
         self.licenseHeader = ""
         self.text = """
-        This is a fictional test license text XYZ-UNIQUE-9a3f2b created solely
+        <text>
+        <copyrightText>
+        <p>Copyright (C) 2026 by Quom Glimp-Noodle &lt;qgn@example.com&gt;</p>
+        </copyrightText>
+        <p>This is a fictional test license text XYZ-UNIQUE-9a3f2b created solely
         for automated testing. It does not correspond to any real open source
-        license. Permission is granted for testing purposes only.
-        The heavy cast-iron skillet hissed loudly as the diced onions hit the
+        license. Permission is granted for testing purposes only.</p>
+        <p>The heavy cast-iron skillet hissed loudly as the diced onions hit the
         shimmering oil. A fragrant cloud of steam billowed toward the ceiling,
         carrying hints of crushed garlic and smoky paprika. Outside the kitchen
         window, a lone blue jay perched on the weathered fence, chirping at the
-        morning sun. Beneath the rolling turquoise waves, a vibrant coral reef
-        teemed with rhythmic life.
+        morning sun.</p>
+        <p>Beneath the rolling turquoise waves, a vibrant coral reef
+        teemed with rhythmic life.</p>
+        </text>
         """
         self.userEmail = "test@mail.com"
         self.licenseAuthorName = ""
