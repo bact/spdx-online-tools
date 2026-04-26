@@ -7,9 +7,11 @@
 from django.http import JsonResponse
 from rest_framework import serializers as drf_serializers, status
 from rest_framework.decorators import api_view, permission_classes, renderer_classes
+from rest_framework.parsers import FormParser, MultiPartParser
 from rest_framework.permissions import BasePermission, IsAuthenticated
 from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
+from rest_framework.viewsets import ModelViewSet
 
 from drf_spectacular.utils import OpenApiResponse, extend_schema, inline_serializer
 
@@ -59,6 +61,26 @@ TYPE_TO_URL = {
 
 
 
+# /api2/ ViewSets
+class ValidateViewSet(ModelViewSet):
+    queryset = ValidateFileUpload.objects.all()
+    serializer_class = ValidateSerializerReturn
+    parser_classes = (MultiPartParser, FormParser,)
+
+
+class ConvertViewSet(ModelViewSet):
+    queryset = ConvertFileUpload.objects.all()
+    serializer_class = ConvertSerializerReturn
+    parser_classes = (MultiPartParser, FormParser,)
+
+
+class CompareViewSet(ModelViewSet):
+    queryset = CompareFileUpload.objects.all()
+    serializer_class = CompareSerializerReturn
+    parser_classes = (MultiPartParser, FormParser,)
+
+# ----- end /api2/ ViewSets -----
+
 _FORMAT_CHOICES = ['TAG', 'RDFXML', 'RDFTTL', 'JSON', 'XML', 'YAML', 'XLS', 'XLSX', 'JSONLD']
 _FORMAT_HELP = (
     'File format of the document. '
@@ -100,15 +122,15 @@ _FORMAT_HELP = (
 @api_view(['GET', 'POST'])
 @renderer_classes((JSONRenderer,))
 def validate(request):
-    """ Handle Validate api request """
+    """Handle Validate API request"""
     if request.method == 'GET':
-        """ Return all validate api request """
+        # Return all validate API requests
         query = ValidateFileUpload.objects.filter(owner=request.user)
         serializer = ValidateSerializer(query, many=True)
         return Response(serializer.data)
 
     elif request.method == 'POST':
-        """ Return validate tool result on the post file"""
+        # Return validate tool result on the post file
         serializer = ValidateSerializer(data=request.data)
 
         if serializer.is_valid():
@@ -172,14 +194,15 @@ def validate(request):
 @api_view(['GET', 'POST'])
 @renderer_classes((JSONRenderer,))
 def convert(request):
-    """ Handle Convert api request """
+    """Handle Convert API request"""
     if request.method == 'GET':
-        """ Return all convert api request """
+        # Return all convert API requests
         query = ConvertFileUpload.objects.filter(owner=request.user)
         serializer = ConvertSerializer(query, many=True)
         return Response(serializer.data)
+
     elif request.method == 'POST':
-        """ Return convert tool result on the post file"""
+        # Return convert tool result on the post file
         serializer = ConvertSerializer(data=request.data)
         if serializer.is_valid():
             core.initialise_jpype()
@@ -252,15 +275,15 @@ def convert(request):
 @api_view(['GET', 'POST'])
 @renderer_classes((JSONRenderer,))
 def compare(request):
-    """ Handle Compare api request """
+    """Handle Compare API request"""
     if request.method == 'GET':
-        """ Return all compare api request """
+        # Return all compare API requests
         query = CompareFileUpload.objects.filter(owner=request.user)
         serializer = CompareSerializerReturn(query, many=True)
         return Response(serializer.data)
 
     elif request.method == 'POST':
-        """ Return compare tool result on the post file"""
+        # Return compare tool result on the post file
         serializer = CompareSerializer(data=request.data)
         if serializer.is_valid():
             core.initialise_jpype()
@@ -337,8 +360,8 @@ def compare(request):
 )
 @api_view(['POST'])
 def check_license(request):
+    """Handle Check License API request"""
     if request.method == 'POST':
-        """ Return check license tool result on the post file"""
         serializer = CheckLicenseSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         license_text = serializer.validated_data['file'].read().decode('utf8')
@@ -439,9 +462,9 @@ def check_license(request):
 @renderer_classes((JSONRenderer,))
 @permission_classes((PostAllowAny, ))
 def submit_license(request):
-    """ Handle submit license api request """
+    """Handle submit license API request"""
     if request.method == 'GET':
-        # Return all check license api request
+        # Return all check license API requests
         query = SubmitLicenseModel.objects.filter(owner=request.user)
         serializer = SubmitLicenseSerializer(query, many=True)
         return Response(serializer.data)

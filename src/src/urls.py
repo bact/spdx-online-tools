@@ -33,11 +33,20 @@ from django.views.generic import RedirectView
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.conf import settings
 from django.conf.urls.static import static
+from rest_framework import routers
+from api import views
+
+router = routers.DefaultRouter()
+router.register(r'validate', views.ValidateViewSet)
+router.register(r'convert', views.ConvertViewSet)
+router.register(r'compare', views.CompareViewSet)
+
 urlpatterns = [
 	re_path(r'^(/)?$', RedirectView.as_view(url=settings.HOME_URL),name="root"),
     path('admin/', admin.site.urls),
     path('app/', include('app.urls')),
     path('api/', include('api.urls')),
+    path('api2/', include(router.urls)),
     path('api-auth/', include(("rest_framework.urls", 'api_auth'), namespace='rest_framework')),
     path('oauth/', include('social_django.urls', namespace='social')),
     path('auth/', include(("rest_framework_social_oauth2.urls", 'github_auth'), namespace='github_social')),
