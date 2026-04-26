@@ -75,8 +75,35 @@
     background: rgba(255,255,255,0.28);
     margin: 15px 5px;
 }
+
+/* category labels */
+.nav-cat {
+    padding: 15px 1px 13px 7px !important;
+    pointer-events: none;
+    user-select: none;
+    white-space: nowrap;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.10em;
+    color: rgba(255,255,255,0.46);
+    line-height: 1;
+}
+
 @media (max-width: 767px) {
-    .nav-sep { display: none !important; }
+    .nav-sep {
+        display: block !important;
+        height: 0 !important;
+        padding: 0 !important;
+        margin: 4px 0 !important;
+        border-top: 1px solid rgba(255,255,255,0.15);
+    }
+    .nav-sep > span { display: none; }
+    .nav-cat {
+        display: block;
+        padding: 8px 16px 2px !important;
+        font-size: 9px;
+    }
     .navbar-inverse .navbar-nav > li > a {
         padding: 12px 16px;
         border-radius: 0;
@@ -243,23 +270,25 @@ div p {
             <li><a href="/app/" id="homepage" title="Home" aria-label="Home"><span class="glyphicon glyphicon-home"></span></a></li>
             <li class="nav-sep" role="separator" aria-hidden="true"><span></span></li>
             <!-- SBOM tools -->
+            <li class="nav-cat" aria-hidden="true">SBOM</li>
             <li><a href="/app/validate/"     id="validatepage">Validate</a></li>
             <li><a href="/app/convert/"      id="convertpage">Convert</a></li>
             <li><a href="/app/compare/"      id="comparepage">Compare</a></li>
             <li><a href="/app/ntia_checker/" id="checkerpage">Conformance</a></li>
-            <li><a href="/app/dots/"         id="dots">Visual Editor</a></li>
+            <li><a href="/app/dots/"         id="dots">Edit</a></li>
             <li class="nav-sep" role="separator" aria-hidden="true"><span></span></li>
             <!-- License tools -->
-            <li><a href="/app/check_license/" id="checklicensepage">License Check</a></li>
-            <li><a href="/app/xml_upload/"    id="license-xml-editor">XML Editor</a></li>
+            <li class="nav-cat" aria-hidden="true">License</li>
+            <li><a href="/app/check_license/" id="checklicensepage">Check</a></li>
+            <li><a href="/app/xml_upload/"    id="license-xml-editor">Edit</a></li>
             <li class="dropdown">
               <a class="dropdown-toggle" data-toggle="dropdown" href="#" id="licenserequest" role="button" aria-haspopup="true" aria-expanded="false">
-                License Requests <span class="caret"></span>
+                Request <span class="caret"></span>
               </a>
               <ul class="dropdown-menu">
                 <li><a href="/app/submit_new_license/" id="submitnewlicensepage">Submit New License</a></li>
-                <li><a href="/app/license_requests/"   id="licenserequestspage">License Requests</a></li>
-                <li><a href="/app/archive_requests/"   id="archiverequestspage">Archive Requests</a></li>
+                <li><a href="/app/license_requests/"   id="licenserequestspage">Request List</a></li>
+                <li><a href="/app/archive_requests/"   id="archiverequestspage">Request Archive</a></li>
               </ul>
             </li>
             <li class="nav-sep" role="separator" aria-hidden="true"><span></span></li>
