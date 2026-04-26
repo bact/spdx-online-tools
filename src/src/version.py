@@ -13,7 +13,9 @@ from re import search
 from subprocess import PIPE, run
 from typing import Any, Dict, cast
 
-from .settings import LICENSE_ROOT
+# Will be removed once we read the license list version from the Redis database
+# Put it here temporarily to avoid circular imports between with settings.py
+LICENSE_ROOT = "/licenses/current/"
 
 
 def get_tools_version(jar_name: str) -> str:
