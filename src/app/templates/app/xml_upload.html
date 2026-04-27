@@ -64,9 +64,10 @@
           </form>
         </div>
   </div>
-  {% include "app/modal.html" %} 
+  {% include "app/modal.html" %}
   </div>
 </div>
+{% include "app/_tool_versions.html" with show_java_tools=True %}
 {% endblock %}
 
 {% block script_block %}
