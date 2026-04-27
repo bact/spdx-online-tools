@@ -41,13 +41,19 @@ def initialise_jpype():
 
 @contextmanager
 def _jvm_thread():
-    """Attach current thread to JVM as daemon; detach on exit."""
+    """Attach current thread to JVM as daemon; detach on exit.
+
+    Guards the detach with isAttached() because spdx_license_matcher (v2.8)
+    calls detachThreadFromJVM() internally, which can leave the thread already
+    detached by the time the finally block runs.
+    """
     JThread = jpype.JClass("java.lang.Thread")
     JThread.attachAsDaemon()
     try:
         yield
     finally:
-        JThread.detach()
+        if JThread.isAttached():
+            JThread.detach()
 
 
 def license_compare_helper(request):
