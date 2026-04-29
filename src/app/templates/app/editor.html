@@ -9,6 +9,7 @@
     <link href="{% static 'css/editor/foldgutter.css' %}" rel="stylesheet" type="text/css">
     <link href="{% static 'css/editor/treeview.css' %}" rel="stylesheet" type="text/css">
     <link href="{% static 'css/editor/diffview.css' %}" rel="stylesheet" type="text/css">
+    <style>.starter-template { padding: 0; }</style>
 {% endblock %}
 
 {% block body1 %}
@@ -16,7 +17,7 @@
 {% endblock %}
 
 {% block body2 %}
-    <div class="container-fluid">
+    <div class="container-fluid editor-container">
         <input type="hidden" id="xmlText" value="{{xml_text}}">
         <ul class="nav nav-tabs">
             <li class="active"><a href="#text" id="tabTextEditor">Text editor</a></li>

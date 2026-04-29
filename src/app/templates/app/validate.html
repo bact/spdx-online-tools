@@ -6,9 +6,8 @@
 {% endblock %}
 
 {% block body1 %}
-<div id="messages" class="messages">
-</div>
-<p class ="lead"> {{ error }}</p>
+<div id="messages" class="messages"></div>
+{% if error %}<p class="lead">{{ error }}</p>{% endif %}
 <div class="panel panel-default">
 <div class="panel-heading">
   <p class="lead">Validate SPDX document</p>
@@ -39,11 +38,13 @@
     </form>
 <hr>
     <button id="validatebutton" name="validatebutton" class="btn btn-md btn-info" type="submit" disabled="true">Validate</button>
-  {% include "app/modal.html" %} 
+  {% include "app/modal.html" %}
   <!--
   <output id="list"></output>
   -->
 </div>
+</div>
+{% include "app/_tool_versions.html" with show_java_tools=True %}
 
 {% endblock %}
 

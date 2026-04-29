@@ -6,10 +6,9 @@
 {% endblock %}
 
 {% block body1 %}
-<div id="messages" class="messages">
-</div>
-<p class ="lead"> {{ medialink }}</p>
-<p class ="lead"> {{ error }}</p>
+<div id="messages" class="messages"></div>
+{% if medialink %}<p class="lead">{{ medialink }}</p>{% endif %}
+{% if error %}<p class="lead">{{ error }}</p>{% endif %}
 <div class="panel panel-default">
 <div class="panel-heading">
 	<p class="lead">Compare SPDX 2.X documents</p>
@@ -41,6 +40,7 @@
 </div>
 </div>
 {% include "app/modal.html" %}
+{% include "app/_tool_versions.html" with show_java_tools=True %}
 {% endblock %}
 
 {% block script_block %}

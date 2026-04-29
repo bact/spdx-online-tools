@@ -138,9 +138,8 @@
 {% endblock %}
 
 {% block body1 %}
-<div id="messages" class="messages">
-</div>
-<p class ="lead">{{ error }}</p>
+<div id="messages" class="messages"></div>
+{% if error %}<p class="lead">{{ error }}</p>{% endif %}
 <div class="panel panel-default">
 <div class="panel-heading">
   <p class="lead">Check conformance</p>
@@ -177,6 +176,8 @@
   <button id="checkbutton" name="checkbutton" class="btn btn-md btn-info" type="submit" disabled="true">Check minimum elements</button>
   {% include "app/modal.html" %}
 </div>
+</div>
+{% include "app/_tool_versions.html" with show_python_tools=True show_ntia=True %}
 
 {% endblock %}
 
@@ -256,7 +257,7 @@ function checkform() {
 
   function renderConformanceData(data) {
     if (typeof data !== "object" || data === null) {
-      return escapeHtml(String(data));
+      return String(data);  // data is HTML
     }
 
     var html = "<div class='res-container'>";
