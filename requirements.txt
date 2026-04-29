@@ -1,15 +1,15 @@
-django-oauth-toolkit>=2.0.0
-django-rest-framework-social-oauth2>=1.2.0
+django-oauth-toolkit>=2.0.0,<3.0.0
+django-rest-framework-social-oauth2>=1.2.0,<2.0.0
 Django>=4.2,<4.3
-djangorestframework>=3.14.0
-gevent>=26.4.0
-gunicorn>=25.3.0
+djangorestframework>=3.14.0,<4.0.0
+gevent>=26.4.0,<27.0.0
+gunicorn>=25.3.0,<26.0.0
 jpype1==1.6.0
 lxml>=5.4.0,<6.0.0
 ntia-conformance-checker>=5.0.2,<6.0.0
 python-dotenv>=1.0.1
 redis==4.4.4 # spdx-license-matcher depends on this specific version
-requests>=2.33.1
+requests>=2.33.1,<3.0.0
 social-auth-app-django>=5.0,<6.0
 social-auth-core>=4.3,<5.0
 spdx-python-model>=0.0.4,<1.0.0
