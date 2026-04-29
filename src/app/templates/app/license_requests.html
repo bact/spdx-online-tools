@@ -4,9 +4,8 @@
 
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.css">
 
-<div id="messages" class="messages">
-</div>
-<p class ="lead"> {{ error }}</p>
+<div id="messages" class="messages"></div>
+{% if error %}<p class="lead">{{ error }}</p>{% endif %}
 <div class="panel panel-default">
 <div class="panel-heading"> <p class="lead">License Requests List</p> </div>
 <div class="panel-body" style="overflow: scroll;">
