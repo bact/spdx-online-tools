@@ -40,7 +40,7 @@ def initialise_jpype():
 
 
 @contextmanager
-def _jvm_thread():
+def jvm_thread():
     """Attach current thread to JVM as daemon; detach on exit.
 
     Guards the detach with isAttached() because spdx_license_matcher (v2.8)
