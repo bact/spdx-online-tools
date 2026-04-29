@@ -1,48 +1,57 @@
 #drop-area {
-    border: 2px dashed rgb(221, 221, 221);
-    border-radius: 20px;
-    width: 90%;
-    min-height: 220px;
-    font-family: sans-serif;
-    margin: 30px auto;
-    padding: 20px 0;
-    transition: box-shadow 0.2s;
-    overflow: hidden;
+    border: 2px dashed #a8c8d8;
+    border-radius: 10px;
+    width: 100%;
+    max-width: 600px;
+    min-height: 150px;
+    margin: 16px auto;
+    padding: 24px 20px 16px;
+    text-align: center;
+    background: #f4fafd;
+    transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
+    box-sizing: border-box;
+}
+#drop-area:focus-within {
+    border-color: #0097c4;
+    background: #eaf5fb;
 }
 #drop-area.highlight {
-    -webkit-box-shadow: 0 0 12px 1px grey inset;
-    -moz-box-shadow: 0 0 12px 1px grey inset;
-    box-shadow: 0 0 12px 1px grey inset;
+    border-color: #0097c4;
+    background: #e2f1f8;
+    box-shadow: 0 0 0 3px rgba(0,151,196,0.15);
 }
-.my-form {
-    margin-bottom: 10px;
+#drop-area h4,
+#drop-area p {
+    font-size: 0.92em;
+    color: #555;
+    margin-bottom: 14px;
 }
-.file-name{
-    margin-top:10px;
-}
-.success{
-    color:green;
-}
-.fail{
-    color:red;
+.file-name {
+    margin-top: 12px;
+    font-size: 0.88em;
+    color: #444;
+    min-height: 1.4em;
 }
 .button {
     display: inline-block;
-    padding: 8px;
-    background: #ccc;
+    padding: 7px 18px;
+    background: #0097c4;
+    color: #fff;
     cursor: pointer;
     border-radius: 5px;
-    border: 1px solid #ccc;
+    border: none;
+    font-size: 0.9em;
+    font-weight: 600;
+    transition: background 0.12s;
+    margin: 2px 4px;
 }
-.button:hover {
-    background: #ddd;
+.button:hover { background: #007aa0; color: #fff; }
+.button:focus { outline: 3px solid rgba(0,151,196,0.40); outline-offset: 2px; }
+.reset {
+    background: #b71c1c !important;
+    color: #fff;
 }
-.reset{
-    background: rgb(255, 62, 62) !important;
-}
-.reset:hover{
-    background: rgb(252, 98, 98) !important;
-}
-#file {
-    display: none;
-}
+.reset:hover { background: #8b1010 !important; }
+#file { display: none; }
+.success { color: #2e7d32; font-weight: 600; }
+.fail    { color: #c62828; font-weight: 600; }

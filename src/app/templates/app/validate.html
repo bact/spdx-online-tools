@@ -6,9 +6,8 @@
 {% endblock %}
 
 {% block body1 %}
-<div id="messages" class="messages">
-</div>
-<p class ="lead"> {{ error }}</p>
+<div id="messages" class="messages"></div>
+{% if error %}<p class="lead">{{ error }}</p>{% endif %}
 <div class="panel panel-default">
 <div class="panel-heading">
   <p class="lead">Validate SPDX document</p>
