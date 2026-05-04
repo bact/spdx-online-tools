@@ -3,26 +3,6 @@
 {% block body1 %}
 
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.css">
-<style>
-  .dataTables_filter {
-    margin-bottom: 15px;
-  }
-
-  .dataTables_filter input {
-    padding: 7px 12px !important;
-    border: 1px solid #ccc !important;
-    border-radius: 4px !important;
-    outline: none !important;
-    font-size: 16px !important;
-    margin-left: 8px !important;
-    transition: border-color 0.15s;
-  }
-
-  .dataTables_filter input:focus {
-    border-color: #0097c4 !important;
-    box-shadow: 0 0 0 3px rgba(0, 151, 196, 0.15);
-  }
-</style>
 
 <div id="messages" class="messages"></div>
 {% if error %}<p class="lead">{{ error }}</p>{% endif %}

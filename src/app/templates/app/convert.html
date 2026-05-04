@@ -18,7 +18,7 @@
       {% csrf_token %}
       <div class="form-narrow">
         <div class="form-group">
-          <label for="from_format">From format: </label>
+          <label for="from_format">From</label>
           <select name="from_format" id="from_format" aria-required="true">
             <option value="0" selected="">— Select source format —</option>
             <option value="JSON">V2 JSON</option>
@@ -30,11 +30,10 @@
             <option value="XML">V2 XML</option>
             <option value="YAML">V2 YAML</option>
           </select>
-        </div>
-        <div class="form-group">
-          <label for="to_format">To format: </label>
+          <label for="to_format">to</label>
           <select name="to_format" id="to_format" aria-required="true">
             <option value="0" data-value="INGORE" data-ext="" selected="">— Select target format —</option>
+            <option value="JSONLD" data-value="JSONLD" data-ext=".spdx3.json">V3 JSON-LD</option>
             <option value="JSON" data-value="JSON" data-ext=".json">V2 JSON</option>
             <option value="RDFTTL" data-value="RDFTTL" data-ext=".rdf.ttl">V2 RDF/TTL</option>
             <option value="RDFXML" data-value="RDFXML" data-ext=".rdf.xml">V2 RDF/XML</option>

@@ -18,7 +18,7 @@
       </p>
       <p>The result will be one of the following: <em>Perfect match</em>, <em>Standard License match</em>, <em>Close
           match</em>, or
-        <em>Error (No match)</em>.
+        <em>Error (no match)</em>.
       </p>
       <div class="form-group">
         <label for="licensetext" class="sr-only">License text</label>
@@ -43,7 +43,7 @@
 
 {% block script_block %}
 <script type="text/javascript">
-  $(document).ready(function () { $('#checklicensepage').addClass('linkactive'); });
+  $(document).ready(function() { $('#checklicensepage').addClass('linkactive'); });
 </script>
 
 <script type="text/javascript">
@@ -57,7 +57,7 @@
 </script>
 
 <script type="text/javascript">
-  $('#checklicenseform').on('submit', function (event) {
+  $('#checklicenseform').on('submit', function(event) {
     event.preventDefault();
     var check = checkform();
     if (check === '1') {
@@ -97,13 +97,13 @@
           showResult(type, title, '<p>' + body + '</p>');
           $('#checklicensebutton').text('Check license').prop('disabled', false).removeAttr('aria-disabled');
         },
-        error: function (e) {
+        error: function(e) {
           try {
             var obj = JSON.parse(e.responseText);
             showResult('error', 'Error', '<p>' + obj.data + '</p>');
           } catch (_) {
             showResult('error', 'Error',
-              '<p>The application could not be connected. Please try later.</p>');
+                       '<p>The application could not be connected. Please try later.</p>');
           }
           $('#checklicensebutton').text('Check license').prop('disabled', false).removeAttr('aria-disabled');
         }
@@ -113,7 +113,7 @@
         '<div class="alert alert-danger" role="alert"><strong>Error:</strong> ' +
         $('<span>').text(check).html() + '</div>'
       );
-      setTimeout(function () { $('#messages').html(''); }, 5000);
+      setTimeout(function() { $('#messages').html(''); }, 5000);
     }
   });
 </script>
