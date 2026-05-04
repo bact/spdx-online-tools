@@ -16,16 +16,16 @@ from django.core.management import call_command
 from django.test import TestCase
 from django.urls import reverse
 from selenium import webdriver
+from selenium.webdriver.chrome.options import Options as ChromeOptions
+from selenium.webdriver.chrome.service import Service as ChromeService
 from selenium.webdriver.common.by import By
 from selenium.webdriver.firefox.options import Options as FirefoxOptions
 from selenium.webdriver.firefox.service import Service as FirefoxService
-from selenium.webdriver.chrome.options import Options as ChromeOptions
-from selenium.webdriver.chrome.service import Service as ChromeService
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from social_django.models import UserSocialAuth
-from webdriver_manager.firefox import GeckoDriverManager
 from webdriver_manager.chrome import ChromeDriverManager
+from webdriver_manager.firefox import GeckoDriverManager
 
 from app.generateXml import generateLicenseXml
 from app.models import LicenseNamespace, LicenseRequest, UserID
@@ -137,8 +137,10 @@ class LoginViewsTestCase(TestCase):
     def test_postlogin(self):
         """POST Request for index with different user types."""
         self.initialise()
-        resp = self.client.post(reverse("login"),self.credentials,follow=True,secure=True)
-        self.assertEqual(resp.status_code,200)
+        resp = self.client.post(
+            reverse("login"), self.credentials, follow=True, secure=True
+        )
+        self.assertEqual(resp.status_code, 200)
         self.assertNotEqual(resp.redirect_chain,[])
         self.assertIn(settings.LOGIN_REDIRECT_URL, (i[0] for i in resp.redirect_chain))
         self.assertTrue(resp.context['user'].is_active)
@@ -146,8 +148,10 @@ class LoginViewsTestCase(TestCase):
         self.assertFalse(resp.context['user'].is_superuser)
         self.client.get(reverse("logout"))
 
-        resp2 = self.client.post(reverse("login"),self.credentials2,follow=True,secure=True)
-        self.assertEqual(resp2.status_code,403)
+        resp2 = self.client.post(
+            reverse("login"), self.credentials2, follow=True, secure=True
+        )
+        self.assertEqual(resp2.status_code, 403)
         self.assertEqual(resp2.redirect_chain,[])
         self.assertFalse(resp2.context['user'].is_active)
         self.assertFalse(resp2.context['user'].is_staff)
@@ -156,8 +160,10 @@ class LoginViewsTestCase(TestCase):
         self.assertIn("app/login.html",(i.name for i in resp2.templates))
         self.client.get(reverse("logout"))
 
-        resp3 = self.client.post(reverse("login"),self.credentials3,follow=True,secure=True)
-        self.assertEqual(resp3.status_code,403)
+        resp3 = self.client.post(
+            reverse("login"), self.credentials3, follow=True, secure=True
+        )
+        self.assertEqual(resp3.status_code, 403)
         self.assertEqual(resp3.redirect_chain,[])
         self.assertFalse(resp3.context['user'].is_active)
         self.assertFalse(resp3.context['user'].is_staff)
@@ -170,10 +176,16 @@ class RegisterViewsTestCase(TestCase):
 
     def initialise(self):
         self.username = "testuser4"
-        self.password ="testpass4"
-        self.data = {"first_name": "test","last_name" : "test" ,
-            "email" : "test@spdx.org","username":self.username,
-            "password":self.password,"confirm_password":self.password,"organisation":"spdx"}
+        self.password = "testpass4"
+        self.data = {
+            "first_name": "test",
+            "last_name": "test",
+            "email": "test@spdx.org",
+            "username": self.username,
+            "password": self.password,
+            "confirm_password": self.password,
+            "organisation": "spdx",
+        }
 
     def test_register(self):
         """GET Request for register"""
