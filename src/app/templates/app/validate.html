@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block head_block %}
-  <link href="{% static 'css/dragdrop.css' %}" rel="stylesheet" type="text/css">
+<link href="{% static 'css/dragdrop.css' %}" rel="stylesheet" type="text/css">
 {% endblock %}
 
 {% block body1 %}
@@ -14,7 +14,7 @@
   </div>
   <div class="panel-body">
     <form id="validateform" enctype="multipart/form-data" class="form-horizontal" method="post"
-          aria-label="Validate SPDX document">
+      aria-label="Validate SPDX document">
       {% csrf_token %}
       <div class="form-narrow">
         <div class="form-group">
@@ -33,24 +33,24 @@
         </div>
       </div>
       <div id="drop-area" class="container" role="region" aria-label="File upload area">
-        <p id="drop-instructions">Upload SPDX document using the button or by dragging and dropping onto the dashed region</p>
-        <input type="file" id="file" onchange="handleFiles(this.files)"
-               aria-label="Select SPDX document" aria-describedby="drop-instructions">
+        <p id="drop-instructions">Upload SPDX document using the button or by dragging and dropping onto the dashed
+          region</p>
+        <input type="file" id="file" onchange="handleFiles(this.files)" aria-label="Select SPDX document"
+          aria-describedby="drop-instructions">
         <label class="button" for="file">Select file</label>
         <div class="file-name" aria-live="polite" aria-atomic="true">No file selected</div>
       </div>
     </form>
     <hr>
     <p id="warning-msg" hidden></p>
-    <button id="validatebutton" name="validatebutton" class="btn btn-md btn-info btn-submit-center"
-            type="button" disabled aria-disabled="true">Validate</button>
+    <button id="validatebutton" name="validatebutton" class="btn btn-md btn-info btn-submit-center" type="button"
+      disabled aria-disabled="true">Validate</button>
 
-    <section id="result-section" class="result-section" role="region"
-             aria-label="Validation result" tabindex="-1" hidden>
+    <section id="result-section" class="result-section" role="region" aria-label="Validation result" tabindex="-1"
+      hidden>
       <div id="result-header" class="result-header">
         <h2 id="result-title" class="result-title"></h2>
-        <button type="button" class="result-close" aria-label="Close result"
-                onclick="hideResult()">&times;</button>
+        <button type="button" class="result-close" aria-label="Close result" onclick="hideResult()">&times;</button>
       </div>
       <div id="result-body" class="result-body"></div>
     </section>
@@ -66,7 +66,7 @@
   /* Drag and drop handling */
   var dropArea = document.getElementById('drop-area');
   var selected_file = "";
-  ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(function(eventName) {
+  ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(function (eventName) {
     dropArea.addEventListener(eventName, preventDefaults, false);
   });
 
@@ -75,17 +75,17 @@
     e.stopPropagation();
   }
 
-  ['dragenter', 'dragover'].forEach(function(eventName) {
+  ['dragenter', 'dragover'].forEach(function (eventName) {
     dropArea.addEventListener(eventName, highlight, false);
   });
-  ['dragleave', 'drop'].forEach(function(eventName) {
+  ['dragleave', 'drop'].forEach(function (eventName) {
     dropArea.addEventListener(eventName, unhighlight, false);
   });
 
   function highlight() { dropArea.classList.add('highlight'); }
   function unhighlight() { dropArea.classList.remove('highlight'); }
 
-  dropArea.addEventListener('drop', function(e) {
+  dropArea.addEventListener('drop', function (e) {
     handleFiles(e.dataTransfer.files);
   }, false);
 
@@ -112,8 +112,8 @@
         else if (name.endsWith('.rdf.xml') || name.endsWith('.rdf')) formatDropdown.value = 'RDFXML';
         else if (name.endsWith('.xlsx')) formatDropdown.value = 'XLSX';
         else if (name.endsWith('.xls')) formatDropdown.value = 'XLS';
-        else if (name.endsWith('.yaml') || name.endsWith('.yml')) formatDropdown.value = 'YAML';
         else if (name.endsWith('.xml')) formatDropdown.value = 'XML';
+        else if (name.endsWith('.yaml') || name.endsWith('.yml')) formatDropdown.value = 'YAML';
       }
     } else {
       document.querySelector('.file-name').textContent = 'No file selected';
@@ -134,7 +134,7 @@
 </script>
 
 <script type="text/javascript">
-  document.getElementById('validatebutton').addEventListener('click', function(event) {
+  document.getElementById('validatebutton').addEventListener('click', function (event) {
     event.preventDefault();
     var check = checkform();
     if (check === '1') {
@@ -158,15 +158,15 @@
         dataType: 'json',
         timeout: 600000,
         data: form,
-        success: function(data) {
+        success: function (data) {
           showResult('success', 'Valid', '<p>' + data.data + '</p>');
           btn.textContent = 'Validate';
           btn.disabled = false;
           btn.removeAttribute('aria-disabled');
         },
-        error: function(e) {
+        error: function (e) {
           var title = 'Error';
-          var body  = 'The application could not be connected. Please try later.';
+          var body = 'The application could not be connected. Please try later.';
           try {
             var obj = JSON.parse(e.responseText);
             var type = (obj.type === 'warning') ? 'warning' : 'error';
@@ -184,7 +184,7 @@
       document.getElementById('messages').innerHTML =
         '<div class="alert alert-danger" role="alert"><strong>Error: </strong>' +
         $('<span>').text(check).html() + '</div>';
-      setTimeout(function() {
+      setTimeout(function () {
         document.getElementById('messages').innerHTML = '';
       }, 5000);
     }
@@ -192,7 +192,7 @@
 </script>
 
 <script type="text/javascript">
-  $(document).ready(function() {
+  $(document).ready(function () {
     $('#validatepage').addClass('linkactive');
   });
 </script>

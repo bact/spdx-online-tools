@@ -141,7 +141,7 @@
     <hr>
     <p id="warning-msg" hidden></p>
     <button id="checkbutton" name="checkbutton" class="btn btn-md btn-info btn-submit-center" type="button" disabled
-      aria-disabled="true">Check minimum elements</button>
+      aria-disabled="true">Check conformance</button>
 
     <section id="result-section" class="result-section" role="region" aria-label="Conformance check result"
       tabindex="-1" hidden>
@@ -343,7 +343,7 @@
         data: form,
         success: function (data) {
           showResult('success', 'Check complete', renderConformanceData(data.data));
-          btn.textContent = 'Check minimum elements';
+          btn.textContent = 'Check conformance';
           btn.disabled = false;
           btn.removeAttribute('aria-disabled');
         },
@@ -357,7 +357,7 @@
             showResult('error', 'Error',
               '<p>The application could not be connected. Please try later.</p>');
           }
-          btn.textContent = 'Check minimum elements';
+          btn.textContent = 'Check conformance';
           btn.disabled = false;
           btn.removeAttribute('aria-disabled');
         }
