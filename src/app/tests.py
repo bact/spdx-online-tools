@@ -17,12 +17,15 @@ from django.test import TestCase
 from django.urls import reverse
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-from selenium.webdriver.firefox.options import Options
-from selenium.webdriver.firefox.service import Service
+from selenium.webdriver.firefox.options import Options as FirefoxOptions
+from selenium.webdriver.firefox.service import Service as FirefoxService
+from selenium.webdriver.chrome.options import Options as ChromeOptions
+from selenium.webdriver.chrome.service import Service as ChromeService
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from social_django.models import UserSocialAuth
 from webdriver_manager.firefox import GeckoDriverManager
+from webdriver_manager.chrome import ChromeDriverManager
 
 from app.generateXml import generateLicenseXml
 from app.models import LicenseNamespace, LicenseRequest, UserID
@@ -33,15 +36,26 @@ os.environ.setdefault('WDM_PROGRESS_BAR', '0')
 os.environ.setdefault('WDM_LOG', '0')
 
 def _init_selenium():
+    # Attempt Firefox
     try:
         driver_path = shutil.which("geckodriver") or GeckoDriverManager().install()
         if driver_path and os.path.isfile(driver_path) and os.access(driver_path, os.X_OK):
-            return True, Service(driver_path)
-        return False, None
-    except Exception:
-        return False, None
+            return "firefox", driver_path
+    except Exception as e:
+        print(f"Firefox initialization failed or geckodriver not found: {e}")
 
-SELENIUM_AVAILABLE, service = _init_selenium()
+    # Attempt Chrome
+    try:
+        driver_path = shutil.which("chromedriver") or ChromeDriverManager().install()
+        if driver_path and os.path.isfile(driver_path) and os.access(driver_path, os.X_OK):
+            return "chrome", driver_path
+    except Exception as e:
+        print(f"Chrome initialization failed or chromedriver not found: {e}")
+
+    return None, None
+
+DRIVER_TYPE, DRIVER_PATH = _init_selenium()
+SELENIUM_AVAILABLE = DRIVER_TYPE is not None
 
 def getExamplePath(filename):
     return os.path.join(settings.EXAMPLES_DIR, filename)
@@ -686,24 +700,42 @@ class ValidateXMLViewsTestCase(TestCase):
         self.client.logout()
 
 
-@skipIf(not SELENIUM_AVAILABLE, "geckodriver not available or not working")
-class LicenseXMLEditorTestCase(StaticLiveServerTestCase):
-
+class BaseSeleniumTestCase(StaticLiveServerTestCase):
     def setUp(self):
-        options = Options()
-        options.add_argument('-headless')
+        if not SELENIUM_AVAILABLE:
+            self.skipTest("No supported webdriver (Firefox or Chrome) available")
+
         try:
-            self.selenium = webdriver.Firefox(service=service, options=options)
+            if DRIVER_TYPE == "firefox":
+                options = FirefoxOptions()
+                options.add_argument('-headless')
+                self.selenium = webdriver.Firefox(service=FirefoxService(DRIVER_PATH), options=options)
+            elif DRIVER_TYPE == "chrome":
+                options = ChromeOptions()
+                options.add_argument('--headless')
+                options.add_argument('--no-sandbox')
+                options.add_argument('--disable-dev-shm-usage')
+                self.selenium = webdriver.Chrome(service=ChromeService(DRIVER_PATH), options=options)
+            
+            self.selenium.set_window_size(1920, 1080)
         except Exception as e:
-            self.skipTest(f"geckodriver not available or not working: {e}")
-        self.selenium.set_window_size(1920, 1080)
-        self.initialXML = '<?xml version="1.0" encoding="UTF-8"?>\n<SPDXLicenseCollection xmlns="http://www.spdx.org/license">\n   <license>\n   </license>\n</SPDXLicenseCollection>'
-        self.invalidXML = '<?xml version="1.0" encoding="UTF-8"?><SPDXLicenseCollection xmlns="http://www.spdx.org/license"><license></license>'
-        super(LicenseXMLEditorTestCase, self).setUp()
+            self.skipTest(f"Failed to initialize {DRIVER_TYPE} driver: {e}")
+        
+        super(BaseSeleniumTestCase, self).setUp()
 
     def tearDown(self):
-        self.selenium.quit()
-        super(LicenseXMLEditorTestCase, self).tearDown()
+        if hasattr(self, 'selenium'):
+            self.selenium.quit()
+        super(BaseSeleniumTestCase, self).tearDown()
+
+
+@skipIf(not SELENIUM_AVAILABLE, "Selenium not available (Firefox or Chrome required)")
+class LicenseXMLEditorTestCase(BaseSeleniumTestCase):
+
+    def setUp(self):
+        super(LicenseXMLEditorTestCase, self).setUp()
+        self.initialXML = '<?xml version="1.0" encoding="UTF-8"?>\n<SPDXLicenseCollection xmlns="http://www.spdx.org/license">\n   <license>\n   </license>\n</SPDXLicenseCollection>'
+        self.invalidXML = '<?xml version="1.0" encoding="UTF-8"?><SPDXLicenseCollection xmlns="http://www.spdx.org/license"><license></license>'
 
     def test_tree_editor_attributes(self):
         """ Test for adding, editing and deleting attributes using tree editor """
@@ -1224,21 +1256,8 @@ class ArchiveLicenseRequestsViewsTestCase(TestCase):
         self.assertEqual(resp.resolver_match.func.__name__,"licenseInformation")
 
 
-@skipIf(not SELENIUM_AVAILABLE, "geckodriver not available or not working")
-class ArchiveLicenseRequestsSeleniumTestCase(StaticLiveServerTestCase):
-
-    def setUp(self):
-        options = Options()
-        options.add_argument('-headless')
-        try:
-            self.selenium = webdriver.Firefox(service=service, options=options)
-        except Exception as e:
-            self.skipTest(f"geckodriver not available or not working: {e}")
-        super(ArchiveLicenseRequestsSeleniumTestCase, self).setUp()
-
-    def tearDown(self):
-        self.selenium.quit()
-        super(ArchiveLicenseRequestsSeleniumTestCase, self).tearDown()
+@skipIf(not SELENIUM_AVAILABLE, "Selenium not available (Firefox or Chrome required)")
+class ArchiveLicenseRequestsSeleniumTestCase(BaseSeleniumTestCase):
 
     @skipIf(not getAccessToken() or not getGithubUserId() or not getGithubUserName(), "You need to set GitHub parameters in the secret.py file for this test to be executed properly.")
     def test_archive_license_requests_feature(self):
@@ -1396,23 +1415,13 @@ class LicenseNamespaceViewsTestCase(TestCase):
         self.assertEqual(resp.resolver_match.func.__name__,"licenseNamespaceRequests")
 
 
-@skipIf(not SELENIUM_AVAILABLE, "geckodriver not available or not working")
-class PromoteLicenseNamespaceViewsTestCase(StaticLiveServerTestCase):
+@skipIf(not SELENIUM_AVAILABLE, "Selenium not available (Firefox or Chrome required)")
+class PromoteLicenseNamespaceViewsTestCase(BaseSeleniumTestCase):
 
     def setUp(self):
-        options = Options()
-        options.add_argument('-headless')
-        try:
-            self.selenium = webdriver.Firefox(service=service, options=options)
-        except Exception as e:
-            self.skipTest(f"geckodriver not available or not working: {e}")
+        super(PromoteLicenseNamespaceViewsTestCase, self).setUp()
         login = TestUtil.gitHubLogin(self)
         self.assertTrue(login)
-        super(PromoteLicenseNamespaceViewsTestCase, self).setUp()
-
-    def tearDown(self):
-        self.selenium.quit()
-        super(PromoteLicenseNamespaceViewsTestCase, self).tearDown()
 
 
     @skipIf(not getAccessToken() or not getGithubUserId() or not getGithubUserName(), "You need to set GitHub parameters in the secret.py file for this test to be executed properly.")
@@ -1473,22 +1482,8 @@ class ArchiveLicenseNamespaceViewsTestCase(TestCase):
         self.assertEqual(resp.resolver_match.func.__name__,"licenseNamespaceInformation")
 
 
-@skipIf(not SELENIUM_AVAILABLE, "geckodriver not available or not working")
-class ArchiveLicenseNamespaceSeleniumTestCase(StaticLiveServerTestCase):
-
-    def setUp(self):
-        options = Options()
-        options.add_argument('-headless')
-        try:
-            self.selenium = webdriver.Firefox(service=service, options=options)
-        except Exception as e:
-            self.skipTest(f"geckodriver not available or not working: {e}")
-        self.selenium.set_window_size(1920, 1080)
-        super(ArchiveLicenseNamespaceSeleniumTestCase, self).setUp()
-
-    def tearDown(self):
-        self.selenium.quit()
-        super(ArchiveLicenseNamespaceSeleniumTestCase, self).tearDown()
+@skipIf(not SELENIUM_AVAILABLE, "Selenium not available (Firefox or Chrome required)")
+class ArchiveLicenseNamespaceSeleniumTestCase(BaseSeleniumTestCase):
 
     def test_archive_license_namespace_feature(self):
         """Check if the license namespace is shifted to archive namespace when archive button is pressed"""
