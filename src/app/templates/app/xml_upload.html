@@ -29,7 +29,7 @@
             {% csrf_token %}
             <h4>Write the XML document text below: </h4>
             <textarea id="xmltext" name="xmltext" rows="15" style="width: 90%; resize:none;"></textarea> <hr>
-            <button id="xmlTextButton" name="xmlTextButton" class=" btn btn-md btn-info" type="submit">Edit document</button>
+            <button id="xmlTextButton" name="xmlTextButton" class=" btn btn-md btn-info btn-submit-center" type="submit">Edit document</button>
           </form>
         </div>
         <div id="upload" class="tab-pane fade">
@@ -42,7 +42,7 @@
               <div class="file-name">No file selected</div>
             </form>
           </div>
-          <button id="uploadButton" name="uploadButton" class="btn btn-md btn-info" type="submit">Edit document</button>
+          <button id="uploadButton" name="uploadButton" class="btn btn-md btn-info btn-submit-center" type="submit">Edit document</button>
         </div>
         <div id="license-name" class="tab-pane fade">
           <form id="form-license-name" enctype="multipart/form-data" class="form-horizontal" method="post">
@@ -53,14 +53,14 @@
                 <input type="text" id="licenseName" placeholder="License Name" name="licenseName" autocomplete="off" autofocus style="width:280px;">
               </div>
             </div> <hr>
-            <button id="licenseNameButton" name="licenseNameButton" class="btn btn-md btn-info" type="submit">Edit document</button>
+            <button id="licenseNameButton" name="licenseNameButton" class="btn btn-md btn-info btn-submit-center" type="submit">Edit document</button>
           </form>
         </div>
         <div id="new" class="tab-pane fade">
           <form id="form-new" enctype="multipart/form-data" class="form-horizontal" method="post">
             {% csrf_token %}
             <h3>Make a new License XML file from scratch</h3><br>
-            <button id="new-button" name="new-button" class="btn btn-l btn-info" type="submit">Go</button>
+            <button id="new-button" name="new-button" class="btn btn-l btn-info btn-submit-center" type="submit">Go</button>
           </form>
         </div>
   </div>
