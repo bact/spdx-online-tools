@@ -18,9 +18,9 @@
       </p>
       <p>The result will be one of <em>Exact match</em>, <em>Close match</em>, or <em>No match</em>.</p>
       <div class="form-group">
-        <label for="licensetext"><strong>License text</strong></label>
-        <textarea id="licensetext" name="licensetext" rows="18"
-                  style="width:100%" aria-required="true"
+        <label for="licensetext" class="sr-only">License text</label>
+        <textarea id="licensetext" name="licensetext" rows="12"
+                  style="width:100%; resize: vertical;" aria-required="true"
                   placeholder="Paste the full license text here…"></textarea>
       </div>
       <button id="checklicensebutton" class="btn btn-md btn-info btn-submit-center" type="submit">Check license</button>
@@ -75,13 +75,25 @@ $('#checklicenseform').on('submit', function(event) {
       cache: false,
       dataType: 'json',
       data: form,
-      success: function(data) {
+      success: function (data) {
         var msg = data.data || '';
-        var lower = msg.toLowerCase();
-        var type = (lower.indexOf('perfect match') > -1 || lower.indexOf('exact match') > -1)
-                   ? 'success' : 'warning';
-        var title = (type === 'success') ? 'Match found' : 'Result';
-        showResult(type, title, '<p>' + msg + '</p>');
+        var title = 'Result';
+        var body = msg;
+
+        // Parse the standard "X found.<br />Y" format from the backend
+        if (msg.indexOf(' found.<br />') > -1) {
+          var parts = msg.split(' found.<br />');
+          title = parts[0];
+          body = parts[1];
+        } else if (msg === "There are no matching SPDX listed licenses") {
+          title = "No match";
+        }
+
+        var lowerTitle = title.toLowerCase();
+        var type = (lowerTitle.indexOf('perfect') > -1 || lowerTitle.indexOf('exact') > -1 || lowerTitle.indexOf('standard') > -1)
+          ? 'success' : (title === 'No match' ? 'error' : 'warning');
+
+        showResult(type, title, '<p>' + body + '</p>');
         $('#checklicensebutton').text('Check license').prop('disabled', false).removeAttr('aria-disabled');
       },
       error: function(e) {

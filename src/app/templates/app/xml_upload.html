@@ -2,8 +2,21 @@
 {% load static %}
 
 {% block head_block %}
-  <link href="{% static 'css/dragdrop.css' %}" rel="stylesheet" type="text/css">
-  <link href="{% static 'css/jquery-ui.min.css' %}" rel="stylesheet" type="text/css">
+<link href="{% static 'css/dragdrop.css' %}" rel="stylesheet" type="text/css">
+<link href="{% static 'css/jquery-ui.min.css' %}" rel="stylesheet" type="text/css">
+<style>
+  .tab-content {
+    padding-top: 24px;
+  }
+
+  /* Standardize the first element height/margin in tabs */
+  .tab-pane>form>p:first-child,
+  .tab-pane>form>h4:first-child,
+  .tab-pane>.container:first-child,
+  .tab-pane>form>.container:first-child {
+    margin-top: 0 !important;
+  }
+</style>
 {% endblock %}
 
 {% block body1 %}
@@ -12,59 +25,66 @@
 
 <div class="panel panel-default">
   <div class="panel-heading">
-    <p class="lead">License XML Editor</p>
+    <p class="lead">License XML editor</p>
   </div>
-    <div class="panel-body">
+  <div class="panel-body">
 
-      <ul class="nav nav-tabs">
-        <li class="active"><a data-toggle="tab" href="#text">XML text</a></li>
-        <li><a data-toggle="tab" href="#upload">Upload file</a></li>
-        <li><a data-toggle="tab" href="#license-name">License name</a></li>
-        <li><a data-toggle="tab" href="#new">New license XML</a></li>
-      </ul>
+    <ul class="nav nav-tabs">
+      <li class="active"><a data-toggle="tab" href="#text">XML text</a></li>
+      <li><a data-toggle="tab" href="#upload">Upload file</a></li>
+      <li><a data-toggle="tab" href="#license-name">License name</a></li>
+      <li><a data-toggle="tab" href="#new">New license XML</a></li>
+    </ul>
 
-      <div class="tab-content">
-        <div id="text" class="tab-pane fade in active">
-          <form id="form-text" enctype="multipart/form-data" class="form-horizontal" method="post">
+    <div class="tab-content">
+      <div id="text" class="tab-pane fade in active">
+        <form id="form-text" enctype="multipart/form-data" class="form-horizontal" method="post">
+          {% csrf_token %}
+          <p>Write the XML document text below:</p>
+          <textarea id="xmltext" name="xmltext" rows="12" style="width: 100%; resize: vertical;"></textarea>
+          <hr>
+          <button id="xmlTextButton" name="xmlTextButton" class=" btn btn-md btn-info btn-submit-center"
+            type="submit">Edit document</button>
+        </form>
+      </div>
+      <div id="upload" class="tab-pane fade">
+        <div id="drop-area" class="container">
+          <form id="form-upload" enctype="multipart/form-data" class="form-horizontal" method="post">
             {% csrf_token %}
-            <h4>Write the XML document text below: </h4>
-            <textarea id="xmltext" name="xmltext" rows="15" style="width: 90%; resize:none;"></textarea> <hr>
-            <button id="xmlTextButton" name="xmlTextButton" class=" btn btn-md btn-info btn-submit-center" type="submit">Edit document</button>
+            <p>Upload XML file using the button or by dragging and dropping onto the dashed region</p>
+            <input type="file" id="file" accept="application/xml" onchange="handleFiles(this.files)">
+            <label class="button" for="file">Select XML file</label>
+            <div class="file-name">No file selected</div>
           </form>
         </div>
-        <div id="upload" class="tab-pane fade">
-          <div id="drop-area" class="container">
-            <form id="form-upload" enctype="multipart/form-data" class="form-horizontal" method="post">
-              {% csrf_token %}
-              <h4>Upload XML file using the button or by dragging and dropping onto the dashed region</h4>
-              <input type="file" id="file" accept="application/xml" onchange="handleFiles(this.files)">
-              <label class="button" for="file">Select XML file</label>
-              <div class="file-name">No file selected</div>
-            </form>
+        <button id="uploadButton" name="uploadButton" class="btn btn-md btn-info btn-submit-center" type="submit">Edit
+          document</button>
+      </div>
+      <div id="license-name" class="tab-pane fade">
+        <form id="form-license-name" enctype="multipart/form-data" class="form-horizontal" method="post">
+          {% csrf_token %}
+          <div class="container">
+            <label class="control-label col-sm-6">License full name or identifier as on SPDX License List:</label>
+            <div class="col-sm-6" style="text-align:left;">
+              <input type="text" id="licenseName" placeholder="License Name" name="licenseName" autocomplete="off"
+                autofocus style="width:280px;">
+            </div>
           </div>
-          <button id="uploadButton" name="uploadButton" class="btn btn-md btn-info btn-submit-center" type="submit">Edit document</button>
-        </div>
-        <div id="license-name" class="tab-pane fade">
-          <form id="form-license-name" enctype="multipart/form-data" class="form-horizontal" method="post">
-            {% csrf_token %}
-            <div class="container" style="margin-top:20px;">
-              <label class="control-label col-sm-6" >License full name or identifier as on SPDX License List:</label>
-              <div class="col-sm-6" style="text-align:left;"> 
-                <input type="text" id="licenseName" placeholder="License Name" name="licenseName" autocomplete="off" autofocus style="width:280px;">
-              </div>
-            </div> <hr>
-            <button id="licenseNameButton" name="licenseNameButton" class="btn btn-md btn-info btn-submit-center" type="submit">Edit document</button>
-          </form>
-        </div>
-        <div id="new" class="tab-pane fade">
-          <form id="form-new" enctype="multipart/form-data" class="form-horizontal" method="post">
-            {% csrf_token %}
-            <h3>Make a new License XML file from scratch</h3><br>
-            <button id="new-button" name="new-button" class="btn btn-l btn-info btn-submit-center" type="submit">Go</button>
-          </form>
-        </div>
-  </div>
-  {% include "app/modal.html" %}
+          <hr>
+          <button id="licenseNameButton" name="licenseNameButton" class="btn btn-md btn-info btn-submit-center"
+            type="submit">Edit document</button>
+        </form>
+      </div>
+      <div id="new" class="tab-pane fade">
+        <form id="form-new" enctype="multipart/form-data" class="form-horizontal" method="post">
+          {% csrf_token %}
+          <p>Make a new License XML file from scratch</p>
+          <button id="new-button" name="new-button" class="btn btn-lg btn-info btn-submit-center"
+            type="submit">Go</button>
+        </form>
+      </div>
+    </div>
+    {% include "app/modal.html" %}
   </div>
 </div>
 {% include "app/_tool_versions.html" with show_java_tools=True %}
@@ -75,12 +95,12 @@
 <script type="text/javascript">
   /* Javascript to handel drag and drop */
   let dropArea = document.getElementById('drop-area');
-  var xml_file="", valid=false;
+  var xml_file = "", valid = false;
   ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
     dropArea.addEventListener(eventName, preventDefaults, false)
   });
-  
-  function preventDefaults (e) {
+
+  function preventDefaults(e) {
     e.preventDefault()
     e.stopPropagation()
   }
@@ -88,19 +108,19 @@
   ['dragenter', 'dragover'].forEach(eventName => {
     dropArea.addEventListener(eventName, highlight, false)
   });
-  
+
   ['dragleave', 'drop'].forEach(eventName => {
     dropArea.addEventListener(eventName, unhighlight, false)
   });
-  
+
   function highlight(e) {
     dropArea.classList.add('highlight')
   }
-  
+
   function unhighlight(e) {
     dropArea.classList.remove('highlight')
   }
-  
+
   dropArea.addEventListener('drop', handleDrop, false)
 
   function handleDrop(e) {
@@ -112,17 +132,17 @@
   function handleFiles(files) {
     ([...files]).forEach(checkFile)
   }
-  
-  function checkFile(file){
-    if(file.type=="text/xml" || file.type=="application/xml"){
-      $(".file-name").html("<b>Selected file:</b> "+file.name);
+
+  function checkFile(file) {
+    if (file.type == "text/xml" || file.type == "application/xml") {
+      $(".file-name").html("<b>Selected file:</b> " + file.name);
       $(".file-name").removeClass("fail");
       $(".file-name").addClass("success");
       valid = true;
       xml_file = file;
     }
-    else{
-      $(".file-name").html("<b>Selected file:</b> "+file.name);
+    else {
+      $(".file-name").html("<b>Selected file:</b> " + file.name);
       $(".file-name").removeClass("success");
       $(".file-name").addClass("fail");
       valid = false;
@@ -132,24 +152,24 @@
 </script>
 
 <script type="text/javascript">
-  
-  function button_change(state){
+
+  function button_change(state) {
     /* to change the state of submit button */
-    if(state == 0){
+    if (state == 0) {
       $("#licenseNameButton,#uploadButton,#xmlTextButton,#new-button").text("Processing...");
       $("#licenseNameButton,#uploadButton,#xmlTextButton,#new-button").prop('disabled', true);
     }
-    else if(state==1){
+    else if (state == 1) {
       $("#licenseNameButton,#uploadButton,#xmlTextButton,#new-button").text("Edit Document");
       $("#licenseNameButton,#uploadButton,#xmlTextButton,#new-button").prop('disabled', false);
     }
   }
 
-  function random_string(){
+  function random_string() {
     return Math.random().toString(36).substring(2);
   }
 
-  function send_request(form){
+  function send_request(form) {
     /* sending the request */
     $.ajax({
       type: "POST",
@@ -169,19 +189,19 @@
         $("#modal-header").removeClass("green-modal");
         try {
           var obj = JSON.parse(e.responseText);
-          if (obj.type=="warning"){
+          if (obj.type == "warning") {
             $("#modal-header").removeClass("red-modal");
             $("#modal-header").addClass("yellow-modal");
             $("#modal-title").html("Warning!");
-        }
-          else if (obj.type=="error"){
+          }
+          else if (obj.type == "error") {
             $("#modal-header").removeClass("yellow-modal");
             $("#modal-header").addClass("red-modal");
             $("#modal-title").html("Error!");
           }
           $("#modal-body").text(obj.data);
         }
-        catch (e){
+        catch (e) {
           $("#modal-header").removeClass("yellow-modal");
           $("#modal-header").addClass("red-modal");
           $("#modal-title").html("Error!");
@@ -189,7 +209,7 @@
         }
         $("#myModal").modal({
           backdrop: 'static',
-          keyboard: true, 
+          keyboard: true,
           show: true
         });
         button_change(1);
@@ -197,83 +217,83 @@
     });
   }
 
-  $("#form-text").on('submit', function(event){
+  $("#form-text").on('submit', function (event) {
     /* if user submits xml using the textarea */
     event.preventDefault();
-    if($("#xmltext").val().length>0){
+    if ($("#xmltext").val().length > 0) {
       button_change(0);
       $("#messages").html("");
       var form = new FormData($("#form-text")[0]);
-      form.append("xmlTextButton","xmlTextButton");
-      form.append("page_id",random_string());
+      form.append("xmlTextButton", "xmlTextButton");
+      form.append("page_id", random_string());
       send_request(form);
     }
-    else{
+    else {
       display_message("No license XML text provided. Please input some license XML text to edit.");
       button_change(1);
     }
   })
 
-  function check_upload_form(){
-    if(valid==false){
+  function check_upload_form() {
+    if (valid == false) {
       return "Please select a SPDX license XML file.";
     }
-    else if(xml_file==""){
+    else if (xml_file == "") {
       return "No file selected. Please select a SPDX license file to edit.";
     }
-    else{
+    else {
       return 1;
     }
   }
 
-  $("#uploadButton").on('click', function(event){
+  $("#uploadButton").on('click', function (event) {
     /* if the user uploads the file */
     event.preventDefault();
-    if(check_upload_form()==1){
+    if (check_upload_form() == 1) {
       button_change(0);
       $("#messages").html("");
       var form = new FormData($("#form-upload")[0]);
-      form.append("file",xml_file);
-      form.append("uploadButton","uploadButton");
-      form.append("page_id",random_string());
+      form.append("file", xml_file);
+      form.append("uploadButton", "uploadButton");
+      form.append("page_id", random_string());
       send_request(form);
     }
-    else{
+    else {
       display_message(check_upload_form());
       button_change(1);
     }
   })
 
-  $("#form-license-name").on('submit', function(event){
+  $("#form-license-name").on('submit', function (event) {
     /* if the user enters license name */
     event.preventDefault();
-    if($("#licenseName").val().length>0){
+    if ($("#licenseName").val().length > 0) {
       button_change(0);
       $("#messages").html("");
       var form = new FormData($("#form-license-name")[0]);
-      form.append("licenseNameButton","licenseNameButton");
-      form.append("page_id",random_string());
+      form.append("licenseNameButton", "licenseNameButton");
+      form.append("page_id", random_string());
       send_request(form);
     }
-    else{
+    else {
       display_message("Please provide a SPDX license or exception name.");
       $("#licenseName").focus();
     }
   })
 
-  $("#form-new").on('submit', function(event){
+  $("#form-new").on('submit', function (event) {
     event.preventDefault();
     button_change(0);
     $("#messages").html("");
     var form = new FormData($("#form-license-name")[0]);
-    form.append("newButton","newButton");
-    form.append("page_id",random_string());
+    form.append("newButton", "newButton");
+    form.append("page_id", random_string());
     send_request(form);
   })
 
-  function display_message(message_text){
-    $("#messages").html('<div class="alert alert-danger alert-dismissable fade in"><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a><strong>Error! </strong>'+message_text+'</div>');
-    setTimeout(function() {
+  function display_message(message_text) {
+    $("#messages").html('<div class="alert alert-danger alert-dismissable fade in"><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a><strong>Error! </strong>' + message_text + '</div>');
+    setTimeout(function () {
       $("#messages").html("");
     }, 5000);
   }
@@ -284,7 +304,7 @@
   $(document).ready(function () {
     // add autocomplete to license name textbox using jquery ui
     $("#licenseName").autocomplete({
-        source: "/app/search/",
+      source: "/app/search/",
     });
     $("#license-xml-editor").addClass('linkactive');
   });

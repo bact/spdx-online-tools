@@ -82,8 +82,8 @@
     pointer-events: none;
     user-select: none;
     white-space: nowrap;
-    font-size: 11px;
-    font-weight: 700;
+    font-size: 10px !important;
+    font-weight: 800;
     text-transform: uppercase;
     letter-spacing: 0.10em;
     color: rgba(255,255,255,0.72);
@@ -333,7 +333,7 @@ tbody tr:hover > .sorting_1 { background-color: #e8f4f8 !important; }
 .result-title {
   color: #fff;
   margin: 0;
-  font-size: 1em;
+  font-size: 1.1em !important;
   font-weight: 700;
 }
 .result-close {
@@ -379,10 +379,36 @@ tbody tr:hover > .sorting_1 { background-color: #e8f4f8 !important; }
   max-width: 600px;
   margin: 0 auto 16px;
 }
-/* Centering main action buttons at bottom of tool pages */
+/* ── Common Utilities ───────────────────────────────────── */
+body {
+    font-size: 16px !important;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+/* Ensure all text-bearing elements have a minimum of 16px */
+p, li, a, label, input, select, textarea, button, h1, h2, h3, h4, h5, h6, .control-label {
+    font-size: 16px !important;
+}
+
+/* Headings should be proportionally larger but clearly 16px+ */
+h1 { font-size: 2.2em !important; }
+h2 { font-size: 1.8em !important; }
+h3 { font-size: 1.5em !important; }
+h4 { font-size: 1.2em !important; }
+
 .btn-submit-center {
-  display: block !important;
-  margin: 1.5em auto 0.5em !important;
+    display: block !important;
+    width: -webkit-fit-content !important;
+    width: -moz-fit-content !important;
+    width: fit-content !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    margin-top: 1.5em !important;
+    margin-bottom: 0.5em !important;
+    font-size: 16px !important;
+    float: none !important;
+    clear: both !important;
+    text-align: center !important;
 }
 </style>
   </head>

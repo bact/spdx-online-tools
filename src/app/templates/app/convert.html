@@ -10,7 +10,7 @@
 {% if error %}<p class="lead text-danger" role="alert">{{ error }}</p>{% endif %}
 <div class="panel panel-default">
   <div class="panel-heading">
-    <p class="lead">Convert to other SPDX format</p>
+    <p class="lead">Convert to another SPDX format</p>
   </div>
   <div class="panel-body">
     <form id="convertform" enctype="multipart/form-data" class="form-horizontal" method="post"
@@ -35,7 +35,6 @@
           <label for="to_format">To format: </label>
           <select name="to_format" id="to_format" aria-required="true">
             <option value="0" data-value="INGORE" data-ext="" selected="">— Select target format —</option>
-            <option value="JSONLD" data-value="JSONLD" data-ext=".spdx3.json">V3 JSON-LD</option>
             <option value="TAG" data-value="TAG" data-ext=".spdx">V2 Tag/Value</option>
             <option value="RDFXML" data-value="RDFXML" data-ext=".rdf.xml">V2 RDF/XML</option>
             <option value="RDFTTL" data-value="RDFTTL" data-ext=".rdf.ttl">V2 RDF/TTL</option>
@@ -129,6 +128,30 @@
       selected_file = file;
       updateDefaultFilename();
       checkFilesSize([file], '#warning-msg');
+
+      /* Auto-select from_format if not already selected */
+      var fromFormatDropdown = document.getElementById('from_format');
+      if (fromFormatDropdown.value === '0') {
+        var name = file.name.toLowerCase();
+        var detected = '';
+        if (name.endsWith('.spdx')) detected = 'TAG';
+        else if (name.endsWith('.jsonld') || name.endsWith('.spdx3.json') || name.endsWith('.jsonld.json')) {
+          document.getElementById('messages').innerHTML =
+            '<div class="alert alert-danger" role="alert"><strong>Error:</strong> ' +
+            'Conversion from SPDX 3 JSON-LD is not supported yet.</div>';
+          setTimeout(function () { document.getElementById('messages').innerHTML = ''; }, 5000);
+        } else if (name.endsWith('.json')) detected = 'JSON';
+        else if (name.endsWith('.rdf.xml') || name.endsWith('.rdf')) detected = 'RDFXML';
+        else if (name.endsWith('.rdf.ttl') || name.endsWith('.ttl')) detected = 'RDFTTL';
+        else if (name.endsWith('.xlsx')) detected = 'XLSX';
+        else if (name.endsWith('.xls')) detected = 'XLS';
+        else if (name.endsWith('.xml')) detected = 'XML';
+        else if (name.endsWith('.yaml') || name.endsWith('.yml')) detected = 'YAML';
+        if (detected) {
+          fromFormatDropdown.value = detected;
+          $(fromFormatDropdown).change();
+        }
+      }
     } else {
       document.querySelector('.file-name').textContent = 'No file selected';
       selected_file = '';

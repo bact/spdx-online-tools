@@ -2,56 +2,100 @@
 {% load static %}
 
 {% block head_block %}
-  <link href="{% static 'css/dragdrop.css' %}" rel="stylesheet" type="text/css">
-  <style>
-    .res-container { display: flex; flex-direction: column; gap: 16px; }
+<link href="{% static 'css/dragdrop.css' %}" rel="stylesheet" type="text/css">
+<style>
+  .res-container {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
 
-    .conformance-res table {
-      width: auto;
-      max-width: 100%;
-      margin: 0 auto 0.5em;
-      border-collapse: separate;
-      border-spacing: 0;
-      background: #fff;
-      box-shadow: 0 1px 3px rgba(16,24,32,0.08);
-      border-radius: 6px;
-      overflow: hidden;
-    }
-    .conformance-res th {
-      background: #dfdfdf;
-      color: #0f3b47;
-      font-weight: 600;
-      border-bottom: 1px solid rgba(15,59,71,0.08);
-      padding: 10px 14px;
-      text-align: left;
-    }
-    .conformance-res td {
-      padding: 10px 14px;
-      border-bottom: 1px solid rgba(15,59,71,0.04);
-      vertical-align: middle;
-      text-align: left;
-    }
-    .conformance-res tbody tr:nth-child(odd)  { background: #f0f0f0; }
-    .conformance-res tbody tr:nth-child(even) { background: #fff; }
-    .conformance-res tbody tr:hover           { background: #d0e9f6 !important; }
+  .conformance-res table {
+    width: auto;
+    max-width: 100%;
+    margin: 0 auto 0.5em;
+    border-collapse: separate;
+    border-spacing: 0;
+    background: #fff;
+    box-shadow: 0 1px 3px rgba(16, 24, 32, 0.08);
+    border-radius: 6px;
+    overflow: hidden;
+  }
 
-    .status-pass    { color: #166534; font-weight: 600; }
-    .status-fail    { color: #942a1f; font-weight: 600; }
-    .status-warning { color: #7a5800; font-weight: 600; }
+  .conformance-res th {
+    background: #dfdfdf;
+    color: #0f3b47;
+    font-weight: 600;
+    border-bottom: 1px solid rgba(15, 59, 71, 0.08);
+    padding: 10px 14px;
+    text-align: left;
+  }
 
-    .conformance-block {
-      border-radius: 5px;
-      padding: 12px 16px;
-    }
-    .conformance-err { background: #ffc39e; }
-    .conformance-mis { background: #fff8e2; }
-    .conformance-val { background: #e8f4ff; }
+  .conformance-res td {
+    padding: 10px 14px;
+    border-bottom: 1px solid rgba(15, 59, 71, 0.04);
+    vertical-align: middle;
+    text-align: left;
+  }
 
-    .conformance-block ul { margin: 6px 0 0 1.4em; padding: 0; }
-    .conformance-block li { margin-bottom: 4px; }
-    .conformance-val-msg-label,
-    .conformance-val-ctx-label { font-weight: bold; }
-  </style>
+  .conformance-res tbody tr:nth-child(odd) {
+    background: #f0f0f0;
+  }
+
+  .conformance-res tbody tr:nth-child(even) {
+    background: #fff;
+  }
+
+  .conformance-res tbody tr:hover {
+    background: #d0e9f6 !important;
+  }
+
+  .status-pass {
+    color: #166534;
+    font-weight: 600;
+  }
+
+  .status-fail {
+    color: #942a1f;
+    font-weight: 600;
+  }
+
+  .status-warning {
+    color: #7a5800;
+    font-weight: 600;
+  }
+
+  .conformance-block {
+    border-radius: 5px;
+    padding: 12px 16px;
+  }
+
+  .conformance-err {
+    background: #ffc39e;
+  }
+
+  .conformance-mis {
+    background: #fff8e2;
+  }
+
+  .conformance-val {
+    background: #e8f4ff;
+  }
+
+  .conformance-block ul {
+    margin: 6px 0 0 1.4em;
+    padding: 0;
+  }
+
+  .conformance-block li {
+    margin-bottom: 4px;
+  }
+
+  .conformance-val-msg-label,
+  .conformance-val-ctx-label {
+    font-weight: bold;
+  }
+</style>
 {% endblock %}
 
 {% block body1 %}
@@ -63,7 +107,7 @@
   </div>
   <div class="panel-body">
     <form id="checkform" enctype="multipart/form-data" class="form-horizontal" method="post"
-          aria-label="Check SBOM conformance">
+      aria-label="Check SBOM conformance">
       {% csrf_token %}
       <div class="form-narrow">
         <div class="form-group">
@@ -86,24 +130,24 @@
         </div>
       </div>
       <div id="drop-area" class="container" role="region" aria-label="File upload area">
-        <p id="drop-instructions">Upload SPDX document using the button or by dragging and dropping onto the dashed region</p>
-        <input type="file" id="file" onchange="handleFiles(this.files)"
-               aria-label="Select SPDX document" aria-describedby="drop-instructions">
+        <p id="drop-instructions">Upload SPDX document using the button or by dragging and dropping onto the dashed
+          region</p>
+        <input type="file" id="file" onchange="handleFiles(this.files)" aria-label="Select SPDX document"
+          aria-describedby="drop-instructions">
         <label class="button" for="file">Select file</label>
         <div class="file-name" aria-live="polite" aria-atomic="true">No file selected</div>
       </div>
     </form>
     <hr>
     <p id="warning-msg" hidden></p>
-    <button id="checkbutton" name="checkbutton" class="btn btn-md btn-info btn-submit-center"
-            type="button" disabled aria-disabled="true">Check minimum elements</button>
+    <button id="checkbutton" name="checkbutton" class="btn btn-md btn-info btn-submit-center" type="button" disabled
+      aria-disabled="true">Check minimum elements</button>
 
-    <section id="result-section" class="result-section" role="region"
-             aria-label="Conformance check result" tabindex="-1" hidden>
+    <section id="result-section" class="result-section" role="region" aria-label="Conformance check result"
+      tabindex="-1" hidden>
       <div id="result-header" class="result-header">
         <h2 id="result-title" class="result-title"></h2>
-        <button type="button" class="result-close" aria-label="Close result"
-                onclick="hideResult()">&times;</button>
+        <button type="button" class="result-close" aria-label="Close result" onclick="hideResult()">&times;</button>
       </div>
       <div id="result-body" class="result-body"></div>
     </section>
@@ -118,17 +162,17 @@
 <script type="text/javascript">
   var dropArea = document.getElementById('drop-area');
   var selected_file = '';
-  ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(function(ev) {
+  ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(function (ev) {
     dropArea.addEventListener(ev, preventDefaults, false);
   });
   function preventDefaults(e) { e.preventDefault(); e.stopPropagation(); }
-  ['dragenter', 'dragover'].forEach(function(ev) {
-    dropArea.addEventListener(ev, function() { dropArea.classList.add('highlight'); }, false);
+  ['dragenter', 'dragover'].forEach(function (ev) {
+    dropArea.addEventListener(ev, function () { dropArea.classList.add('highlight'); }, false);
   });
-  ['dragleave', 'drop'].forEach(function(ev) {
-    dropArea.addEventListener(ev, function() { dropArea.classList.remove('highlight'); }, false);
+  ['dragleave', 'drop'].forEach(function (ev) {
+    dropArea.addEventListener(ev, function () { dropArea.classList.remove('highlight'); }, false);
   });
-  dropArea.addEventListener('drop', function(e) { handleFiles(e.dataTransfer.files); }, false);
+  dropArea.addEventListener('drop', function (e) { handleFiles(e.dataTransfer.files); }, false);
 
   function handleFiles(files) { Array.from(files).forEach(checkFile); }
 
@@ -140,6 +184,17 @@
       btn.removeAttribute('aria-disabled');
       selected_file = file;
       checkFilesSize([file], '#warning-msg');
+
+      /* Auto-select format if not already selected */
+      var formatDropdown = document.getElementById('format');
+      if (formatDropdown.value === '0') {
+        var name = file.name.toLowerCase();
+        if (name.endsWith('.spdx')) formatDropdown.value = 'TAG';
+        else if (name.endsWith('.jsonld') || name.endsWith('.spdx3.json') || name.endsWith('.jsonld.json')) formatDropdown.value = 'SPDX3_JSON';
+        else if (name.endsWith('.json')) formatDropdown.value = 'JSON';
+        else if (name.endsWith('.rdf.xml') || name.endsWith('.rdf')) formatDropdown.value = 'RDFXML';
+        else if (name.endsWith('.xml')) formatDropdown.value = 'XML';
+      }
     } else {
       document.querySelector('.file-name').textContent = 'No file selected';
       var btn = document.getElementById('checkbutton');
@@ -160,8 +215,8 @@
 
 <script type="text/javascript">
   function escapeHtml(text) {
-    var map = {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'};
-    return String(text).replace(/[&<>"']/g, function(m) { return map[m]; });
+    var map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
+    return String(text).replace(/[&<>"']/g, function (m) { return map[m]; });
   }
 
   function renderConformanceData(data) {
@@ -172,12 +227,12 @@
     if (data.parsingError && data.parsingError.length > 0) {
       inner += '<div class="conformance-block conformance-err" role="alert">';
       inner += '<p><strong>The document could not be parsed; check could not be performed.</strong><br>' +
-               'The following parsing errors were found:</p>';
+        'The following parsing errors were found:</p>';
       inner += '<ul>';
-      data.parsingError.forEach(function(err) { inner += '<li>' + escapeHtml(err) + '</li>'; });
+      data.parsingError.forEach(function (err) { inner += '<li>' + escapeHtml(err) + '</li>'; });
       inner += '</ul></div>';
     } else {
-      var stdNames = {'ntia': 'NTIA Minimum Elements', 'fsct3-min': 'CISA 2024 FSCT Minimum Expected'};
+      var stdNames = { 'ntia': 'NTIA Minimum Elements', 'fsct3-min': 'CISA 2024 FSCT Minimum Expected' };
       var stdName = stdNames[data.complianceStandard] || escapeHtml(data.complianceStandard || '');
       var conformantClass = data.isConformant ? 'status-pass' : 'status-fail';
 
@@ -186,19 +241,21 @@
       inner += '<p>Conformant: <span class="' + conformantClass + '">' + data.isConformant + '</span></p>';
 
       var requirements = [
-        ['All component names provided?',       data.componentNames],
-        ['All component versions provided?',    data.componentVersions],
+        ['All component names provided?', data.componentNames],
+        ['All component versions provided?', data.componentVersions],
         ['All component identifiers provided?', data.componentIdentifiers],
-        ['All component suppliers provided?',   data.componentSuppliers],
-        ['SBOM author name provided?',          {allProvided: data.authorNameProvided}],
-        ['SBOM creation timestamp provided?',   {allProvided: data.timestampProvided}],
-        ['Dependency relationships provided?',  {allProvided: data.dependencyRelationshipsProvided}],
-      ].filter(function(r) { return r[1] !== undefined && r[1] !== null; });
+        ['All component suppliers provided?', data.componentSuppliers],
+        ['SBOM author name provided?', { allProvided: data.authorNameProvided }],
+        ['SBOM creation timestamp provided?', { allProvided: data.timestampProvided }],
+        ['Dependency relationships provided?', { allProvided: data.dependencyRelationshipsProvided }],
+      ].filter(function (r) { return r[1] !== undefined && r[1] !== null; });
 
       if (requirements.length > 0) {
-        inner += '<table><caption>' + (data.sbomName ? escapeHtml(data.sbomName) : 'Requirements') + '</caption>';
+        var fileName = (selected_file && selected_file.name) ? selected_file.name : 'N/A';
+        var sBomName = (data.sbomName) ? data.sbomName : 'N/A';
+        inner += '<table><caption><strong>Uploaded filename:</strong> ' + escapeHtml(fileName) + ' <br /><strong>SBOM name:</strong> ' + escapeHtml(sBomName) + '</caption>';
         inner += '<thead><tr><th scope="col">Requirement</th><th scope="col">Conformant</th></tr></thead><tbody>';
-        requirements.forEach(function(req) {
+        requirements.forEach(function (req) {
           var val = req[1].allProvided;
           var cls = val ? 'status-pass' : 'status-fail';
           inner += '<tr><td>' + req[0] + '</td><td><span class="' + cls + '">' + val + '</span></td></tr>';
@@ -209,16 +266,16 @@
 
       var missingFields = [
         ['concluded license', data.componentConcludedLicenses],
-        ['copyright text',    data.componentCopyrightTexts],
-        ['identifier',        data.componentIdentifiers],
-        ['name',              data.componentNames],
-        ['supplier',          data.componentSuppliers],
-        ['version',           data.componentVersions],
+        ['copyright text', data.componentCopyrightTexts],
+        ['identifier', data.componentIdentifiers],
+        ['name', data.componentNames],
+        ['supplier', data.componentSuppliers],
+        ['version', data.componentVersions],
       ];
       var componentMissing = {};
-      missingFields.forEach(function(g) {
+      missingFields.forEach(function (g) {
         if (g[1] && !g[1].allProvided && g[1].nonconformantComponents && g[1].nonconformantComponents.length > 0) {
-          g[1].nonconformantComponents.forEach(function(comp) {
+          g[1].nonconformantComponents.forEach(function (comp) {
             if (!componentMissing[comp]) componentMissing[comp] = [];
             componentMissing[comp].push(g[0]);
           });
@@ -228,26 +285,26 @@
       if (nonconformantComponents.length > 0) {
         inner += '<div class="conformance-block conformance-mis">';
         inner += '<p><strong>Components with missing required information (' + nonconformantComponents.length + '):</strong></p>';
-        inner += '<ul>';
-        nonconformantComponents.forEach(function(comp) {
+        inner += '<ol>';
+        nonconformantComponents.forEach(function (comp) {
           inner += '<li>' + escapeHtml(comp) + ': missing ' + componentMissing[comp].join(', ') + '</li>';
         });
-        inner += '</ul></div>';
+        inner += '</ol></div>';
       }
 
       if (data.validationMessages && data.validationMessages.length > 0) {
         inner += '<div class="conformance-block conformance-val">';
         inner += '<p><strong>The document is not valid according to the SBOM specification' +
-                 ' ("' + escapeHtml(data.sbomSpec || '') + '").</strong><br>' +
-                 'The following violations were found:</p>';
+          ' ("' + escapeHtml(data.sbomSpec || '') + '").</strong><br>' +
+          'The following violations were found:</p>';
         inner += '<ul>';
-        data.validationMessages.forEach(function(msg) {
+        data.validationMessages.forEach(function (msg) {
           inner += '<li><p class="conformance-val-msg-label">Validation message:</p>';
           inner += '<p>' + escapeHtml(msg.message) + '</p>';
           if (msg.spdxId || msg.parentId || msg.elementType) {
             inner += '<p class="conformance-val-ctx-label">Validation context:</p><ul>';
-            if (msg.spdxId)      inner += '<li>SPDX ID: '      + escapeHtml(msg.spdxId)      + '</li>';
-            if (msg.parentId)    inner += '<li>Parent ID: '    + escapeHtml(msg.parentId)    + '</li>';
+            if (msg.spdxId) inner += '<li>SPDX ID: ' + escapeHtml(msg.spdxId) + '</li>';
+            if (msg.parentId) inner += '<li>Parent ID: ' + escapeHtml(msg.parentId) + '</li>';
             if (msg.elementType) inner += '<li>Element type: ' + escapeHtml(msg.elementType) + '</li>';
             inner += '</ul>';
           }
@@ -260,7 +317,7 @@
     return '<div class="res-container">' + inner + '</div>';
   }
 
-  document.getElementById('checkbutton').addEventListener('click', function(event) {
+  document.getElementById('checkbutton').addEventListener('click', function (event) {
     event.preventDefault();
     var check = checkform();
     if (check === '1') {
@@ -284,21 +341,21 @@
         dataType: 'json',
         timeout: 600000,
         data: form,
-        success: function(data) {
+        success: function (data) {
           showResult('success', 'Check complete', renderConformanceData(data.data));
           btn.textContent = 'Check minimum elements';
           btn.disabled = false;
           btn.removeAttribute('aria-disabled');
         },
-        error: function(e) {
+        error: function (e) {
           try {
             var obj = JSON.parse(e.responseText);
-            var type  = (obj.type === 'warning') ? 'warning' : 'error';
+            var type = (obj.type === 'warning') ? 'warning' : 'error';
             var title = (obj.type === 'warning') ? 'Check completed with warnings' : 'Check failed';
             showResult(type, title, renderConformanceData(obj.data));
           } catch (_) {
             showResult('error', 'Error',
-                       '<p>The application could not be connected. Please try later.</p>');
+              '<p>The application could not be connected. Please try later.</p>');
           }
           btn.textContent = 'Check minimum elements';
           btn.disabled = false;
@@ -309,13 +366,13 @@
       document.getElementById('messages').innerHTML =
         '<div class="alert alert-danger" role="alert"><strong>Error:</strong> ' +
         $('<span>').text(check).html() + '</div>';
-      setTimeout(function() { document.getElementById('messages').innerHTML = ''; }, 5000);
+      setTimeout(function () { document.getElementById('messages').innerHTML = ''; }, 5000);
     }
   });
 </script>
 
 <script type="text/javascript">
-$(document).ready(function() { $('#checkerpage').addClass('linkactive'); });
+  $(document).ready(function () { $('#checkerpage').addClass('linkactive'); });
 </script>
 
 {% endblock %}
