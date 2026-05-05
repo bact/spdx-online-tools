@@ -69,11 +69,11 @@
 <div id="messages" class="messages" role="status" aria-live="polite"></div>
 {% if error %}<p class="lead text-danger" role="alert">{{ error }}</p>{% endif %}
 <div class="panel panel-default">
-  <div class="panel-heading">
-    <p class="lead">Compare SPDX 2.X documents</p>
-  </div>
-  <div class="panel-body">
-    <form id="compareform" enctype="multipart/form-data" class="form-horizontal" method="post" aria-label="Compare SPDX documents">
+<div class="panel-heading">
+	<p class="lead">Compare SPDX 2.X documents</p>
+</div>
+<div class="panel-body">
+<form id="compareform" enctype="multipart/form-data" class="form-horizontal" method="post" aria-label="Compare SPDX documents">
       {% csrf_token %}
       <div id="drop-area" class="container" role="region" aria-label="File upload area">
         <p id="drop-instructions">Upload two or more SPDX documents using the button or by dragging and dropping onto the dashed region</p>
@@ -155,19 +155,19 @@
     }
     selected_files.push(file);
     renderFileList();
-    checkFilesSize(selected_files, '#warning-msg');
+    checkFilesSize(selected_files, "#warning-msg");
   }
 
   function removeFile(index) {
     selected_files.splice(index, 1);
     renderFileList();
-    checkFilesSize(selected_files, '#warning-msg');
-    if (selected_files.length === 0) removeWarningElement('#warning-msg');
+    checkFilesSize(selected_files, "#warning-msg");
+    if (selected_files.length === 0) removeWarningElement("#warning-msg");
   }
 
   function updateDefaultFilename() {
     if (filenameUserEdited) return;
-    var field = document.getElementById('rfilename');
+    var field = document.getElementById("rfilename");
     if (selected_files.length > 0) {
       var first = selected_files[0].name;
       var base = first.replace(/(\.(spdx3|spdx))?\.[^.]+$/, '') || first;
