@@ -232,21 +232,21 @@ function checkform() {
 
     // Parsing errors
     if (data.parsingError && data.parsingError.length > 0) {
-      inner += '<div class="conformance-block conformance-err" role="alert">';
-      inner += '<p><strong>The document could not be parsed; check could not be performed.</strong><br>' +
-        'The following parsing errors were found:</p>';
-      inner += '<ul>';
-      data.parsingError.forEach(function (err) { inner += '<li>' + escapeHtml(err) + '</li>'; });
-      inner += '</ul></div>';
+      inner += "<div class='conformance-block conformance-err' role='alert'>";
+      inner += "<p><strong>The document could not be parsed; check could not be performed.</strong><br>" +
+        "The following parsing errors were found:</p>";
+      inner += "<ul>";
+      data.parsingError.forEach(function (err) { inner += "<li>" + escapeHtml(err) + "</li>"; });
+      inner += "</ul></div>";
     } else {
-      var stdNames = { 'ntia': 'NTIA Minimum Elements', 'fsct3-min': 'CISA 2024 FSCT Minimum Expected' };
-      var stdName = stdNames[data.complianceStandard] || escapeHtml(data.complianceStandard || '');
-      var conformantClass = data.isConformant ? 'status-pass' : 'status-fail';
+    // Conformance results summary
+    var stdNames = { "ntia": "NTIA Minimum Elements", "fsct3-min": "CISA 2024 FSCT Minimum Expected" };
+    var stdName = stdNames[data.complianceStandard] || escapeHtml(data.complianceStandard || "");
+    var conformantClass = data.isConformant ? "status-pass" : "status-fail";
 
-      inner += '<div class="conformance-res">';
-      inner += '<h3>' + stdName + ' Conformance Results</h3>';
-      inner += '<p>Conformant: <span class="' + conformantClass + '">' + data.isConformant + '</span></p>';
-
+    inner += "<div class='conformance-res'>";
+    inner += "<h3>" + stdName + " Conformance Results</h3>";
+    inner += "<p>Conformant: <span class='" + conformantClass + "'>" + data.isConformant + "</span></p>";
 
     // Per-requirement table
     var requirements = [
@@ -260,14 +260,14 @@ function checkform() {
     ].filter(function(r) { return r[1] !== undefined && r[1] !== null; });
 
     if (requirements.length > 0) {
-      var fileName = (selected_file && selected_file.name) ? selected_file.name : 'N/A';
+      var fileName = (selected_file && selected_file.name) ? selected_file.name : "N/A";
       var sBomName = (data.sbomName) ? data.sbomName : 'N/A';
-      inner += '<table><caption><strong>Uploaded filename:</strong> ' + escapeHtml(fileName) + ' <br /><strong>SBOM name:</strong> ' + escapeHtml(sBomName) + '</caption>';
-      inner += '<thead><tr><th scope="col">Requirement</th><th scope="col">Conformant</th></tr></thead><tbody>';
+      inner += "<table><caption><strong>Uploaded filename:</strong> " + escapeHtml(fileName) + " <br /><strong>SBOM name:</strong> " + escapeHtml(sBomName) + "</caption>";
+      inner += "<thead><tr><th scope='col'>Requirement</th><th scope='col'>Conformant</th></tr></thead><tbody>";
       requirements.forEach(function (req) {
         var val = req[1].allProvided;
-        var cls = val ? 'status-pass' : 'status-fail';
-        inner += '<tr><td>' + req[0] + '</td><td><span class="' + cls + '">' + val + '</span></td></tr>';
+        var cls = val ? "status-pass" : "status-fail";
+        inner += "<tr><td>" + req[0] + "</td><td><span class='" + cls + "'>" + val + "</span></td></tr>";
       });
       inner += "</tbody></table>";
     }
