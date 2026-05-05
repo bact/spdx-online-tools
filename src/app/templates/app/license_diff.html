@@ -1,5 +1,6 @@
 {% extends 'app/base.html' %}
 {% load static %}
+
 {% block head_block %}
     <link href="{% static 'css/editor/editor.css' %}" rel="stylesheet" type="text/css">
     <link href="{% static 'css/editor/diffview.css' %}" rel="stylesheet" type="text/css">
@@ -84,16 +85,16 @@ $('#diffform').on('submit', function(event) {
 
 /* Render a side-by-side diff inline in the result section */
 function generate_text_diff(base, newtxt) {
-  var sm      = new difflib.SequenceMatcher(base, newtxt);
+  var sm = new difflib.SequenceMatcher(base, newtxt);
   var opcodes = sm.get_opcodes();
-  var diffEl  = diffview.buildView({
+  var diffEl = diffview.buildView({
     baseTextLines: base,
-    newTextLines:  newtxt,
-    opcodes:       opcodes,
-    baseTextName:  "SPDX license text",
-    newTextName:   "Your license text",
-    contextSize:   null,
-    viewType:      1,
+    newTextLines: newtxt,
+    opcodes: opcodes,
+    baseTextName: "SPDX license text",
+    newTextName: "Your license text",
+    contextSize: null,
+    viewType: 1,
   });
   // Strip the thead/th so only the diff body rows show
   $(diffEl).find('thead').remove();

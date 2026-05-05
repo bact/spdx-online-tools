@@ -11,8 +11,8 @@
     <form id="checklicenseform" enctype="multipart/form-data" class="form-horizontal" method="post" aria-label="Check license text">
       {% csrf_token %}
       <p>Enter full license text in the text area below to check it against
-        <a href="https://spdx.org/licenses/">SPDX License List</a> and
-        <a href="https://spdx.org/licenses/exceptions-index.html">License Exceptions</a>.</p>
+      <a href="https://spdx.org/licenses/">SPDX License List</a> and
+      <a href="https://spdx.org/licenses/exceptions-index.html">License Exceptions</a>.</p>
       <p>The result will be one of the following: <em>Perfect match</em>, <em>Standard License match</em>, <em>Close match</em>, or <em>Error (no match)</em>.</p>
       <div class="form-group">
         <label for="licensetext" class="sr-only">License text</label>
