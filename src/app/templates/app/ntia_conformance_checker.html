@@ -206,11 +206,12 @@
 
 function checkform() {
   if (selected_file === "") {
-    return("No files selected.");
-  } else if (document.getElementById('format').value === '0') {
-    document.getElementById('format').focus();
+    return ("No files selected.");
+  } else if (document.getElementById("format").value === "0") {
+    document.getElementById("format").focus();
     return("Please select the file format.");
-  } else {
+  }
+  else {
     return "1";
   }
 }
@@ -268,9 +269,9 @@ function checkform() {
         var cls = val ? 'status-pass' : 'status-fail';
         inner += '<tr><td>' + req[0] + '</td><td><span class="' + cls + '">' + val + '</span></td></tr>';
       });
-      inner += '</tbody></table>';
+      inner += "</tbody></table>";
     }
-    inner += '</div>';
+    inner += "</div>";
 
     // Components missing required information
     var missingFields = [
@@ -282,9 +283,9 @@ function checkform() {
       ["version",           data.componentVersions],
     ];
     var componentMissing = {};
-    missingFields.forEach(function (g) {
+    missingFields.forEach(function(g) {
       if (g[1] && !g[1].allProvided && g[1].nonconformantComponents && g[1].nonconformantComponents.length > 0) {
-        g[1].nonconformantComponents.forEach(function (comp) {
+        g[1].nonconformantComponents.forEach(function(comp) {
           if (!componentMissing[comp]) componentMissing[comp] = [];
           componentMissing[comp].push(g[0]);
         });
@@ -329,9 +330,9 @@ function checkform() {
   document.getElementById('checkbutton').addEventListener('click', function (event) {
     event.preventDefault();
     var check = checkform();
-    if (check === '1') {
+    if (check==='1'){
       var btn = document.getElementById('checkbutton');
-      btn.textContent = 'Checking…';
+      btn.textContent = "Checking...";
       btn.disabled = true;
       btn.setAttribute('aria-disabled', 'true');
       document.getElementById('messages').innerHTML = '';
@@ -341,47 +342,52 @@ function checkform() {
       form.append('file', selected_file);
 
       $.ajax({
-        type: 'POST',
-        enctype: 'multipart/form-data',
-        url: '/app/ntia_checker/',
-        processData: false,
-        contentType: false,
-        cache: false,
-        dataType: 'json',
-        timeout: 600000,
-        data: form,
-        success: function (data) {
-          showResult('success', 'Check complete', renderConformanceData(data.data));
-          btn.textContent = 'Check conformance';
-          btn.disabled = false;
-          btn.removeAttribute('aria-disabled');
-        },
-        error: function (e) {
-          try {
-            var obj = JSON.parse(e.responseText);
-            var type = (obj.type === 'warning') ? 'warning' : 'error';
-            var title = (obj.type === 'warning') ? 'Check completed with warnings' : 'Check failed';
-            showResult(type, title, renderConformanceData(obj.data));
-          } catch (_) {
-            showResult('error', 'Error',
-              '<p>The application could not be connected. Please try later.</p>');
-          }
-          btn.textContent = 'Check conformance';
-          btn.disabled = false;
-          btn.removeAttribute('aria-disabled');
-        }
-      });
-    } else {
+              type: "POST",
+              enctype: 'multipart/form-data',
+              url: "/app/ntia_checker/",
+              processData: false,
+              contentType: false,
+              cache: false,
+              dataType: 'json',
+              timeout: 600000,
+              data: form,
+              success: function (data) {
+                  showResult('success', 'Check complete', renderConformanceData(data.data));
+                  btn.textContent = 'Check conformance';
+                  btn.disabled = false;
+                  btn.removeAttribute('aria-disabled');
+              },
+              error: function (e) {
+                  try {
+                    var obj = JSON.parse(e.responseText);
+                    var type = (obj.type === 'warning') ? 'warning' : 'error';
+                    var title = (obj.type === 'warning') ? 'Check completed with warnings' : 'Check failed';
+                    showResult(type, title, renderConformanceData(obj.data));
+                  }
+                  catch (_) {
+                    showResult('error', 'Error',
+                      '<p>The application could not be connected. Please try later.</p>');
+                  }
+                  btn.textContent = 'Check conformance';
+                  btn.disabled = false;
+                  btn.removeAttribute('aria-disabled');
+            }
+        });
+    }
+    else {
       document.getElementById('messages').innerHTML =
         '<div class="alert alert-danger" role="alert"><strong>Error:</strong> ' +
         $('<span>').text(check).html() + '</div>';
       setTimeout(function () { document.getElementById('messages').innerHTML = ''; }, 5000);
     }
-  });
+});
+
 </script>
 
 <script type="text/javascript">
-  $(document).ready(function () { $('#checkerpage').addClass('linkactive'); });
+$(document).ready(function () {
+    $("#checkerpage").addClass('linkactive');
+    });
 </script>
 
 {% endblock %}
