@@ -8,8 +8,7 @@ function findLicenseMatch(request) {
       console.log("SUCCESS : ", data);
       var matchType = data.matchType;
       var matchIds = data.matchIds;
-
-      if (matchType === "Close match") {
+      if (matchType == "Close match") {
         var inputLicenseText = data.inputLicenseText.replace(/\r\n/g, "\n");
         var originalLicenseText = data.originalLicenseText;
         var matchingGuidelinesUrl =
