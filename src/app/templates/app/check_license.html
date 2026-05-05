@@ -46,19 +46,18 @@ function checkform() {
   }
   else {
     return "1";
+  }
 }
 </script>
 <script type="text/javascript">
   $('#checklicenseform').on('submit', function(event){
     event.preventDefault();
     var check = checkform();
-    if (check === '1') {
-      $('#checklicensebutton').text('Checking…').prop('disabled', true).attr('aria-disabled', 'true');
-      $('#messages').html('');
+    if (check=="1"){
+      $("#checklicensebutton").text("Checking…").prop('disabled', true).attr('aria-disabled', 'true');
+      $("#messages").html("");
       hideResult();
-
-      var form = new FormData($('#checklicenseform')[0]);
-
+      var form = new FormData($("#checklicenseform")[0]);
       $.ajax({
         type: 'POST',
         enctype: 'multipart/form-data',
