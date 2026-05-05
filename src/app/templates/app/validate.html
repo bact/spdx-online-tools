@@ -118,12 +118,15 @@
   }
 
   function checkform() {
-    if (selected_file === '') return 'No files selected.';
-    if (document.getElementById('format').value === '0') {
+    if (selected_file == "") {
+      return ("No files selected.");
+    } else if (document.getElementById('format').value == "0") {
       document.getElementById('format').focus();
-      return 'Please select the file format.';
+      return("Please select the file format.");
     }
-    return '1';
+    else {
+      return "1";
+    }
   }
 </script>
 
@@ -131,7 +134,7 @@
   document.getElementById('validatebutton').addEventListener('click', function (event) {
     event.preventDefault();
     var check = checkform();
-    if (check === '1') {
+    if (check=="1") {
       var btn = document.getElementById('validatebutton');
       btn.textContent = 'Validating…';
       btn.disabled = true;

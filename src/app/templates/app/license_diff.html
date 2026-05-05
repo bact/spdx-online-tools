@@ -43,21 +43,25 @@
 <script type="text/javascript" src="{% static 'js/editor/difflib.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/editor/diffview.js' %}"></script>
 <script type="text/javascript">
-$(document).ready(function() { $('#licensediffpage').addClass('linkactive'); });
+$(document).ready(function () {
+    $("#licensediffpage").addClass('linkactive');
+    });
 </script>
 <script type="text/javascript">
 function checkform() {
-  if ($('#licensetext').val() === '') {
+  if ($('#licensetext').val() == "") {
     $('#licensetext').focus();
-    return 'No text entered.';
+    return ("No text entered.");
   }
-  return '1';
+  else {
+    return "1";
+  }
 }
 
 $('#diffform').on('submit', function(event) {
   event.preventDefault();
   var check = checkform();
-  if (check === '1') {
+  if (check=="1") {
     $('#licensediffbutton').text('Checking…').prop('disabled', true).attr('aria-disabled', 'true');
     $('#messages').html('');
     hideResult();
