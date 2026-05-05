@@ -16,7 +16,7 @@
       margin: 0 auto 0.5em;
       border-collapse: separate;
       border-spacing: 0;
-      background: #fff;
+      background: #ffffff;
       box-shadow: 0 1px 3px rgba(16, 24, 32, 0.08);
       border-radius: 6px;
       overflow: hidden;
@@ -135,7 +135,7 @@
       <div class="file-name" aria-live="polite" aria-atomic="true">No file selected</div>
     </div>
   </form>
-  <hr>
+<hr>
   <p id="warning-msg" hidden></p>
   <button id="checkbutton" name="checkbutton" class="btn btn-md btn-info btn-submit-center" type="button" disabled aria-disabled="true">Check conformance</button>
 
@@ -205,7 +205,7 @@
   }
 
 function checkform() {
-  if (selected_file === "") {
+  if (selected_file == "") {
     return ("No files selected.");
   } else if (document.getElementById("format").value === "0") {
     document.getElementById("format").focus();
@@ -291,37 +291,37 @@ function checkform() {
         });
       }
     });
-      var nonconformantComponents = Object.keys(componentMissing).sort();
-      if (nonconformantComponents.length > 0) {
-        inner += '<div class="conformance-block conformance-mis">';
-        inner += '<p><strong>Components with missing required information (' + nonconformantComponents.length + '):</strong></p>';
-        inner += '<ol>';
-        nonconformantComponents.forEach(function (comp) {
-          inner += '<li>' + escapeHtml(comp) + ': missing ' + componentMissing[comp].join(', ') + '</li>';
-        });
-        inner += '</ol></div>';
-      }
+    var nonconformantComponents = Object.keys(componentMissing).sort();
+    if (nonconformantComponents.length > 0) {
+      inner += '<div class="conformance-block conformance-mis">';
+      inner += '<p><strong>Components with missing required information (' + nonconformantComponents.length + '):</strong></p>';
+      inner += '<ol>';
+      nonconformantComponents.forEach(function (comp) {
+        inner += '<li>' + escapeHtml(comp) + ': missing ' + componentMissing[comp].join(', ') + '</li>';
+      });
+      inner += '</ol></div>';
+    }
 
-      if (data.validationMessages && data.validationMessages.length > 0) {
-        inner += '<div class="conformance-block conformance-val">';
-        inner += '<p><strong>The document is not valid according to the SBOM specification' +
-          ' ("' + escapeHtml(data.sbomSpec || '') + '").</strong><br>' +
-          'The following violations were found:</p>';
-        inner += '<ul>';
-        data.validationMessages.forEach(function (msg) {
-          inner += '<li><p class="conformance-val-msg-label">Validation message:</p>';
-          inner += '<p>' + escapeHtml(msg.message) + '</p>';
-          if (msg.spdxId || msg.parentId || msg.elementType) {
-            inner += '<p class="conformance-val-ctx-label">Validation context:</p><ul>';
-            if (msg.spdxId) inner += '<li>SPDX ID: ' + escapeHtml(msg.spdxId) + '</li>';
-            if (msg.parentId) inner += '<li>Parent ID: ' + escapeHtml(msg.parentId) + '</li>';
-            if (msg.elementType) inner += '<li>Element type: ' + escapeHtml(msg.elementType) + '</li>';
-            inner += '</ul>';
-          }
-          inner += '</li>';
-        });
-        inner += '</ul></div>';
-      }
+    if (data.validationMessages && data.validationMessages.length > 0) {
+      inner += '<div class="conformance-block conformance-val">';
+      inner += '<p><strong>The document is not valid according to the SBOM specification' +
+        ' ("' + escapeHtml(data.sbomSpec || '') + '").</strong><br>' +
+        'The following violations were found:</p>';
+      inner += '<ul>';
+      data.validationMessages.forEach(function (msg) {
+        inner += '<li><p class="conformance-val-msg-label">Validation message:</p>';
+        inner += '<p>' + escapeHtml(msg.message) + '</p>';
+        if (msg.spdxId || msg.parentId || msg.elementType) {
+          inner += '<p class="conformance-val-ctx-label">Validation context:</p><ul>';
+          if (msg.spdxId) inner += '<li>SPDX ID: ' + escapeHtml(msg.spdxId) + '</li>';
+          if (msg.parentId) inner += '<li>Parent ID: ' + escapeHtml(msg.parentId) + '</li>';
+          if (msg.elementType) inner += '<li>Element type: ' + escapeHtml(msg.elementType) + '</li>';
+          inner += '</ul>';
+        }
+        inner += '</li>';
+      });
+      inner += '</ul></div>';
+    }
     }
 
     return '<div class="res-container">' + inner + '</div>';
@@ -330,7 +330,7 @@ function checkform() {
   document.getElementById('checkbutton').addEventListener('click', function (event) {
     event.preventDefault();
     var check = checkform();
-    if (check==='1'){
+    if (check=="1"){
       var btn = document.getElementById('checkbutton');
       btn.textContent = "Checking...";
       btn.disabled = true;
