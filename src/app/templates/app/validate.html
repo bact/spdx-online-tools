@@ -1,8 +1,7 @@
 {% extends 'app/base.html' %}
 {% load static %}
-
 {% block head_block %}
-<link href="{% static 'css/dragdrop.css' %}" rel="stylesheet" type="text/css">
+  <link href="{% static 'css/dragdrop.css' %}" rel="stylesheet" type="text/css">
 {% endblock %}
 
 {% block body1 %}
@@ -13,8 +12,7 @@
     <p class="lead">Validate SPDX document</p>
   </div>
   <div class="panel-body">
-    <form id="validateform" enctype="multipart/form-data" class="form-horizontal" method="post"
-      aria-label="Validate SPDX document">
+    <form id="validateform" enctype="multipart/form-data" class="form-horizontal" method="post" aria-label="Validate SPDX document">
       {% csrf_token %}
       <div class="form-narrow">
         <div class="form-group">
@@ -33,21 +31,17 @@
         </div>
       </div>
       <div id="drop-area" class="container" role="region" aria-label="File upload area">
-        <p id="drop-instructions">Upload SPDX document using the button or by dragging and dropping onto the dashed
-          region</p>
-        <input type="file" id="file" onchange="handleFiles(this.files)" aria-label="Select SPDX document"
-          aria-describedby="drop-instructions">
+        <p id="drop-instructions">Upload SPDX document using the button or by dragging and dropping onto the dashed region</p>
+        <input type="file" id="file" onchange="handleFiles(this.files)" aria-label="Select SPDX document" aria-describedby="drop-instructions">
         <label class="button" for="file">Select file</label>
         <div class="file-name" aria-live="polite" aria-atomic="true">No file selected</div>
       </div>
     </form>
     <hr>
     <p id="warning-msg" hidden></p>
-    <button id="validatebutton" name="validatebutton" class="btn btn-md btn-info btn-submit-center" type="button"
-      disabled aria-disabled="true">Validate</button>
+    <button id="validatebutton" name="validatebutton" class="btn btn-md btn-info btn-submit-center" type="button" disabled aria-disabled="true">Validate</button>
 
-    <section id="result-section" class="result-section" role="region" aria-label="Validation result" tabindex="-1"
-      hidden>
+    <section id="result-section" class="result-section" role="region" aria-label="Validation result" tabindex="-1" hidden>
       <div id="result-header" class="result-header">
         <h2 id="result-title" class="result-title"></h2>
         <button type="button" class="result-close" aria-label="Close result" onclick="hideResult()">&times;</button>
@@ -57,11 +51,8 @@
   </div>
 </div>
 {% include "app/_tool_versions.html" with show_java_tools=True %}
-
 {% endblock %}
-
 {% block script_block %}
-
 <script type="text/javascript">
   /* Drag and drop handling */
   var dropArea = document.getElementById('drop-area');

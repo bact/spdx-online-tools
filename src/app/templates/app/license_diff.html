@@ -1,9 +1,8 @@
 {% extends 'app/base.html' %}
 {% load static %}
-
 {% block head_block %}
-  <link href="{% static 'css/editor/editor.css' %}" rel="stylesheet" type="text/css">
-  <link href="{% static 'css/editor/diffview.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'css/editor/editor.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'css/editor/diffview.css' %}" rel="stylesheet" type="text/css">
   <style>
     .diff-result-body { padding: 0; overflow-x: auto; }
     .diff-result-body table { font-size: 0.82em; }
@@ -19,40 +18,32 @@
     <p>Check license text against existing SPDX licenses</p>
   </div>
   <div class="panel-body">
-    <form id="diffform" enctype="multipart/form-data" class="form-horizontal" method="post"
-          aria-label="Check license diff">
+    <form id="diffform" enctype="multipart/form-data" class="form-horizontal" method="post" aria-label="Check license diff">
       {% csrf_token %}
       <div class="form-group">
         <label for="licensetext"><strong>License text</strong></label>
-        <textarea id="licensetext" name="licensetext" rows="18"
-                  style="width:100%" aria-required="true"
-                  placeholder="Paste the full license text here…"></textarea>
+        <textarea id="licensetext" name="licensetext" rows="18" style="width:100%" aria-required="true" placeholder="Paste the full license text here…"></textarea>
       </div>
       <button id="licensediffbutton" class="btn btn-md btn-info" type="submit">Check license diff</button>
     </form>
 
-    <section id="result-section" class="result-section" role="region"
-             aria-label="License diff result" tabindex="-1" hidden>
+    <section id="result-section" class="result-section" role="region" aria-label="License diff result" tabindex="-1" hidden>
       <div id="result-header" class="result-header">
         <h2 id="result-title" class="result-title"></h2>
-        <button type="button" class="result-close" aria-label="Close result"
-                onclick="hideResult()">&times;</button>
+        <button type="button" class="result-close" aria-label="Close result" onclick="hideResult()">&times;</button>
       </div>
       <div id="result-body" class="result-body"></div>
     </section>
   </div>
 </div>
 {% endblock %}
-
 {% block script_block %}
 <script src="{% static 'js/utils.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/editor/difflib.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/editor/diffview.js' %}"></script>
-
 <script type="text/javascript">
 $(document).ready(function() { $('#licensediffpage').addClass('linkactive'); });
 </script>
-
 <script type="text/javascript">
 function checkform() {
   if ($('#licensetext').val() === '') {

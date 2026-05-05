@@ -106,8 +106,7 @@
     <p class="lead">Check conformance</p>
   </div>
   <div class="panel-body">
-    <form id="checkform" enctype="multipart/form-data" class="form-horizontal" method="post"
-      aria-label="Check SBOM conformance">
+    <form id="checkform" enctype="multipart/form-data" class="form-horizontal" method="post" aria-label="Check SBOM conformance">
       {% csrf_token %}
       <div class="form-narrow">
         <div class="form-group">
@@ -130,21 +129,17 @@
         </div>
       </div>
       <div id="drop-area" class="container" role="region" aria-label="File upload area">
-        <p id="drop-instructions">Upload SPDX document using the button or by dragging and dropping onto the dashed
-          region</p>
-        <input type="file" id="file" onchange="handleFiles(this.files)" aria-label="Select SPDX document"
-          aria-describedby="drop-instructions">
+        <p id="drop-instructions">Upload SPDX document using the button or by dragging and dropping onto the dashed region</p>
+        <input type="file" id="file" onchange="handleFiles(this.files)" aria-label="Select SPDX document" aria-describedby="drop-instructions">
         <label class="button" for="file">Select file</label>
         <div class="file-name" aria-live="polite" aria-atomic="true">No file selected</div>
       </div>
     </form>
     <hr>
     <p id="warning-msg" hidden></p>
-    <button id="checkbutton" name="checkbutton" class="btn btn-md btn-info btn-submit-center" type="button" disabled
-      aria-disabled="true">Check conformance</button>
+    <button id="checkbutton" name="checkbutton" class="btn btn-md btn-info btn-submit-center" type="button" disabled aria-disabled="true">Check conformance</button>
 
-    <section id="result-section" class="result-section" role="region" aria-label="Conformance check result"
-      tabindex="-1" hidden>
+    <section id="result-section" class="result-section" role="region" aria-label="Conformance check result" tabindex="-1" hidden>
       <div id="result-header" class="result-header">
         <h2 id="result-title" class="result-title"></h2>
         <button type="button" class="result-close" aria-label="Close result" onclick="hideResult()">&times;</button>
@@ -154,9 +149,7 @@
   </div>
 </div>
 {% include "app/_tool_versions.html" with show_python_tools=True show_ntia=True %}
-
 {% endblock %}
-
 {% block script_block %}
 
 <script type="text/javascript">

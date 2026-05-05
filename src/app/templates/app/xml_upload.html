@@ -1,6 +1,5 @@
 {% extends 'app/base.html' %}
 {% load static %}
-
 {% block head_block %}
 <link href="{% static 'css/dragdrop.css' %}" rel="stylesheet" type="text/css">
 <link href="{% static 'css/jquery-ui.min.css' %}" rel="stylesheet" type="text/css">
@@ -43,8 +42,7 @@
           <p>Write the XML document text below:</p>
           <textarea id="xmltext" name="xmltext" rows="12" style="width: 100%; resize: vertical;"></textarea>
           <hr>
-          <button id="xmlTextButton" name="xmlTextButton" class=" btn btn-md btn-info btn-submit-center"
-            type="submit">Edit document</button>
+          <button id="xmlTextButton" name="xmlTextButton" class=" btn btn-md btn-info btn-submit-center" type="submit">Edit document</button>
         </form>
       </div>
       <div id="upload" class="tab-pane fade">
@@ -57,8 +55,7 @@
             <div class="file-name">No file selected</div>
           </form>
         </div>
-        <button id="uploadButton" name="uploadButton" class="btn btn-md btn-info btn-submit-center" type="submit">Edit
-          document</button>
+        <button id="uploadButton" name="uploadButton" class="btn btn-md btn-info btn-submit-center" type="submit">Edit document</button>
       </div>
       <div id="license-name" class="tab-pane fade">
         <form id="form-license-name" enctype="multipart/form-data" class="form-horizontal" method="post">
@@ -71,16 +68,14 @@
             </div>
           </div>
           <hr>
-          <button id="licenseNameButton" name="licenseNameButton" class="btn btn-md btn-info btn-submit-center"
-            type="submit">Edit document</button>
+          <button id="licenseNameButton" name="licenseNameButton" class="btn btn-md btn-info btn-submit-center" type="submit">Edit document</button>
         </form>
       </div>
       <div id="new" class="tab-pane fade">
         <form id="form-new" enctype="multipart/form-data" class="form-horizontal" method="post">
           {% csrf_token %}
           <p>Make a new License XML file from scratch</p>
-          <button id="new-button" name="new-button" class="btn btn-lg btn-info btn-submit-center"
-            type="submit">Go</button>
+          <button id="new-button" name="new-button" class="btn btn-lg btn-info btn-submit-center" type="submit">Go</button>
         </form>
       </div>
     </div>
@@ -89,7 +84,6 @@
 </div>
 {% include "app/_tool_versions.html" with show_java_tools=True %}
 {% endblock %}
-
 {% block script_block %}
 <script type="text/javascript" src="{% static 'js/jquery-ui.min.js' %}"></script>
 <script type="text/javascript">
