@@ -13,7 +13,6 @@ function findLicenseMatch(request) {
         var originalLicenseText = data.originalLicenseText;
         var matchingGuidelinesUrl =
           "https://spdx.org/spdx-license-list/matching-guidelines";
-
         var bodyHtml =
           '<p>Close match found! The license closely matches with the license ID(s): ' +
           '<strong>' + $('<span>').text(matchIds).html() + '</strong> ' +
@@ -59,7 +58,6 @@ function findLicenseMatch(request) {
       $("#licensediffbutton").text("License diff");
       $("#licensediffbutton").prop("disabled", false);
     },
-
     error: function (e) {
       console.log("ERROR : ", e);
       try {
