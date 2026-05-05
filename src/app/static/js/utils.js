@@ -7,10 +7,10 @@ function findLicenseMatch(request) {
     success: function (data) {
       console.log("SUCCESS : ", data);
       var matchType = data.matchType;
-      var matchIds  = data.matchIds;
+      var matchIds = data.matchIds;
 
       if (matchType === "Close match") {
-        var inputLicenseText    = data.inputLicenseText.replace(/\r\n/g, "\n");
+        var inputLicenseText = data.inputLicenseText.replace(/\r\n/g, "\n");
         var originalLicenseText = data.originalLicenseText;
         var matchingGuidelinesUrl =
           "https://spdx.org/spdx-license-list/matching-guidelines";
@@ -32,7 +32,7 @@ function findLicenseMatch(request) {
         showResult("warning", "Close match", bodyHtml);
 
         // Store texts for the diff so the click handler can reach them
-        document.getElementById("showDiff")._baseText  = originalLicenseText;
+        document.getElementById("showDiff")._baseText = originalLicenseText;
         document.getElementById("showDiff")._inputText = inputLicenseText;
 
         $(document).off("click.showDiff").on("click.showDiff", "#showDiff", function () {
