@@ -58,53 +58,56 @@ function checkform() {
       hideResult();
       var form = new FormData($("#checklicenseform")[0]);
       $.ajax({
-        type: 'POST',
-        enctype: 'multipart/form-data',
-        url: '/app/check_license/',
-        processData: false,
-        contentType: false,
-        cache: false,
-        dataType: 'json',
-        data: form,
-        success: function (data) {
-          var msg = data.data || '';
-          var title = 'Result';
-          var body = msg;
-
-          // Parse the standard "X found.<br />Y" format from the backend
-          if (msg.indexOf(' found.<br />') > -1) {
-            var parts = msg.split(' found.<br />');
-            title = parts[0];
-            body = parts[1];
-          } else if (msg === "There are no matching SPDX listed licenses") {
-            title = "No match";
-          }
-
-          var lowerTitle = title.toLowerCase();
-          var type = (lowerTitle.indexOf('perfect') > -1 || lowerTitle.indexOf('exact') > -1 || lowerTitle.indexOf('standard') > -1)
-            ? 'success' : (title === 'No match' ? 'error' : 'warning');
-
-          showResult(type, title, '<p>' + body + '</p>');
-          $('#checklicensebutton').text('Check license').prop('disabled', false).removeAttr('aria-disabled');
-        },
-        error: function(e) {
-          try {
-            var obj = JSON.parse(e.responseText);
-            showResult('error', 'Error', '<p>' + obj.data + '</p>');
-          } catch (_) {
-            showResult('error', 'Error',
-                       '<p>The application could not be connected. Please try later.</p>');
-          }
-          $('#checklicensebutton').text('Check license').prop('disabled', false).removeAttr('aria-disabled');
-        }
-      });
-    } else {
+              type: "POST",
+              enctype: 'multipart/form-data',
+              url: "/app/check_license/",
+              processData: false,
+              contentType: false,
+              cache: false,
+              dataType: 'json',
+              data: form,
+              success: function (data) {
+                  var msg = data.data || '';
+                  var title = 'Result';
+                  var body = msg;
+        
+                  // Parse the standard "X found.<br />Y" format from the backend
+                  if (msg.indexOf(' found.<br />') > -1) {
+                    var parts = msg.split(' found.<br />');
+                    title = parts[0];
+                    body = parts[1];
+                  } else if (msg === "There are no matching SPDX listed licenses") {
+                    title = "No match";
+                  }
+        
+                  var lowerTitle = title.toLowerCase();
+                  var type = (lowerTitle.indexOf('perfect') > -1 || lowerTitle.indexOf('exact') > -1 || lowerTitle.indexOf('standard') > -1)
+                    ? 'success' : (title === 'No match' ? 'error' : 'warning');
+        
+                  showResult(type, title, '<p>' + body + '</p>');
+                  $('#checklicensebutton').text('Check license').prop('disabled', false).removeAttr('aria-disabled');
+              },
+              error: function (e) {
+                  try {
+                    var obj = JSON.parse(e.responseText);
+                    showResult('error', 'Error', '<p>' + obj.data + '</p>');
+                  } catch (_) {
+                    showResult('error', 'Error',
+                               '<p>The application could not be connected. Please try later.</p>');
+                  }
+                  $('#checklicensebutton').text('Check license').prop('disabled', false).removeAttr('aria-disabled');
+              }
+          });
+    }
+    else{
       $('#messages').html(
         '<div class="alert alert-danger" role="alert"><strong>Error:</strong> ' +
         $('<span>').text(check).html() + '</div>'
       );
-      setTimeout(function() { $('#messages').html(''); }, 5000);
+      setTimeout(function() {
+        $("#messages").html("");
+      }, 5000);
     }
-  });
+});
 </script>
 {% endblock %}
