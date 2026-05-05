@@ -34,19 +34,22 @@
 {% endblock %}
 {% block script_block %}
 <script type="text/javascript">
-  $(document).ready(function() { $('#checklicensepage').addClass('linkactive'); });
+$(document).ready(function () {
+    $("#checklicensepage").addClass('linkactive');
+    });
 </script>
 <script type="text/javascript">
-  function checkform() {
-    if ($('#licensetext').val() === '') {
-      $('#licensetext').focus();
-      return 'No text entered.';
-    }
-    return '1';
+function checkform() {
+  if ($('#licensetext').val() == "") {
+    $('#licensetext').focus();
+    return ("No text entered.");
   }
+  else {
+    return "1";
+}
 </script>
 <script type="text/javascript">
-  $('#checklicenseform').on('submit', function(event) {
+  $('#checklicenseform').on('submit', function(event){
     event.preventDefault();
     var check = checkform();
     if (check === '1') {
