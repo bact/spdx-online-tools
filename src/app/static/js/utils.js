@@ -38,8 +38,7 @@ function findLicenseMatch(request) {
           var base = this._baseText.split("\n\n");
           var newtxt = this._inputText.split("\n\n");
           generate_text_diff(base, newtxt);
-        });
-
+          });
       } else if (
         matchType == "Perfect match" ||
         matchType == "Standard License match"
