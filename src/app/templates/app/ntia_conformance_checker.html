@@ -308,8 +308,9 @@ function checkform() {
         " ('" + escapeHtml(data.sbomSpec || "") + "').</strong><br>" +
         'The following violations were found:</p>';
       inner += "<ul>";
-      data.validationMessages.forEach(function (msg) {
-        inner += "<li><p class='conformance-val-msg-label'>Validation message:</p>";
+      data.validationMessages.forEach(function(msg) {
+        inner += "<li>"
+        inner += "<p class='conformance-val-msg-label'>Validation message:</p>";
         inner += "<p>" + escapeHtml(msg.message) + "</p>";
         if (msg.spdxId || msg.parentId || msg.elementType) {
           inner += "<p class='conformance-val-ctx-label'>Validation context:</p><ul>";
