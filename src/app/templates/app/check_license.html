@@ -91,7 +91,8 @@ function checkform() {
                   try {
                     var obj = JSON.parse(e.responseText);
                     showResult('error', 'Error', '<p>' + obj.data + '</p>');
-                  } catch (_) {
+                  }
+                  catch (_){
                     showResult('error', 'Error',
                                '<p>The application could not be connected. Please try later.</p>');
                   }
@@ -109,5 +110,6 @@ function checkform() {
       }, 5000);
     }
 });
+
 </script>
 {% endblock %}
