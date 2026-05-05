@@ -15,12 +15,11 @@
       <a href="https://spdx.org/licenses/exceptions-index.html">License Exceptions</a>.</p>
       <p>The result will be one of the following: <em>Perfect match</em>, <em>Standard License match</em>, <em>Close match</em>, or <em>Error (no match)</em>.</p>
       <div class="form-group">
-      <label for="licensetext" class="sr-only">License text</label>
-      <textarea id="licensetext" name="licensetext" rows="12" style="width:100%; resize: vertical;" aria-required="true" placeholder="Paste the full license text here…"></textarea>
+        <label for="licensetext" class="sr-only">License text</label>
+        <textarea id="licensetext" name="licensetext" rows="12" style="width:100%; resize: vertical;" aria-required="true" placeholder="Paste the full license text here..."></textarea>
       </div>
       <button id="checklicensebutton" class="btn btn-md btn-info btn-submit-center" type="submit">Check license</button>
     </form>
-
     <section id="result-section" class="result-section" role="region" aria-label="License check result" tabindex="-1" hidden>
       <div id="result-header" class="result-header">
         <h2 id="result-title" class="result-title"></h2>
@@ -54,7 +53,7 @@ function checkform() {
     event.preventDefault();
     var check = checkform();
     if (check=="1"){
-      $("#checklicensebutton").text("Checking…").prop('disabled', true).attr('aria-disabled', 'true');
+      $("#checklicensebutton").text("Checking...").prop('disabled', true).attr('aria-disabled', 'true');
       $("#messages").html("");
       hideResult();
       var form = new FormData($("#checklicenseform")[0]);
