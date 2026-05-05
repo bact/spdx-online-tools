@@ -40,7 +40,7 @@
         <div id="text" class="tab-pane fade in active">
           <form id="form-text" enctype="multipart/form-data" class="form-horizontal" method="post">
             {% csrf_token %}
-            <h4>Write the XML document text below: </h4>
+            <p>Write the XML document text below:</p>
             <textarea id="xmltext" name="xmltext" rows="15" style="width: 90%; resize:none;"></textarea> <hr>
             <button id="xmlTextButton" name="xmlTextButton" class=" btn btn-md btn-info" type="submit">Edit document</button>
           </form>
@@ -49,7 +49,7 @@
           <div id="drop-area" class="container">
             <form id="form-upload" enctype="multipart/form-data" class="form-horizontal" method="post">
               {% csrf_token %}
-              <h4>Upload XML file using the button or by dragging and dropping onto the dashed region</h4>
+              <p>Upload XML file using the button or by dragging and dropping onto the dashed region</p>
               <input type="file" id="file" accept="application/xml" onchange="handleFiles(this.files)">
               <label class="button" for="file">Select XML file</label>
               <div class="file-name">No file selected</div>
