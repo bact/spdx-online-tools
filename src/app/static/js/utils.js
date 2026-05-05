@@ -40,7 +40,10 @@ function findLicenseMatch(request) {
           generate_text_diff(base, newtxt);
         });
 
-      } else if (matchType === "Perfect match" || matchType === "Standard License match") {
+      } else if (
+        matchType == "Perfect match" ||
+        matchType == "Standard License match"
+      ) {
         showResult(
           "success",
           "Match found",
