@@ -293,53 +293,53 @@ function checkform() {
     });
     var nonconformantComponents = Object.keys(componentMissing).sort();
     if (nonconformantComponents.length > 0) {
-      inner += '<div class="conformance-block conformance-mis">';
-      inner += '<p><strong>Components with missing required information (' + nonconformantComponents.length + '):</strong></p>';
-      inner += '<ol>';
+      inner += "<div class='conformance-block conformance-mis'>";
+      inner += "<p><strong>Components with missing required information (" + nonconformantComponents.length + "):</strong></p>";
+      inner += "<ol>";
       nonconformantComponents.forEach(function (comp) {
-        inner += '<li>' + escapeHtml(comp) + ': missing ' + componentMissing[comp].join(', ') + '</li>';
+        inner += "<li>" + escapeHtml(comp) + ": missing " + componentMissing[comp].join(", ") + "</li>";
       });
-      inner += '</ol></div>';
+      inner += "</ol></div>";
     }
 
     if (data.validationMessages && data.validationMessages.length > 0) {
-      inner += '<div class="conformance-block conformance-val">';
-      inner += '<p><strong>The document is not valid according to the SBOM specification' +
-        ' ("' + escapeHtml(data.sbomSpec || '') + '").</strong><br>' +
+      inner += "<div class='conformance-block conformance-val'>";
+      inner += "<p><strong>The document is not valid according to the SBOM specification" +
+        " ('" + escapeHtml(data.sbomSpec || "") + "').</strong><br>" +
         'The following violations were found:</p>';
-      inner += '<ul>';
+      inner += "<ul>";
       data.validationMessages.forEach(function (msg) {
-        inner += '<li><p class="conformance-val-msg-label">Validation message:</p>';
-        inner += '<p>' + escapeHtml(msg.message) + '</p>';
+        inner += "<li><p class='conformance-val-msg-label'>Validation message:</p>";
+        inner += "<p>" + escapeHtml(msg.message) + "</p>";
         if (msg.spdxId || msg.parentId || msg.elementType) {
-          inner += '<p class="conformance-val-ctx-label">Validation context:</p><ul>';
-          if (msg.spdxId) inner += '<li>SPDX ID: ' + escapeHtml(msg.spdxId) + '</li>';
-          if (msg.parentId) inner += '<li>Parent ID: ' + escapeHtml(msg.parentId) + '</li>';
-          if (msg.elementType) inner += '<li>Element type: ' + escapeHtml(msg.elementType) + '</li>';
-          inner += '</ul>';
+          inner += "<p class='conformance-val-ctx-label'>Validation context:</p><ul>";
+          if (msg.spdxId) inner += "<li>SPDX ID: " + escapeHtml(msg.spdxId) + "</li>";
+          if (msg.parentId) inner += "<li>Parent ID: " + escapeHtml(msg.parentId) + "</li>";
+          if (msg.elementType) inner += "<li>Element type: " + escapeHtml(msg.elementType) + "</li>";
+          inner += "</ul>";
         }
-        inner += '</li>';
+        inner += "</li>";
       });
-      inner += '</ul></div>';
+      inner += "</ul></div>";
     }
     }
 
-    return '<div class="res-container">' + inner + '</div>';
+    return "<div class='res-container'>" + inner + "</div>";
   }
 
-  document.getElementById('checkbutton').addEventListener('click', function (event) {
+  document.getElementById("checkbutton").addEventListener("click", function (event) {
     event.preventDefault();
     var check = checkform();
     if (check=="1"){
-      var btn = document.getElementById('checkbutton');
+      var btn = document.getElementById("checkbutton");
       btn.textContent = "Checking...";
       btn.disabled = true;
-      btn.setAttribute('aria-disabled', 'true');
-      document.getElementById('messages').innerHTML = '';
+      btn.setAttribute("aria-disabled", "true");
+      document.getElementById("messages").innerHTML = "";
       hideResult();
 
-      var form = new FormData(document.getElementById('checkform'));
-      form.append('file', selected_file);
+      var form = new FormData(document.getElementById("checkform"));
+      form.append("file", selected_file);
 
       $.ajax({
               type: "POST",
@@ -352,38 +352,39 @@ function checkform() {
               timeout: 600000,
               data: form,
               success: function (data) {
-                  showResult('success', 'Check complete', renderConformanceData(data.data));
-                  btn.textContent = 'Check conformance';
+                  showResult("success", "Check complete", renderConformanceData(data.data));
+                  btn.textContent = "Check conformance";
                   btn.disabled = false;
                   btn.removeAttribute('aria-disabled');
               },
               error: function (e) {
                   try {
                     var obj = JSON.parse(e.responseText);
-                    var type = (obj.type === 'warning') ? 'warning' : 'error';
-                    var title = (obj.type === 'warning') ? 'Check completed with warnings' : 'Check failed';
+                    var type = (obj.type === "warning") ? "warning" : "error";
+                    var title = (obj.type === "warning") ? "Check completed with warnings" : "Check failed";
                     showResult(type, title, renderConformanceData(obj.data));
                   }
                   catch (_) {
-                    showResult('error', 'Error',
-                      '<p>The application could not be connected. Please try later.</p>');
+                    showResult("error', "Error",
+                      "<p>The application could not be connected. Please try later.</p>");
                   }
-                  btn.textContent = 'Check conformance';
+                  btn.textContent = "Check conformance";
                   btn.disabled = false;
-                  btn.removeAttribute('aria-disabled');
-            }
-        });
+                  btn.removeAttribute("aria-disabled");
+              }
+          });
     }
-    else {
-      document.getElementById('messages').innerHTML =
-        '<div class="alert alert-danger" role="alert"><strong>Error:</strong> ' +
-        $('<span>').text(check).html() + '</div>';
-      setTimeout(function () { document.getElementById('messages').innerHTML = ''; }, 5000);
+    else{
+      document.getElementById("messages").innerHTML =
+        "<div class='alert alert-danger' role='alert'><strong>Error:</strong> " +
+        $("<span>").text(check).html() + "</div>";
+      setTimeout(function () {
+        document.getElementById('messages').innerHTML = "";
+      }, 5000);
     }
 });
 
 </script>
-
 <script type="text/javascript">
 $(document).ready(function () {
     $("#checkerpage").addClass('linkactive');
