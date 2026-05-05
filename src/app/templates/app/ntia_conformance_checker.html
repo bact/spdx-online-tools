@@ -206,13 +206,13 @@
 
 function checkform() {
   if (selected_file === "") {
-    return "No files selected.";
-  } else
-  if (document.getElementById('format').value === '0') {
+    return("No files selected.");
+  } else if (document.getElementById('format').value === '0') {
     document.getElementById('format').focus();
-    return "Please select the file format.";
-  }
+    return("Please select the file format.");
+  } else {
     return "1";
+  }
 }
 </script>
 
