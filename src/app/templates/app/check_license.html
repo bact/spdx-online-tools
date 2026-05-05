@@ -10,13 +10,13 @@
   <div class="panel-body">
     <form id="checklicenseform" enctype="multipart/form-data" class="form-horizontal" method="post" aria-label="Check license text">
       {% csrf_token %}
-      <p>Enter full license text in the text area below to check it against
+      <p>Enter full license text in the text area below to check it against 
       <a href="https://spdx.org/licenses/">SPDX License List</a> and
       <a href="https://spdx.org/licenses/exceptions-index.html">License Exceptions</a>.</p>
       <p>The result will be one of the following: <em>Perfect match</em>, <em>Standard License match</em>, <em>Close match</em>, or <em>Error (no match)</em>.</p>
       <div class="form-group">
-        <label for="licensetext" class="sr-only">License text</label>
-        <textarea id="licensetext" name="licensetext" rows="12" style="width:100%; resize: vertical;" aria-required="true" placeholder="Paste the full license text here…"></textarea>
+      <label for="licensetext" class="sr-only">License text</label>
+      <textarea id="licensetext" name="licensetext" rows="12" style="width:100%; resize: vertical;" aria-required="true" placeholder="Paste the full license text here…"></textarea>
       </div>
       <button id="checklicensebutton" class="btn btn-md btn-info btn-submit-center" type="submit">Check license</button>
     </form>
