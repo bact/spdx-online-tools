@@ -55,8 +55,8 @@ function findLicenseMatch(request) {
           "<p>The given license was not found in the SPDX database.</p>"
         );
       }
-
-      $("#licensediffbutton").text("Check license diff").prop("disabled", false);
+      $("#licensediffbutton").text("License diff");
+      $("#licensediffbutton").prop("disabled", false);
     },
 
     error: function (e) {
@@ -71,7 +71,8 @@ function findLicenseMatch(request) {
           "<p>The application could not be connected. Please try later.</p>"
         );
       }
-      $("#licensediffbutton").text("Check license diff").prop("disabled", false);
+      $("#licensediffbutton").text("Check license");
+      $("#licensediffbutton").prop("disabled", false);
     },
   });
 }
