@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 {% load static %}
-<html lang="en">
+<html lang="en" style="scrollbar-gutter: stable;">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -82,8 +82,8 @@
     pointer-events: none;
     user-select: none;
     white-space: nowrap;
-    font-size: 11px;
-    font-weight: 700;
+    font-size: 10px !important;
+    font-weight: 800;
     text-transform: uppercase;
     letter-spacing: 0.10em;
     color: rgba(255,255,255,0.72);
@@ -200,6 +200,19 @@
 .panel-body { padding: 20px 24px; }
 
 /* form controls */
+/* cross-browser form normalisation — Safari applies native OS styles unless reset */
+select,
+input[type="text"],
+input[type="email"],
+input[type="password"],
+textarea,
+button {
+    -webkit-appearance: none;
+    appearance: none;
+    font-family: inherit;
+    box-sizing: border-box;
+}
+
 select,
 input[type="text"],
 input[type="email"],
@@ -207,18 +220,25 @@ input[type="password"] {
     border: 1px solid #c8d0d4;
     border-radius: 5px;
     padding: 6px 10px;
-    font-size: 0.94em;
+    font-size: 14px;
     transition: border-color 0.15s, box-shadow 0.15s;
     outline: none;
     background: #fff;
     color: #333;
     height: auto;
 }
+/* custom dropdown arrow so select looks consistent cross-browser */
+select {
+    background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23666'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    padding-right: 30px;
+}
 textarea {
     border: 1px solid #c8d0d4;
     border-radius: 5px;
     padding: 8px 10px;
-    font-size: 0.94em;
+    font-size: 14px;
     transition: border-color 0.15s, box-shadow 0.15s;
     outline: none;
     background: #fff;
@@ -239,7 +259,7 @@ label.control-label { font-weight: 600; color: #444; font-size: 0.92em; }
 .btn { border-radius: 5px; font-weight: 600; transition: background 0.12s, box-shadow 0.12s; }
 .btn:focus,
 .btn:active:focus { outline: 3px solid rgba(0,151,196,0.35); outline-offset: 2px; }
-.btn-info { background-color: #0097c4; border: none; padding: 8px 20px; }
+.btn-info { background-color: #0097c4; border: none; padding: 8px 20px; color: #fff; }
 .btn-info:hover,
 .btn-info:focus { background-color: #007aa0; color: #fff; }
 .btn-default { padding: 7px 16px; }
@@ -268,11 +288,50 @@ label.control-label { font-weight: 600; color: #444; font-size: 0.92em; }
 a:focus { outline: 2px solid #0097c4; outline-offset: 2px; border-radius: 2px; }
 
 /* utilities */
-.left-align  { text-align: left; }
-.btn-space   { margin-right: 1em; }
-.error-log   { font-size: 0.6em; text-align: left; white-space: pre-wrap; }
 .messages    { margin-bottom: 8px; }
 .messages:empty { margin-bottom: 0; }
+.error-log-lead { font-weight: bold; color: #c62828; margin-bottom: 5px; }
+.error-log   { font-size: 13px !important; text-align: left; white-space: pre-wrap; background: #fdfdfd; border: 1px solid #eee; padding: 8px; border-radius: 4px; color: #444; }
+.btn-space   { margin-right: 1em; }
+
+/* DataTables search field overrides */
+.dataTables_filter { margin-bottom: 15px; }
+.dataTables_filter input {
+  padding: 6px 12px !important;
+  border: 1px solid #c8d0d4 !important;
+  border-radius: 4px !important;
+  outline: none !important;
+  font-size: 16px !important;
+  margin-left: 8px !important;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  background: #fff;
+  height: auto;
+}
+.dataTables_filter input:focus {
+  border-color: #0097c4 !important;
+  box-shadow: 0 0 0 3px rgba(0, 151, 196, 0.15);
+}
+
+/* Custom widgets */
+.add-another {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: 600;
+  color: #0097c4;
+  text-decoration: none;
+  margin-left: 10px;
+}
+.add-another:hover { text-decoration: underline; color: #007aa0; }
+.add-another img { vertical-align: middle; }
+
+/* AJAX loader centering */
+.ajax-loader {
+  display: block;
+  margin: 20px auto;
+  width: 32px;
+  height: 32px;
+}
 
 /* tables */
 tbody tr  { cursor: pointer; }
@@ -288,7 +347,97 @@ tbody tr:hover > .sorting_1 { background-color: #e8f4f8 !important; }
 /* license tools */
 .licenseField { float: left; margin-top: 1.5em; }
 .fieldName    { font-size: 1.4em; color: #0097c4; }
-.btn-space    { margin-right: 1em; }
+
+/* ── Inline result section (replaces modal for tool pages) ── */
+.result-section {
+  margin-top: 24px;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.10);
+  scroll-margin-top: 80px;
+}
+.result-section.result-success { border-left: 5px solid #2e7d32; }
+.result-section.result-error   { border-left: 5px solid #c62828; }
+.result-section.result-warning { border-left: 5px solid #e65100; }
+.result-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 20px;
+}
+.result-header.result-success { background: #2e7d32; }
+.result-header.result-error   { background: #c62828; }
+.result-header.result-warning { background: #e65100; }
+.result-title {
+  color: #fff;
+  margin: 0;
+  font-size: 1.1em !important;
+  font-weight: 700;
+}
+.result-close {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 1.4em;
+  cursor: pointer;
+  padding: 0 4px;
+  opacity: 0.85;
+  line-height: 1;
+}
+.result-close:hover { opacity: 1; }
+.result-close:focus { outline: 2px solid rgba(255,255,255,0.7); outline-offset: 2px; border-radius: 2px; }
+.result-body {
+  padding: 20px 24px;
+  background: #fff;
+  font-size: 16px !important; /* explicit px — WCAG 2.2 AA minimum; Bootstrap 3 base is 14px */
+  line-height: 1.6;
+}
+/* !important here so child-template inline <style> blocks can't override with 1rem/0.88em */
+.result-body p,
+.result-body li,
+.result-body td,
+.result-body th { font-size: 16px !important; }
+.result-body small,
+.result-body .small { font-size: 14px !important; }
+/* Bootstrap 3 applies margin-left/right: -15px to .form-horizontal .form-group;
+   neutralise so form controls don't bleed past panel-body padding */
+.form-horizontal .form-group { margin-left: 0; margin-right: 0; }
+/* shared narrow-form layout used on tool pages to match the drop-area width */
+.form-narrow {
+  max-width: 600px;
+  margin: 0 auto 16px;
+}
+/* ── Common Utilities ───────────────────────────────────── */
+body {
+    font-size: 16px !important;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+/* Ensure all text-bearing elements have a minimum of 16px */
+p, li, a, label, input, select, textarea, button, h1, h2, h3, h4, h5, h6, .control-label {
+    font-size: 16px !important;
+}
+
+/* Headings should be proportionally larger but clearly 16px+ */
+h1 { font-size: 2.2em !important; }
+h2 { font-size: 1.8em !important; }
+h3 { font-size: 1.5em !important; }
+h4 { font-size: 1.2em !important; }
+
+.btn-submit-center {
+    display: block !important;
+    width: -webkit-fit-content !important;
+    width: -moz-fit-content !important;
+    width: fit-content !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    margin-top: 1.5em !important;
+    margin-bottom: 0.5em !important;
+    font-size: 16px !important;
+    float: none !important;
+    clear: both !important;
+    text-align: center !important;
+}
 </style>
   </head>
   <body>
@@ -375,6 +524,31 @@ tbody tr:hover > .sorting_1 { background-color: #e8f4f8 !important; }
     <script src="{% static 'js/jquery.min.js' %}"></script>
     <script src="{% static 'js/bootstrap.min.js' %}"></script>
     <script src="{% static 'js/warning.js' %}"></script>
+    <script type="text/javascript">
+    /* Shared helpers for inline result sections on tool pages */
+    function showResult(type, title, bodyHtml) {
+      var section = document.getElementById('result-section');
+      if (!section) return;
+      var header  = document.getElementById('result-header');
+      var titleEl = document.getElementById('result-title');
+      var bodyEl  = document.getElementById('result-body');
+      section.classList.remove('result-success', 'result-error', 'result-warning');
+      section.classList.add('result-' + type);
+      if (header) {
+        header.classList.remove('result-success', 'result-error', 'result-warning');
+        header.classList.add('result-' + type);
+      }
+      if (titleEl) titleEl.textContent = title;
+      if (bodyEl)  bodyEl.innerHTML = bodyHtml;
+      section.removeAttribute('hidden');
+      section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      section.focus();
+    }
+    function hideResult() {
+      var section = document.getElementById('result-section');
+      if (section) section.setAttribute('hidden', '');
+    }
+    </script>
     <script type="text/javascript">
       // Shift content down if the navbar gets taller,
       // so the navbar doesn't cover the content.
