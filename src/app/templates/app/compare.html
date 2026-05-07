@@ -252,73 +252,72 @@
   $('#compareform').on('submit', function(event){
     event.preventDefault();
     var check = checkform();
-    if (check === '1') {
-      $('#comparebutton').text('Comparing…').prop('disabled', true).attr('aria-disabled', 'true');
-      $('#messages').html('');
-      hideResult();
-
-      var form = new FormData($('#compareform')[0]);
-      for (var i = 0; i < selected_files.length; i++) {
-        form.append('files', selected_files[i]);
-      }
-
-      $.ajax({
-        type: 'POST',
-        enctype: 'multipart/form-data',
-        url: '/app/compare/',
-        processData: false,
-        contentType: false,
-        dataType: 'json',
-        cache: false,
-        timeout: 600000,
-        data: form,
-        success: function (data) {
-          var link = '<a href="' + data.medialink + '" class="btn btn-default">' +
-            '<span class="glyphicon glyphicon-save-file" aria-hidden="true"></span>' +
-            ' Download result file</a>';
-          showResult('success', 'Comparison successful', link);
-          $('#comparebutton').text('Compare').prop('disabled', false).removeAttr('aria-disabled');
-          filenameUserEdited = false;
-        },
-        error: function (e) {
-          try {
-            var obj = JSON.parse(e.responseText);
-            var fileErrors = '';
-            if (obj.files && obj.errors) {
-              for (var i = 0; i < obj.files.length; i++) {
-                fileErrors += '<p><strong>' + obj.files[i] + '</strong><br>' +
-                  obj.errors[i] + '</p><hr>';
-              }
-            }
-            if (obj.type === 'warning') {
-              var extra = obj.medialink
-                ? '<p>Despite warnings, the comparison produced a result:</p>' +
-                '<a href="' + obj.medialink + '" class="btn btn-default">' +
-                '<span class="glyphicon glyphicon-save-file" aria-hidden="true"></span>' +
-                ' Download result file</a>'
-                : (obj.toolerror
-                  ? '<p>Additionally, the compare tool produced this error:</p><p>' +
-                  obj.toolerror + '</p>'
-                  : '');
-              showResult('warning', 'Comparison completed with warnings', fileErrors + extra);
-            } else {
-              showResult('error', 'Comparison failed', fileErrors ||
-                '<p>The application could not be connected. Please try later.</p>');
-            }
-          } catch (_) {
-            showResult('error', 'Error',
-              '<p>The application could not be connected. Please try later.</p>');
-          }
-          $('#comparebutton').text('Compare').prop('disabled', false).removeAttr('aria-disabled');
-        }
-      });
-    } else {
-      $('#messages').html(
-        '<div class="alert alert-danger" role="alert"><strong>Error:</strong> ' +
-        $('<span>').text(check).html() + '</div>'
-      );
-      setTimeout(function () { $('#messages').html(''); }, 5000);
-    }
+    if (check === "1") {
+    	$("#comparebutton").text("Comparing…").prop('disabled', true).attr('aria-disabled', 'true');
+        $("#messages").html("");
+        hideResult();
+			var form = new FormData($("#compareform")[0]);
+			for (var i = 0; i < selected_files.length; i++) {
+				form.append('files', selected_files[i]);
+			}
+	    $.ajax({
+	            type: "POST",
+	            enctype: 'multipart/form-data',
+	            url: "/app/compare/",
+	            processData: false,
+	            contentType: false,
+	            dataType: 'json',
+	            cache: false,
+	            timeout: 600000,
+	            data: form,
+	            success: function (data) {
+	                var link = '<a href="' + data.medialink + '" class="btn btn-default">' +
+	                  '<span class="glyphicon glyphicon-save-file" aria-hidden="true"></span>' +
+	                  ' Download result file</a>';
+	                showResult("success", "Comparison successful", link);
+	                $("#comparebutton").text("Compare").prop('disabled', false).removeAttr('aria-disabled');
+	                filenameUserEdited = false;
+	            },
+	            error: function (e) {
+	                try {
+	                    var obj = JSON.parse(e.responseText);
+	                    var fileErrors = "";
+	                    if (obj.files && obj.errors) {
+	                        for (var i = 0; i < obj.files.length; i++) {
+	                            fileErrors += '<p><strong>' + obj.files[i] + '</strong><br>' +
+	                              obj.errors[i] + '</p><hr>';
+	                        }
+	                    }
+	                    if (obj.type === "warning") {
+	                        var extra = obj.medialink
+	                          ? '<p>Despite warnings, the comparison produced a result:</p>' +
+	                          '<a href="' + obj.medialink + '" class="btn btn-default">' +
+	                          '<span class="glyphicon glyphicon-save-file" aria-hidden="true"></span>' +
+	                          ' Download result file</a>'
+	                          : (obj.toolerror
+	                            ? '<p>Additionally, the compare tool produced this error:</p><p>' +
+	                            obj.toolerror + '</p>'
+	                            : '');
+	                        showResult("warning", "Comparison completed with warnings", fileErrors + extra);
+	                    } else {
+	                        showResult("error", "Comparison failed", fileErrors ||
+	                          '<p>The application could not be connected. Please try later.</p>');
+	                    }
+	                } catch (_) {
+	                    showResult("error", "Error",
+	                      '<p>The application could not be connected. Please try later.</p>');
+	                }
+	                $("#comparebutton").text("Compare").prop('disabled', false).removeAttr('aria-disabled');
+	            }
+	        });
+	}
+	else{
+		$("#messages").html(
+		  '<div class="alert alert-danger" role="alert"><strong>Error:</strong> ' +
+		  $("<span>").text(check).html() + '</div>'
+		);
+		setTimeout(function () { $("#messages").html(""); }, 5000);
+	}
   });
 </script>
 
