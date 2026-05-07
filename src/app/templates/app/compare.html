@@ -156,6 +156,24 @@
     selected_files.push(file);
     renderFileList();
     checkFilesSize(selected_files, "#warning-msg");
+    updateSpdx3Warning();
+  }
+
+  function isSpdx3JsonLd(file) {
+    var n = file.name.toLowerCase();
+    return n.endsWith('.jsonld') || n.endsWith('.spdx3.json') || n.endsWith('.jsonld.json');
+  }
+
+  function updateSpdx3Warning() {
+    var hasV3 = selected_files.some(isSpdx3JsonLd);
+    var el = document.getElementById('messages');
+    if (hasV3) {
+      el.innerHTML =
+        '<div class="alert alert-danger" role="alert"><strong>Error:</strong> ' +
+        'Compare with SPDX 3 JSON-LD is not supported yet.</div>';
+    } else {
+      el.innerHTML = '';
+    }
   }
 
   function removeFile(index) {
@@ -163,6 +181,7 @@
     renderFileList();
     checkFilesSize(selected_files, "#warning-msg");
     if (selected_files.length === 0) removeWarningElement("#warning-msg");
+    updateSpdx3Warning();
   }
 
   function updateDefaultFilename() {
@@ -217,6 +236,7 @@
     selected_files = [];
     renderFileList();
     removeWarningElement('#warning-msg');
+    updateSpdx3Warning();
   });
 
   function checkform() {
