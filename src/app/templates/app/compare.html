@@ -87,10 +87,10 @@
 		<div class="form-narrow">
 			<div class="form-group">
 				<label for="rfilename" class="control-label col-sm-5">Result file name</label>
-				<div class="col-sm-7">
+				<div class="col-sm-7"> 
 					<input type="text" id="rfilename" name="rfilename" aria-describedby="rfileext-hint">
 					<span id="rfileext-hint" class="control-label">.xlsx</span>
-					</div>
+				</div>
 			</div>
 		</div>
         <p id="warning-msg" hidden></p>
@@ -323,7 +323,9 @@
 </script>
 
 <script type="text/javascript">
-  $(document).ready(function () { $('#comparepage').addClass('linkactive'); });
+$(document).ready(function () {
+	$("#comparepage").addClass('linkactive');
+});
 </script>
 
 {% endblock %}
