@@ -74,30 +74,28 @@
 </div>
 <div class="panel-body">
 <form id="compareform" enctype="multipart/form-data" class="form-horizontal" method="post" aria-label="Compare SPDX documents">
-      {% csrf_token %}
-      <div id="drop-area" class="container" role="region" aria-label="File upload area">
-        <p id="drop-instructions">Upload two or more SPDX documents using the button or by dragging and dropping onto the dashed region</p>
-        <input type="file" id="file" onchange="handleFiles(this.files)" aria-label="Add SPDX document" aria-describedby="drop-instructions">
-        <label class="button" for="file">Add file</label>
-        &nbsp;
-        <button type="button" class="button reset" id="resetbutton" aria-label="Remove all selected files">Remove all</button>
-        <p id="file-list-empty" class="file-list-empty" aria-live="polite">No file selected</p>
-        <ol id="file-list" class="file-list" aria-label="Selected files" aria-live="polite"></ol>
-      </div>
-      <br>
-      <div class="form-narrow">
-        <div class="form-group">
-          <label for="rfilename" class="control-label col-sm-5">Result file name</label>
-          <div class="col-sm-7">
-            <input type="text" id="rfilename" name="rfilename" aria-describedby="rfileext-hint">
-            <span id="rfileext-hint" class="control-label">.xlsx</span>
-          </div>
-        </div>
-      </div>
-      <hr>
-      <p id="warning-msg" hidden></p>
-      <button class="btn btn-md btn-info btn-submit-center" type="submit" id="comparebutton" name="compare">Compare</button>
-    </form>
+		{% csrf_token %}
+		<div id="drop-area" class="container" role="region" aria-label="File upload area">
+      <p id="drop-instructions">Upload two or more SPDX documents using the button or by dragging and dropping onto the dashed region</p>
+      <input type="file" id="file" onchange="handleFiles(this.files)" aria-label="Add SPDX document" aria-describedby="drop-instructions" style="display:none">
+			<button type="button" class="button" id="addfilebutton" onclick="document.getElementById('file').click()">Add file</button>
+			<button type="button" class="button reset" id="resetbutton" aria-label="Remove all selected files">Remove all</button>
+      <p id="file-list-empty" class="file-list-empty" aria-live="polite">No file selected</p>
+      <ol id="file-list" class="file-list" aria-label="Selected files" aria-live="polite"></ol>
+		</div>
+		<br>
+		<div class="form-narrow">
+			<div class="form-group">
+				<label for="rfilename" class="control-label col-sm-5">Result file name</label>
+				<div class="col-sm-7">
+					<input type="text" id="rfilename" name="rfilename" aria-describedby="rfileext-hint">
+					<span id="rfileext-hint" class="control-label">.xlsx</span>
+					</div>
+			</div>
+		</div>
+        <p id="warning-msg" hidden></p>
+		<button class="btn btn-md btn-info btn-submit-center" type="submit" id="comparebutton" name="compare">Compare</button>
+</form>
 
     <section id="result-section" class="result-section" role="region" aria-label="Comparison result" tabindex="-1" hidden>
       <div id="result-header" class="result-header">
@@ -114,6 +112,7 @@
 {% block script_block %}
 
 <script type="text/javascript">
+  /* Javascript to handel drag and drop */
   var dropArea = document.getElementById('drop-area');
   var selected_files = [];
   var filenameUserEdited = false;
@@ -250,7 +249,7 @@
 </script>
 
 <script type="text/javascript">
-  $('#compareform').on('submit', function (event) {
+  $('#compareform').on('submit', function(event){
     event.preventDefault();
     var check = checkform();
     if (check === '1') {
