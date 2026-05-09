@@ -59,18 +59,18 @@ Following are the steps for updating the images:
   - replace `<aws-account-id>` with the AWS account ID
   - replace `<aws-region>` with the AWS region
   - replace `<version>` with the specific version of the spdx-online-tools-build to be deployed
-- Build the image by running `docker-compose -f docker-compose.prod.yml build`
+- Build the image by running `docker compose -f docker-compose.prod.yml build`
 - Test the image for vulnerability by running `docker scan [image]` where `[image]` is the image name from the docker-compose.prod.yml file
   - Update any dependencies as needed based on the vulnerability report
 - Deploy the images on EC2
   - Clone or update this repo on the EC2 instance - a convenient way to copy of the docker-compose files
   - Build the image on the deployment machine with the "no-cache" option:
-    - execute `docker-compose -f docker-compose.prod.yml build --no-cache`
+    - execute `docker compose -f docker-compose.prod.yml build --no-cache`
   - Login to ECR using the AWS CLI by running
     `aws ecr get-login-password --region <aws-region> | docker login --username AWS --password-stdin <aws-account-id>.dkr.ecr.<aws-region>.amazonaws.com`
     replacing the region and account ID
-  - Push the images by running `docker-compose -f docker-compose.prod.yml push`
-  - Launch the containers with the command `docker-compose -f docker-compose.prod.yml up -d`
+  - Push the images by running `docker compose -f docker-compose.prod.yml push`
+  - Launch the containers with the command `docker compose -f docker-compose.prod.yml up -d`
   - Ensure host cron is installed (see "Daily media cleanup schedule").
 
 ## Clean Initial Install
@@ -80,10 +80,8 @@ Following are the steps for a clean initial installation of the application:
 - Launch an AWS EC2 instance
   - Recommend Ubuntu Server 22.04.2 LTS (HVM)
   - Recommend T3 large
-- Login to the instance and install Docker, Docker-Compose, and AWS CLI
+- Login to the instance and install Docker, and AWS CLI
   - See Docker [Installation for Ubuntu](https://docs.docker.com/engine/install/ubuntu/)
-  - Download docker-compose: `sudo curl -L "https://github.com/docker/compose/releases/download/1.26.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose`
-  - Set execution permissions for docker-compose: `sudo chmod +x /usr/local/bin/docker-compose`
   - Install AWS CLI - see the [Installing AWS CLI on Linux documentation](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2-linux.html)
   - Add the logged-in user to the docker group following the [fixing docker permissions documentation](https://www.digitalocean.com/community/questions/how-to-fix-docker-got-permission-denied-while-trying-to-connect-to-the-docker-daemon-socket)
   - Configure the AWS CLI for access to AWS with permissions to use ECR
@@ -98,7 +96,7 @@ Following are the steps for a clean initial installation of the application:
   - replace `<aws-account-id>` with the AWS account ID
   - replace `<aws-region>` with the AWS region
   - replace `<version>` with the specific version of the spdx-online-tools-build to be deployed
-- Build the image by running `docker-compose -f docker-compose.prod.yml build`
+- Build the image by running `docker compose -f docker-compose.prod.yml build`
 - Test the image for vulnerability by running `docker scan [image]` where `[image]` is the image name from the docker-compose.prod.yml file
   - Update any dependencies as needed based on the vulnerability report
 - Setup the SSL Certificates
@@ -107,11 +105,11 @@ Following are the steps for a clean initial installation of the application:
 - Deploy the images on EC2
   - Clone or update this repo on the EC2 instance - a convenient way to copy of the docker-compose files
   - Build the image on the deployment machine:
-    - execute `docker-compose -f docker-compose.prod.yml build`
+    - execute `docker compose -f docker-compose.prod.yml build`
   - Login to ECR using the AWS CLI by running
     `aws ecr get-login-password --region <aws-region> | docker login --username AWS --password-stdin <aws-account-id>.dkr.ecr.<aws-region>.amazonaws.com`
     replacing the region and account ID
-  - Push the images by running `docker-compose -f docker-compose.prod.yml push`
+  - Push the images by running `docker compose -f docker-compose.prod.yml push`
   - Create the spdx-prod.env file:
 
     ```bash
@@ -132,7 +130,7 @@ Following are the steps for a clean initial installation of the application:
     SQL_PORT=5432
     ```
 
-- Launch the containers with the command `docker-compose -f docker-compose.prod.yml up -d`
+- Launch the containers with the command `docker compose -f docker-compose.prod.yml up -d`
   - Ensure host cron is installed (see "Daily media cleanup schedule").
 
 ## Credits
