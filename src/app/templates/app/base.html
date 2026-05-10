@@ -1,193 +1,574 @@
 <!DOCTYPE html>
 {% load static %}
-<html lang="en">
+<html lang="en" style="scrollbar-gutter: stable;">
   <head>
     <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="An easy all-in-one portal to upload and parse SPDX documents for validation, conformance check, comparison, conversion and SPDX License List search.">
+    <meta name="description" content="Validate, convert, compare, and edit SPDX documents. Identify an SPDX License ID from license text and submit new entries to the SPDX License List.">
     <meta name="keywords" content="SPDX, SBOM, validation, conformance, license, licence, compare, convert, SPDX License List, open source, free software, online tools, software bill of materials, supply chain security, NTIA, CISA, compliance">
     <meta name="author" content="SPDX">
     <link rel="icon" type="image/png" href="{% static 'img/spdx-icon.png' %}">
-    <link rel="icon" type="image/x-icon" href="{% static 'img/favicon.ico' %}">
-    <link rel="shortcut icon" type="image/x-icon" href="{% static 'img/favicon.ico' %}">
-    <title >SPDX Online Tools {% block title %}{% endblock %}</title>
-    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet" type="text/css">
-    <link href="{% static 'css/starter-template.css' %}" rel="stylesheet" type="text/css">
+    <link rel="icon" href="{% static 'img/favicon.ico' %}">
+    <title>SPDX Online Tools {% block title %}{% endblock %}</title>
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/starter-template.css' %}" rel="stylesheet">
     {% block head_block %}{% endblock %}
-	</head>
 <style>
+/* ── Navbar ──────────────────────────────────────────────── */
 .navbar-inverse {
     background-color: #0097c4;
-    border-color: #0097c4;
+    border: none;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.18);
+    min-height: 48px;
 }
-.navbar-inverse .navbar-nav > li > a:hover, .navbar-inverse .navbar-nav > li > a:focus {
-    color: #fff;
-    background-color: transparent;
-    border-bottom: 3px solid;
+.navbar-brand {
+    display: flex !important;
+    align-items: center;
+    padding: 8px 12px;
+    height: 48px;
+    color: #fff !important;
 }
+.navbar-brand img { display: block; }
+.brand-sep {
+    display: inline-block;
+    width: 1px;
+    height: 16px;
+    background: rgba(255,255,255,0.38);
+    margin: 0 9px;
+    flex-shrink: 0;
+}
+.brand-title {
+    font-size: 0.86em;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    opacity: 0.88;
+    white-space: nowrap;
+}
+.navbar-inverse .navbar-brand:hover,
+.navbar-inverse .navbar-brand:focus { background: transparent; }
+
 .navbar-inverse .navbar-nav > li > a {
+    color: rgba(255,255,255,0.90);
+    font-size: 14px;
+    padding: 14px 9px;
+    border-radius: 3px;
+    transition: background 0.1s, color 0.1s;
+}
+.navbar-inverse .navbar-nav > li > a:hover,
+.navbar-inverse .navbar-nav > li > a:focus {
     color: #fff;
+    background: rgba(255,255,255,0.12);
 }
-.navbar-inverse .navbar-brand:hover, .navbar-inverse .navbar-brand:focus {
-    color: black;
-    background-color: transparent;
-}
-.navbar-inverse .navbar-brand {
+.navbar-inverse .navbar-nav .linkactive > a,
+.navbar-inverse .navbar-nav > li > a.linkactive {
     color: #fff;
+    background: rgba(0,0,0,0.14);
+    font-weight: 600;
 }
-.navbar-inverse .navbar-nav .linkactive {
-    color: black;
-    background-color: transparent;
-    border-bottom: 3px solid;
+
+/* category separators */
+.nav-sep { padding: 0 !important; pointer-events: none; }
+.nav-sep > span {
+    display: block;
+    width: 1px;
+    height: 18px;
+    background: rgba(255,255,255,0.28);
+    margin: 15px 5px;
 }
-.panel-default > .panel-heading {
-    color: #333;
-    background-color: #f5f5f5;
-    border-color: #0097c4;
+
+/* category labels */
+.nav-cat {
+    padding: 15px 1px 13px 7px !important;
+    pointer-events: none;
+    user-select: none;
+    white-space: nowrap;
+    font-size: 10px !important;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.10em;
+    color: rgba(255,255,255,0.72);
+    line-height: 1;
 }
-.panel-default {
-    border-color: #0097c4;
+
+@media (max-width: 767px) {
+    .nav-sep {
+        display: block !important;
+        height: 0 !important;
+        padding: 0 !important;
+        margin: 4px 0 !important;
+        border-top: 1px solid rgba(255,255,255,0.15);
+    }
+    .nav-sep > span { display: none; }
+    .nav-cat {
+        display: block;
+        padding: 8px 16px 2px !important;
+        font-size: 10px;
+    }
+    .navbar-inverse .navbar-nav > li > a {
+        padding: 12px 16px;
+        border-radius: 0;
+    }
+    /* login button looks like a plain nav item inside collapsed menu */
+    .nav-login > a {
+        margin: 0 !important;
+        padding: 12px 16px !important;
+        border: none !important;
+        border-radius: 0 !important;
+        display: block !important;
+        line-height: inherit !important;
+    }
+    .nav-login > a:hover,
+    .nav-login > a:focus {
+        background: rgba(255,255,255,0.12) !important;
+        border: none !important;
+    }
+    /* reduce top gap on inner pages */
+    .starter-template { padding-top: 14px; }
+    /* collapsed dropdown items: white text to match nav links */
+    .navbar-collapse .dropdown-menu > li > a {
+        color: rgba(255,255,255,0.88) !important;
+        padding: 8px 16px 8px 28px;
+    }
+    .navbar-collapse .dropdown-menu > li > a:hover,
+    .navbar-collapse .dropdown-menu > li > a:focus {
+        color: #fff !important;
+        background: rgba(255,255,255,0.12) !important;
+    }
 }
-.green-modal {
-    background-color: #04dd2f;
+/* on very small screens, hide "Online Tools" text to save brand space */
+@media (max-width: 380px) {
+    .brand-sep,
+    .brand-title { display: none !important; }
 }
-.red-modal{
-    background-color: #ea2300;
+
+/* login / user account button */
+.nav-login > a {
+    display: inline-block;
+    margin: 9px 4px 9px 8px !important;
+    padding: 4px 12px !important;
+    border: 1px solid rgba(255,255,255,0.48) !important;
+    border-radius: 4px !important;
+    line-height: 1.6 !important;
+    font-size: 14px !important;
 }
-.yellow-modal{
-    background-color: #ffcc00;
+.nav-login > a:hover,
+.nav-login > a:focus {
+    background: rgba(255,255,255,0.13) !important;
+    border-color: rgba(255,255,255,0.80) !important;
 }
+
+/* dropdowns — desktop floating menu */
 .dropdown-menu {
-    font-size: 18px;
+    font-size: 13px;
+    border-radius: 4px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.14);
 }
-.dropdown-menu > li > a {
-    color: #0097C4;
+.dropdown-menu > li > a { color: #0097c4; }
+.dropdown-menu > li > a:hover,
+.dropdown-menu > li > a:focus {
+    background-color: #e6f5fb;
+    color: #005f7d;
 }
-.left-align {
-  text-align: left;
+
+/* ── Content / shared components ─────────────────────────── */
+
+/* panels → card */
+.panel {
+    border: none;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+    margin-bottom: 24px;
 }
-tbody tr {
-  cursor: pointer;
+.panel-default { border: none; }
+.panel-default > .panel-heading {
+    background: #f7f9fa;
+    border-bottom: 3px solid #0097c4;
+    border-radius: 8px 8px 0 0;
+    padding: 14px 20px;
+    color: #1a1a1a;
 }
-th {
-  text-align: center;
+.panel-title,
+.panel-heading .lead,
+.panel-heading p.lead {
+    margin: 0;
+    font-size: 1.05em;
+    font-weight: 700;
+    color: #1a1a1a;
+    text-align: left;
+    line-height: 1.3;
 }
-tbody tr:hover {
-  background-color: #ddd!important;
+.panel-body { padding: 20px 24px; }
+
+/* form controls */
+/* cross-browser form normalisation — Safari applies native OS styles unless reset */
+select,
+input[type="text"],
+input[type="email"],
+input[type="password"],
+textarea,
+button {
+    -webkit-appearance: none;
+    appearance: none;
+    font-family: inherit;
+    box-sizing: border-box;
 }
-tbody tr:hover > .sorting_1 {
-  background-color: #ddd!important;
+
+select,
+input[type="text"],
+input[type="email"],
+input[type="password"] {
+    border: 1px solid #c8d0d4;
+    border-radius: 5px;
+    padding: 6px 10px;
+    font-size: 14px;
+    transition: border-color 0.15s, box-shadow 0.15s;
+    outline: none;
+    background: #fff;
+    color: #333;
+    height: auto;
 }
-.ui-autocomplete {
-  background: white;
+/* custom dropdown arrow so select looks consistent cross-browser */
+select {
+    background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23666'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    padding-right: 30px;
 }
-.ui-menu .ui-menu-item{
-  border-radius: 0px;
-  border: 1px solid #dcdcdc;
+textarea {
+    border: 1px solid #c8d0d4;
+    border-radius: 5px;
+    padding: 8px 10px;
+    font-size: 14px;
+    transition: border-color 0.15s, box-shadow 0.15s;
+    outline: none;
+    background: #fff;
+    color: #333;
+    resize: vertical;
 }
-.ui-state-active {
-  background-color: gray;
-  font-weight: bold;
-  color:white;
+select:focus,
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus,
+textarea:focus {
+    border-color: #0097c4;
+    box-shadow: 0 0 0 3px rgba(0,151,196,0.18);
 }
-.licenseField {
-  float: left;
-  margin-top: 1.5em;
+label.control-label { font-weight: 600; color: #444; font-size: 0.92em; }
+
+/* skip-to-main link for keyboard users */
+.skip-link {
+    position: absolute;
+    top: -100px;
+    left: 0;
+    z-index: 9999;
+    padding: 8px 18px;
+    background: #0097c4;
+    color: #fff !important;
+    font-weight: 700;
+    font-size: 16px !important;
+    text-decoration: none;
+    border-radius: 0 0 4px 0;
+    transition: top 0.1s;
 }
-.fieldName {
-  font-size: 1.4em;
-  color: #3197c4;
+.skip-link:focus {
+    top: 0;
+    outline: 3px solid #fff;
+    outline-offset: 2px;
+    color: #fff !important;
 }
-div p {
-  text-align: left;
+
+/* buttons */
+.btn { border-radius: 5px; font-weight: 600; transition: background 0.12s, box-shadow 0.12s; }
+.btn:focus,
+.btn:active:focus { outline: 3px solid rgba(0,151,196,0.85); outline-offset: 2px; }
+/* WCAG AA contrast overrides — all ratios verified ≥ 4.5:1 */
+/* btn-success: white on #2e7d32 ≈ 5.1:1 ✓  (Bootstrap default #5cb85c ≈ 2.5:1 ✗) */
+.btn-success { background-color: #2e7d32; border-color: #2e7d32; color: #fff; }
+.btn-success:hover,
+.btn-success:focus { background-color: #1b5e20; border-color: #1b5e20; color: #fff; }
+/* btn-primary: white on #2a6496 ≈ 5.1:1 ✓  (Bootstrap default #337ab7 ≈ 4.6:1, barely) */
+.btn-primary { background-color: #2a6496; border-color: #2a6496; color: #fff; }
+.btn-primary:hover,
+.btn-primary:focus { background-color: #1e4d73; border-color: #1e4d73; color: #fff; }
+/* btn-warning: white on #c04000 ≈ 5.3:1 ✓  (Bootstrap default #f0ad4e ≈ 1.9:1 ✗) */
+/* #c04000 is the brightest achievable orange where white text passes WCAG AA;         */
+/* adding more green shifts toward yellow and blows past the luminance ceiling.        */
+.btn-warning { background-color: #c04000; border-color: #c04000; color: #fff; }
+.btn-warning:hover,
+.btn-warning:focus { background-color: #963200; border-color: #963200; color: #fff; }
+/* btn-info: white on #007aa0 ≈ 4.9:1 ✓  (white on #0097c4 ≈ 3.4:1 ✗) */
+.btn-info { background-color: #007aa0; border: none; padding: 8px 20px; color: #fff; }
+.btn-info:hover,
+.btn-info:focus { background-color: #005f7d; color: #fff; }
+.btn-default { padding: 7px 16px; }
+.btn-default:focus { outline: 3px solid rgba(0,0,0,0.18); outline-offset: 2px; }
+
+/* modal */
+.modal-dialog { max-width: 860px; margin: 40px auto; }
+.modal-header { padding: 14px 20px; border-radius: 4px 4px 0 0; }
+.modal-footer { padding: 12px 20px; border-top: 1px solid #e9ecef; }
+.green-modal  { background: #2e7d32; }
+.red-modal    { background: #c62828; }
+.yellow-modal { background: #e65100; }
+.green-modal .modal-title,
+.red-modal   .modal-title,
+.yellow-modal .modal-title { color: #fff; }
+.green-modal .close,
+.red-modal   .close,
+.yellow-modal .close { color: #fff; opacity: 0.8; }
+
+/* alerts */
+.alert { border-radius: 6px; border: none; }
+.alert-danger  { background: #fff5f5; color: #8b1a1a; border-left: 4px solid #dc2626; }
+.alert-success { background: #f0faf0; color: #1a5c1a; border-left: 4px solid #2e7d32; }
+
+/* accessible focus for links */
+a:focus { outline: 2px solid #0097c4; outline-offset: 2px; border-radius: 2px; }
+
+/* utilities */
+.messages    { margin-bottom: 8px; }
+.messages:empty { margin-bottom: 0; }
+.error-log-lead { font-weight: bold; color: #c62828; margin-bottom: 5px; }
+.error-log   { font-size: 13px !important; text-align: left; white-space: pre-wrap; background: #fdfdfd; border: 1px solid #eee; padding: 8px; border-radius: 4px; color: #444; }
+.btn-space   { margin-right: 1em; }
+
+/* DataTables search field overrides */
+.dataTables_filter { margin-bottom: 15px; }
+.dataTables_filter input {
+  padding: 6px 12px !important;
+  border: 1px solid #c8d0d4 !important;
+  border-radius: 4px !important;
+  outline: none !important;
+  font-size: 16px !important;
+  margin-left: 8px !important;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  background: #fff;
+  height: auto;
 }
-.lead {
-  text-align: center;
+.dataTables_filter input:focus {
+  border-color: #0097c4 !important;
+  box-shadow: 0 0 0 3px rgba(0, 151, 196, 0.15);
 }
-.btn-info {
-  background-color: #3197c4;
+
+/* Custom widgets */
+.add-another {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: 600;
+  color: #0097c4;
+  text-decoration: none;
+  margin-left: 10px;
+}
+.add-another:hover { text-decoration: underline; color: #007aa0; }
+.add-another img { vertical-align: middle; }
+
+/* AJAX loader centering */
+.ajax-loader {
+  display: block;
+  margin: 20px auto;
+  width: 32px;
+  height: 32px;
+}
+
+/* tables */
+tbody tr  { cursor: pointer; }
+th        { text-align: center; }
+tbody tr:hover              { background-color: #e8f4f8 !important; }
+tbody tr:hover > .sorting_1 { background-color: #e8f4f8 !important; }
+
+/* jQuery UI autocomplete */
+.ui-autocomplete { background: white; box-shadow: 0 3px 10px rgba(0,0,0,0.12); border-radius: 4px; }
+.ui-menu .ui-menu-item { border-radius: 0; border: 1px solid #e0e0e0; }
+.ui-state-active { background-color: #0097c4; font-weight: 600; color: white; }
+
+/* license tools */
+.licenseField { float: left; margin-top: 1.5em; }
+.fieldName    { font-size: 1.4em; color: #0097c4; }
+
+/* ── Inline result section (replaces modal for tool pages) ── */
+.result-section {
+  margin-top: 24px;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.10);
+  scroll-margin-top: 80px;
+}
+.result-section.result-success { border-left: 5px solid #2e7d32; }
+.result-section.result-error   { border-left: 5px solid #c62828; }
+.result-section.result-warning { border-left: 5px solid #e65100; }
+.result-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 20px;
+}
+.result-header.result-success { background: #2e7d32; }
+.result-header.result-error   { background: #c62828; }
+.result-header.result-warning { background: #e65100; }
+.result-title {
+  color: #fff;
+  margin: 0;
+  font-size: 1.1em !important;
+  font-weight: 700;
+}
+.result-close {
+  background: none;
   border: none;
+  color: #fff;
+  font-size: 1.4em;
+  cursor: pointer;
+  padding: 0 4px;
+  opacity: 0.85;
+  line-height: 1;
 }
-.btn-info:hover {
-  background-color: RoyalBlue;
+.result-close:hover { opacity: 1; }
+.result-close:focus { outline: 2px solid rgba(255,255,255,0.7); outline-offset: 2px; border-radius: 2px; }
+.result-body {
+  padding: 20px 24px;
+  background: #fff;
+  font-size: 16px !important; /* explicit px — WCAG 2.2 AA minimum; Bootstrap 3 base is 14px */
+  line-height: 1.6;
 }
-.btn-space {
-  margin-right: 1em;
+/* !important here so child-template inline <style> blocks can't override with 1rem/0.88em */
+.result-body p,
+.result-body li,
+.result-body td,
+.result-body th { font-size: 16px !important; }
+.result-body small,
+.result-body .small { font-size: 14px !important; }
+/* Bootstrap 3 applies margin-left/right: -15px to .form-horizontal .form-group;
+   neutralise so form controls don't bleed past panel-body padding */
+.form-horizontal .form-group { margin-left: 0; margin-right: 0; }
+/* shared narrow-form layout used on tool pages to match the drop-area width */
+.form-narrow {
+  max-width: 600px;
+  margin: 0 auto 16px;
 }
-.error-log {
-  font-size: 0.6em;
-  text-align: left;
-  white-space: pre-wrap;
+/* ── Common Utilities ───────────────────────────────────── */
+body {
+    font-size: 16px !important;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+/* Ensure all text-bearing elements have a minimum of 16px */
+p, li, a, label, input, select, textarea, button, h1, h2, h3, h4, h5, h6, .control-label {
+    font-size: 16px !important;
+}
+
+/* Headings should be proportionally larger but clearly 16px+ */
+h1 { font-size: 2.2em !important; }
+h2 { font-size: 1.8em !important; }
+h3 { font-size: 1.5em !important; }
+h4 { font-size: 1.2em !important; }
+
+/* Auto-center form submit buttons inside tool panels without requiring an extra class */
+.panel-body .btn[type="submit"]:not(.btn-block) {
+    display: block;
+    width: -webkit-fit-content;
+    width: -moz-fit-content;
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 1.5em;
+    margin-bottom: 0.5em;
+    float: none;
+    clear: both;
+}
+
+.nav-tabs > li > a:focus:not(:focus-visible) {
+  outline: none;
+  box-shadow: none;
+}
+
+.btn-submit-center {
+    display: block !important;
+    width: -webkit-fit-content !important;
+    width: -moz-fit-content !important;
+    width: fit-content !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    margin-top: 1.5em !important;
+    margin-bottom: 0.5em !important;
+    font-size: 16px !important;
+    float: none !important;
+    clear: both !important;
+    text-align: center !important;
 }
 </style>
+  </head>
   <body>
 
-    <nav class="navbar navbar-inverse navbar-fixed-top">
-      <div class="navbar-header">
-        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-          <span class="sr-only">Toggle navigation</span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-        </button>
-        <a class="navbar-brand navbar-left" id="indexpage" href="/app/">SPDX Online Tools</a>
-      </div>
-      <div id="navbar" class="collapse navbar-collapse" >
-        <ul class="nav navbar-nav" style="font-size: 12px;">
-            <li><a href="/app/about/" id="aboutpage">About</a></li>
-            <li><a href="/app/validate/" id="validatepage">Validate</a></li>
-            <li><a href="/app/compare/" id="comparepage">Compare</a></li>
-            <li><a href="/app/convert/" id="convertpage">Convert</a></li>
-            <li><a href="/app/check_license/" id="checklicensepage">License Check</a></li>
-            <!-- <li><a href="/app/diff/" id="licensediffpage">License Diff</a></li> -->
-            <li><a href="/app/xml_upload/" id="license-xml-editor">License XML Editor</a></li>
-            <li><a href="/app/ntia_checker/" id="checkerpage">Conformance Checker</a></li>
-            <li><a href="/app/dots/" id="dots">Visual Editor</a></li>
-            <li>
-              <a class="dropdown-toggle" data-toggle="dropdown" href="#" id="licenserequest">License Requests
-                <span class="caret"></span>
-              </a>
-              <ul class="dropdown-menu" style="font-size: 12px;">
-                <li><a href="/app/submit_new_license/" id="submitnewlicensepage">Submit New License</a></li>
-                <li><a href="/app/license_requests/" id="licenserequestspage">License Requests</a></li>
-                <li><a href="/app/archive_requests/" id="archiverequestspage">Archive Requests</a></li>
-              </ul>
-            </li>
-            <!-- Remove the namespace menu until we decide on the specific functionality
-			<li>
-              <a class="dropdown-toggle" data-toggle="dropdown" href="#" id="licensenamespace">License namespaces
-                <span class="caret"></span>
-              </a>
-              <ul class="dropdown-menu" style="font-size: 12px;">
-                <li><a href="/app/submit_new_license_namespace/" id="submitnewlicensenamespacepage">Submit namespace</a></li>
-                <li><a href="/app/license_namespace_requests/" id="licensenamespacerequests">License namespaces</a></li>
-                <li><a href="/app/archive_namespace_requests/" id="archivenamespacerequestspage">Archived namespaces</a></li>
-              </ul>
-            </li> 
-			-->
-		  </ul>
-		  <ul class="nav navbar-nav navbar-right" style="margin-right: 25px;font-size: 12px;">
-        <div class="navbar-left" style="margin-top: 14px; ">
-          <a href="https://spdx.dev/" id="spdxhome" target="_blank">
-            <img class="starting-logo dark-version skip-lazy" width="80" height="20" alt="Software Package Data Exchange (SPDX)" src="{% static 'img/spdx-white.svg' %}">
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
+    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation" aria-label="Main navigation">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/app/" id="indexpage">
+            <img src="{% static 'img/spdx-white.svg' %}" width="62" height="16" alt="SPDX">
+            <span class="brand-sep" aria-hidden="true"></span>
+            <span class="brand-title">Online Tools</span>
           </a>
         </div>
-        {% if user.is_authenticated %}
-        <!--<li><a href="/app/profile/" id="profilepage">Profile</a></li>-->
-        <li><a class="dropdown-toggle" data-toggle="dropdown" href="#">{{user}} <span class="caret"></span></a>
-          <ul class="dropdown-menu">
-            <li><a href="/app/logout/"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
-          </ul>
-        </li>
-        {% else %}
-        <li><a href="/app/login/" id="loginpage"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
-        {% endif %}
-      </ul>
-    </div><!--/.nav-collapse -->
-  </nav>
 
-  <div class="container body1">
+        <div id="navbar" class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <!-- Home -->
+            <li><a href="/app/" id="homepage" title="Home" aria-label="Home"><span class="glyphicon glyphicon-home"></span></a></li>
+            <li class="nav-sep" role="separator" aria-hidden="true"><span></span></li>
+            <!-- SBOM tools -->
+            <li class="nav-cat" aria-hidden="true">SBOM</li>
+            <li><a href="/app/validate/"     id="validatepage">Validate</a></li>
+            <li><a href="/app/convert/"      id="convertpage">Convert</a></li>
+            <li><a href="/app/compare/"      id="comparepage">Compare</a></li>
+            <li><a href="/app/ntia_checker/" id="checkerpage">Conformance</a></li>
+            <li><a href="/app/dots/"         id="dots">Edit</a></li>
+            <li class="nav-sep" role="separator" aria-hidden="true"><span></span></li>
+            <!-- License tools -->
+            <li class="nav-cat" aria-hidden="true">License</li>
+            <li><a href="/app/check_license/" id="checklicensepage">Check</a></li>
+            <li><a href="/app/xml_upload/"    id="license-xml-editor">Edit</a></li>
+            <li class="dropdown">
+              <a class="dropdown-toggle" data-toggle="dropdown" href="#" id="licenserequest" role="button" aria-haspopup="true" aria-expanded="false">
+                Request <span class="caret"></span>
+              </a>
+              <ul class="dropdown-menu">
+                <li><a href="/app/submit_new_license/" id="submitnewlicensepage">Submit New License</a></li>
+                <li><a href="/app/license_requests/"   id="licenserequestspage">Request List</a></li>
+                <li><a href="/app/archive_requests/"   id="archiverequestspage">Request Archive</a></li>
+              </ul>
+            </li>
+            <li class="nav-sep" role="separator" aria-hidden="true"><span></span></li>
+            <!-- About -->
+            <li><a href="/app/about/" id="aboutpage">About</a></li>
+            <li class="nav-sep" role="separator" aria-hidden="true"><span></span></li>
+            <!-- Account -->
+            {% if user.is_authenticated %}
+            <li class="dropdown">
+              <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                {{user}} <span class="caret"></span>
+              </a>
+              <ul class="dropdown-menu">
+                <li><a href="/app/logout/"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+              </ul>
+            </li>
+            {% else %}
+            <li class="nav-login">
+              <a href="/app/login/" id="loginpage"><span class="glyphicon glyphicon-log-in"></span> Login</a>
+            </li>
+            {% endif %}
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+  <div class="container body1" id="main-content" tabindex="-1">
 
       <div class="starter-template">
         {% block body1 %}{% endblock %}
@@ -203,6 +584,31 @@ div p {
     <script src="{% static 'js/bootstrap.min.js' %}"></script>
     <script src="{% static 'js/warning.js' %}"></script>
     <script type="text/javascript">
+    /* Shared helpers for inline result sections on tool pages */
+    function showResult(type, title, bodyHtml) {
+      var section = document.getElementById('result-section');
+      if (!section) return;
+      var header  = document.getElementById('result-header');
+      var titleEl = document.getElementById('result-title');
+      var bodyEl  = document.getElementById('result-body');
+      section.classList.remove('result-success', 'result-error', 'result-warning');
+      section.classList.add('result-' + type);
+      if (header) {
+        header.classList.remove('result-success', 'result-error', 'result-warning');
+        header.classList.add('result-' + type);
+      }
+      if (titleEl) titleEl.textContent = title;
+      if (bodyEl)  bodyEl.innerHTML = bodyHtml;
+      section.removeAttribute('hidden');
+      section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      section.focus();
+    }
+    function hideResult() {
+      var section = document.getElementById('result-section');
+      if (section) section.setAttribute('hidden', '');
+    }
+    </script>
+    <script type="text/javascript">
       // Shift content down if the navbar gets taller,
       // so the navbar doesn't cover the content.
       // This workaround will work for desktop-size screen which is our main target.
@@ -212,6 +618,9 @@ div p {
           const navHeight = $('.navbar-fixed-top').height();
           const newPadding = navHeight + 10; // Add 10px for extra space
           $('body').css('padding-top', newPadding + 'px');
+          // Expose navbar height as CSS custom property so fullscreen overlays
+          // (e.g. CodeMirror fullscreen) can stay below the navbar on any screen width.
+          document.documentElement.style.setProperty('--navbar-height', navHeight + 'px');
           var $dotsIframe = $('#dots-iframe');
           if ($dotsIframe.length) {
             $dotsIframe.css('height', 'calc(100vh - ' + newPadding + 'px)');

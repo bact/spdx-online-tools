@@ -4,14 +4,9 @@
 {% block head_block %}
     <link href="{% static 'css/editor/editor.css' %}" rel="stylesheet" type="text/css">
     <link href="{% static 'css/editor/diffview.css' %}" rel="stylesheet" type="text/css">
-    <style>
-      .body1 {
-        display: none;
-      }
-    </style>
 {% endblock %}
 
-{% block body2 %}
+{% block body1 %}
 {% include "app/modal.html" %}
 <form style="display:none" id="form">
   {% csrf_token %}
@@ -51,13 +46,11 @@
           
           <textarea class="form-control" rows="5" id="prBody" name="prBody" style="resize:none; width:200px;"></textarea>
       </div><br>
-      </textarea>
   </form>
 </div>
 {% else %}
 <p id="githubLogin" hidden>False</p>
 {% endif %}
-</div>
 <div class="panel panel-default">
 <div class="panel-heading">
   <p class="lead">Submit a new license to the SPDX License List</p>
@@ -171,11 +164,10 @@ Once you have submitted a license, please follow the <a href="https://github.com
 
     <hr>
 		<input type="hidden" id="cfileformat" name="submit" value="">
-		<button class=" btn btn-md btn-info" id="submitbutton" type="submit" >Submit</button>
+		<button class=" btn btn-md btn-info btn-submit-center" id="submitbutton" type="submit" >Submit</button>
 </form>
 </div>
 </div>
-{% include "app/modal.html" %}
 {% endblock %}
 
 {% block script_block %}
@@ -406,7 +398,7 @@ function scrollUpAndHighlight(element) {
                   else if(matchType == "Close match"){
                     var inputLicenseText = data.inputLicenseText.replace(/\r\n/g,'\n');
                     var originalLicenseText = data.originalLicenseText;
-                    var matchingGuidelinesUrl = 'https://spdx.github.io/spdx-spec/v2.3/license-matching-guidelines-and-templates/'
+                    var matchingGuidelinesUrl = 'https://spdx.github.io/spdx-spec/latest/annexes/license-matching-guidelines-and-templates/'
                     var message = `Close match found.<br />The license closely matches with the license ID(s): <strong>${matchIds}</strong> based on the SPDX matching guidelines. Press show differences to continue.`
                     LicenseData.data = data;
                     if (!LicenseData.data.matchIds) {

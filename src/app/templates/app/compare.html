@@ -3,44 +3,113 @@
 
 {% block head_block %}
   <link href="{% static 'css/dragdrop.css' %}" rel="stylesheet" type="text/css">
+<style>
+  .file-list {
+    list-style: none;
+    padding: 0;
+    margin: 8px 0 0;
+  }
+
+  .file-list-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 5px 0;
+    border-bottom: 1px solid #f0f0f0;
+  }
+
+  .file-list-item:last-child {
+    border-bottom: none;
+  }
+
+  .file-list-num {
+    flex-shrink: 0;
+    min-width: 1.8em;
+    color: #666;
+    font-size: 14px;
+    text-align: right;
+  }
+
+  .file-list-name {
+    flex: 1;
+    word-break: break-all;
+    font-size: 14px;
+    text-align: left;
+  }
+
+  .file-remove-btn {
+    flex-shrink: 0;
+    background: none;
+    border: 1px solid #c0392b;
+    border-radius: 4px;
+    color: #c0392b;
+    padding: 2px 7px;
+    font-size: 12px;
+    cursor: pointer;
+    line-height: 1.6;
+    transition: background 0.12s, color 0.12s;
+  }
+
+  .file-remove-btn:hover {
+    background: #c0392b;
+    color: #fff;
+  }
+  .file-remove-btn:focus {
+    background: #c0392b;
+    color: #fff;
+    outline: 2px solid #8b0000;
+    outline-offset: 2px;
+  }
+
+  .file-list-empty {
+    color: #888;
+    font-size: 14px;
+    margin: 6px 0 0;
+  }
+</style>
 {% endblock %}
 
 {% block body1 %}
-<div id="messages" class="messages">
-</div>
-<p class ="lead"> {{ medialink }}</p>
-<p class ="lead"> {{ error }}</p>
+<div id="messages" class="messages" role="status" aria-live="polite"></div>
+{% if error %}<p class="lead text-danger" role="alert">{{ error }}</p>{% endif %}
 <div class="panel panel-default">
 <div class="panel-heading">
 	<p class="lead">Compare SPDX 2.X documents</p>
 </div>
 <div class="panel-body">
-<form id="compareform" enctype="multipart/form-data" class="form-horizontal" method="post">
+<form id="compareform" enctype="multipart/form-data" class="form-horizontal" method="post" aria-label="Compare SPDX documents">
 		{% csrf_token %}
-		<div id="drop-area" class="container">
-      <h4 id="doclabel">Upload SPDX documents using the button or by dragging and dropping onto the dashed region</h4>
-      <input type="file" id="file" onchange="handleFiles(this.files)" multiple>
-			<label class="button" for="file">Select files</label> &nbsp;
-			<label class="button reset">Reset files</label>
-      <div class="file-name">No file selected</div>
+		<div id="drop-area" class="container" role="region" aria-label="File upload area">
+      <p id="drop-instructions">Upload two or more SPDX documents using the button or by dragging and dropping onto the dashed region</p>
+      <input type="file" id="file" onchange="handleFiles(this.files)" aria-label="Add SPDX document" aria-describedby="drop-instructions" style="display:none">
+			<button type="button" class="button" id="addfilebutton" onclick="document.getElementById('file').click()">Add file</button>
+			<button type="button" class="button reset" id="resetbutton" aria-label="Remove all selected files">Remove all</button>
+      <p id="file-list-empty" class="file-list-empty" aria-live="polite">No file selected</p>
+      <ol id="file-list" class="file-list" aria-label="Selected files" aria-live="polite"></ol>
 		</div>
 		<br>
-		<div class = "form-group">
-			<div class="col-sm-12">
-			<label class="control-label col-sm-3">Result file name</label>
-				<div class="col-sm-6"> 
-					<input type="text" id="rfilename" name="rfilename">
-					<label class="control-label" id="convertdoclabel">.xlsx</label>
+		<div class="form-narrow">
+			<div class="form-group">
+				<label for="rfilename" class="control-label col-sm-5">Result file name</label>
+				<div class="col-sm-7"> 
+					<input type="text" id="rfilename" name="rfilename" aria-describedby="rfileext-hint">
+					<span id="rfileext-hint" class="control-label">.xlsx</span>
 				</div>
 			</div>
 		</div>
-		<hr>
-        <p id ="warning-msg" hidden="true"></p>
-		<button class=" btn btn-md btn-info" type="submit" id="comparebutton" name="compare">Compare</button>
+        <p id="warning-msg" hidden></p>
+		<button class="btn btn-md btn-info btn-submit-center" type="submit" id="comparebutton" name="compare">Compare</button>
 </form>
+
+    <section id="result-section" class="result-section" role="region" aria-label="Comparison result" tabindex="-1" hidden>
+      <div id="result-header" class="result-header">
+        <h2 id="result-title" class="result-title"></h2>
+        <button type="button" class="result-close" aria-label="Close result" onclick="hideResult()">&times;</button>
+      </div>
+      <div id="result-body" class="result-body"></div>
+    </section>
+  </div>
 </div>
-</div>
-{% include "app/modal.html" %}
 {% include "app/_tool_versions.html" with show_java_tools=True %}
 {% endblock %}
 
@@ -48,95 +117,151 @@
 
 <script type="text/javascript">
   /* Javascript to handel drag and drop */
-  let dropArea = document.getElementById('drop-area');
+  var dropArea = document.getElementById('drop-area');
   var selected_files = [];
-  ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-    dropArea.addEventListener(eventName, preventDefaults, false)
+  var filenameUserEdited = false;
+
+  document.getElementById('rfilename').addEventListener('input', function () {
+    filenameUserEdited = true;
   });
-  
-  function preventDefaults (e) {
-    e.preventDefault()
-    e.stopPropagation()
-  }
 
-  ['dragenter', 'dragover'].forEach(eventName => {
-    dropArea.addEventListener(eventName, highlight, false)
+  ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(function (ev) {
+    dropArea.addEventListener(ev, preventDefaults, false);
   });
-  
-  ['dragleave', 'drop'].forEach(eventName => {
-    dropArea.addEventListener(eventName, unhighlight, false)
+  function preventDefaults(e) { e.preventDefault(); e.stopPropagation(); }
+  ['dragenter', 'dragover'].forEach(function (ev) {
+    dropArea.addEventListener(ev, function () { dropArea.classList.add('highlight'); }, false);
   });
-  
-  function highlight(e) {
-    dropArea.classList.add('highlight')
-  }
-  
-  function unhighlight(e) {
-    dropArea.classList.remove('highlight')
-  }
-  
-  dropArea.addEventListener('drop', handleDrop, false)
+  ['dragleave', 'drop'].forEach(function (ev) {
+    dropArea.addEventListener(ev, function () { dropArea.classList.remove('highlight'); }, false);
+  });
+  dropArea.addEventListener('drop', function (e) { handleFiles(e.dataTransfer.files); }, false);
 
-  function handleDrop(e) {
-    let dt = e.dataTransfer
-    let files = dt.files
-    handleFiles(files)
-  }
+  function handleFiles(files) { Array.from(files).forEach(addFile); }
 
-  function handleFiles(files) {
-    ([...files]).forEach(checkFile)
-  }
-  
-  function checkFile(file){
-    if(file && selected_files.length<13){
-      if ($(".file-name").text() == "No file selected"){
-				$(".file-name").html("<b>Selected files:</b><ul>");
-				$(".file-name").append("<li>" + file.name + "</li>");
-			}
-			else{
-				$(".file-name").append("<li>" + file.name + "</li>");
-			}
-      selected_files.push(file);
-		}
-		else if(selected_files.length>=13){
-			$("#messages").html('<div class="alert alert-danger alert-dismissable fade in"><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a><strong>Maximum file upload limit reached.</strong></div>');
-	    setTimeout(function() {
-	        $("#messages").html("");
-	      }, 5000);
-		}
-		checkFilesSize(selected_files, "#warning-msg");
+  function addFile(file) {
+    if (!file) return;
+    if (selected_files.length >= 13) {
+      document.getElementById('messages').innerHTML =
+        '<div class="alert alert-danger" role="alert"><strong>Maximum file upload limit reached.</strong></div>';
+      setTimeout(function () { document.getElementById('messages').innerHTML = ''; }, 5000);
+      return;
+    }
+    var duplicate = selected_files.some(function (f) {
+      return f.name === file.name && f.size === file.size && f.lastModified === file.lastModified;
+    });
+    if (duplicate) {
+      document.getElementById('messages').innerHTML =
+        '<div class="alert alert-danger" role="alert"><strong>"' + file.name + '" is already in the list.</strong></div>';
+      setTimeout(function () { document.getElementById('messages').innerHTML = ''; }, 5000);
+      return;
+    }
+    selected_files.push(file);
+    renderFileList();
+    checkFilesSize(selected_files, "#warning-msg");
+    updateSpdx3Warning();
   }
 
-function checkform() {
-  if (selected_files.length<2){
-    return ("Please select atleast 2 files.");
-	}
-	else if($('#rfilename').val() == ""){
-		$('#rfilename').focus();
-    return("Please choose a file name for the converted file.");
-	}
-	else{
-		return 1;
-	}
-}
+  function isSpdx3JsonLd(file) {
+    var n = file.name.toLowerCase();
+    return n.endsWith('.jsonld') || n.endsWith('.spdx3.json') || n.endsWith('.jsonld.json');
+  }
 
-$(".reset").on("click", function(){
-	selected_files = [];
-	$(".file-name").html("No file selected");
-	removeWarningElement("#warning-msg");
-})
+  function updateSpdx3Warning() {
+    var hasV3 = selected_files.some(isSpdx3JsonLd);
+    var el = document.getElementById('messages');
+    if (hasV3) {
+      el.innerHTML =
+        '<div class="alert alert-danger" role="alert"><strong>Error:</strong> ' +
+        'Compare with SPDX 3 JSON-LD is not supported yet.</div>';
+    } else {
+      el.innerHTML = '';
+    }
+  }
+
+  function removeFile(index) {
+    selected_files.splice(index, 1);
+    renderFileList();
+    checkFilesSize(selected_files, "#warning-msg");
+    if (selected_files.length === 0) removeWarningElement("#warning-msg");
+    updateSpdx3Warning();
+  }
+
+  function updateDefaultFilename() {
+    if (filenameUserEdited) return;
+    var field = document.getElementById("rfilename");
+    if (selected_files.length > 0) {
+      var first = selected_files[0].name;
+      var base = first.replace(/(\.(spdx3|spdx))?\.[^.]+$/, '') || first;
+      field.value = base + '-diff';
+    } else {
+      field.value = '';
+    }
+  }
+
+  function renderFileList() {
+    var listEl = document.getElementById('file-list');
+    var emptyEl = document.getElementById('file-list-empty');
+    listEl.innerHTML = '';
+    updateDefaultFilename();
+    if (selected_files.length === 0) {
+      emptyEl.style.display = '';
+      return;
+    }
+    emptyEl.style.display = 'none';
+    selected_files.forEach(function (file, i) {
+      var li = document.createElement('li');
+      li.className = 'file-list-item';
+
+      var num = document.createElement('span');
+      num.className = 'file-list-num';
+      num.textContent = (i + 1) + '.';
+
+      var name = document.createElement('span');
+      name.className = 'file-list-name';
+      name.textContent = file.name;
+
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'file-remove-btn';
+      btn.setAttribute('aria-label', 'Remove ' + file.name);
+      btn.innerHTML = '<span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Remove';
+      btn.addEventListener('click', function () { removeFile(i); });
+
+      li.appendChild(num);
+      li.appendChild(name);
+      li.appendChild(btn);
+      listEl.appendChild(li);
+    });
+  }
+
+  document.getElementById('resetbutton').addEventListener('click', function () {
+    selected_files = [];
+    renderFileList();
+    removeWarningElement('#warning-msg');
+    updateSpdx3Warning();
+  });
+
+  function checkform() {
+    if (selected_files.length < 2) return 'Please select at least 2 files.';
+    if (document.getElementById('rfilename').value === '') {
+      document.getElementById('rfilename').focus();
+      return 'Please choose a file name for the result file.';
+    }
+    return '1';
+  }
 </script>
 
 <script type="text/javascript">
   $('#compareform').on('submit', function(event){
     event.preventDefault();
     var check = checkform();
-    if (check=="1"){
-    	$("#comparebutton").text("Comparing");
-	    $("#comparebutton").prop('disabled', true);
+    if (check === "1") {
+    	$("#comparebutton").text("Comparing…").prop('disabled', true).attr('aria-disabled', 'true');
         $("#messages").html("");
+        hideResult();
 			var form = new FormData($("#compareform")[0]);
-			for(var i=0; i<selected_files.length; i++){
+			for (var i = 0; i < selected_files.length; i++) {
 				form.append('files', selected_files[i]);
 			}
 	    $.ajax({
@@ -150,84 +275,54 @@ $(".reset").on("click", function(){
 	            timeout: 600000,
 	            data: form,
 	            success: function (data) {
-	                console.log("SUCCESS : ", data);
-	                $("#modal-header").removeClass("red-modal");
-	                $("#modal-header").removeClass("yellow-modal");
-                    $("#modal-header").addClass("green-modal");
-                    $("#modal-title").html("Success!");
-	                $("#modal-body").html('<h3><a href="'+data.medialink+'"><span class="glyphicon glyphicon-save-file"></span> Download file now</a></h3>');
-	                $("#myModal").modal({
-	                        backdrop: 'static',
-	                        keyboard: true, 
-	                        show: true
-	                });
-	                $("#comparebutton").text("Compare");
-    				$("#comparebutton").prop('disabled', false);
+	                var link = '<a href="' + data.medialink + '" class="btn btn-default">' +
+	                  '<span class="glyphicon glyphicon-save-file" aria-hidden="true"></span>' +
+	                  ' Download result file</a>';
+	                showResult("success", "Comparison successful", link);
+	                $("#comparebutton").text("Compare").prop('disabled', false).removeAttr('aria-disabled');
+	                filenameUserEdited = false;
 	            },
 	            error: function (e) {
-	                console.log("ERROR : ", e);
-	                $("#modal-body").text("");
-	                $("#modal-header").removeClass("green-modal");
-	                try{
-		                var obj = JSON.parse(e.responseText);
-		                if (obj.type=="warning"){
-		                    $("#modal-header").removeClass("red-modal");
-		                    $("#modal-header").addClass("yellow-modal");
-		                    $("#modal-title").html("Warning!");
-		                    for(i=0;i<obj["files"].length;i++){
-			                	$("#modal-body").append("<b>" + obj["files"][i] + "</b><br>");
-			                	$("#modal-body").append(obj["errors"][i] + "<br><hr>");
-			                }
-			                $("#modal-body").append("Ignoring the warnings, the following file was generated<br>");
-			                $("#modal-body").append('<h3><a href="'+obj.medialink+'"><span class="glyphicon glyphicon-save-file"></span> Download file now</a></h3>');
-
-		                }
-		                else if (obj.type=="warning2"){
-		                    $("#modal-header").removeClass("red-modal");
-		                    $("#modal-header").addClass("yellow-modal");
-		                    $("#modal-title").html("Warning!");
-		                    for(i=0;i<obj["files"].length;i++){
-			                	$("#modal-body").append("<b>" + obj["files"][i] + "</b><br>");
-			                	$("#modal-body").append(obj["errors"][i] + "<br><hr>");
-			                }
-			                $("#modal-body").append("Ignoring the warnings,the compare tool was run and the following error was generated:<br><hr>");
-			                $("#modal-body").append(obj["toolerror"]);
-
-		                }
-	                    else if (obj.type=="error"){
-		                    $("#modal-header").removeClass("yellow-modal");
-		                    $("#modal-header").addClass("red-modal");
-		                    $("#modal-title").html("Error!");
-		                    for(i=0;i<obj["files"].length;i++){
-			                	$("#modal-body").append("<b>" + obj["files"][i] + "</b><br>");
-			                	$("#modal-body").append(obj["errors"][i] + "<br><hr>");
-			                }
+	                try {
+	                    var obj = JSON.parse(e.responseText);
+	                    var fileErrors = "";
+	                    if (obj.files && obj.errors) {
+	                        for (var i = 0; i < obj.files.length; i++) {
+	                            fileErrors += '<p><strong>' + obj.files[i] + '</strong><br>' +
+	                              obj.errors[i] + '</p><hr>';
+	                        }
 	                    }
+	                    if (obj.type === "warning") {
+	                        var extra = obj.medialink
+	                          ? '<p>Despite warnings, the comparison produced a result:</p>' +
+	                          '<a href="' + obj.medialink + '" class="btn btn-default">' +
+	                          '<span class="glyphicon glyphicon-save-file" aria-hidden="true"></span>' +
+	                          ' Download result file</a>'
+	                          : (obj.toolerror
+	                            ? '<p>Additionally, the compare tool produced this error:</p><p>' +
+	                            obj.toolerror + '</p>'
+	                            : '');
+	                        showResult("warning", "Comparison completed with warnings", fileErrors + extra);
+	                    } else {
+	                        showResult("error", "Comparison failed", fileErrors ||
+	                          '<p>The application could not be connected. Please try later.</p>');
+	                    }
+	                } catch (_) {
+	                    showResult("error", "Error",
+	                      '<p>The application could not be connected. Please try later.</p>');
 	                }
-	                catch (e){
-	                	$("#modal-header").removeClass("yellow-modal");
-	                    $("#modal-header").addClass("red-modal");
-	                    $("#modal-title").html("Error!");
-	                    $("#modal-body").text("The application could not be connected. Please try later.");
-	                }
-
-	                $("#myModal").modal({
-                          backdrop: 'static',
-                          keyboard: true, 
-                          show: true
-                  	});
-	                $("#comparebutton").text("Compare");
-    				$("#comparebutton").prop('disabled', false);
+	                $("#comparebutton").text("Compare").prop('disabled', false).removeAttr('aria-disabled');
 	            }
 	        });
 	}
 	else{
-		$("#messages").html('<div class="alert alert-danger alert-dismissable fade in"><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a><strong>Error!</strong> '+check+'</div>');
-	    setTimeout(function() {
-	        $("#messages").html("");
-	      }, 5000);
+		$("#messages").html(
+		  '<div class="alert alert-danger" role="alert"><strong>Error:</strong> ' +
+		  $("<span>").text(check).html() + '</div>'
+		);
+		setTimeout(function () { $("#messages").html(""); }, 5000);
 	}
-});
+  });
 </script>
 
 <script type="text/javascript">

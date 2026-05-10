@@ -1,112 +1,79 @@
 {% extends 'app/base.html' %}
 {% load static %}
+{% block head_block %}
+  <link href="{% static 'css/editor/diffview.css' %}" rel="stylesheet" type="text/css">
+  <style>
+    .diff-result-body { padding: 0; overflow-x: auto; }
+    .diff-result-body table { font-size: 0.82em; }
+  </style>
+{% endblock %}
 {% block body1 %}
-<div id="messages" class="messages">
-</div>
-<p class="lead">{{ error }}</p>
+<div id="messages" class="messages" role="status" aria-live="polite"></div>
+{% if error %}<p class="lead text-danger" role="alert">{{ error }}</p>{% endif %}
 <div class="panel panel-default">
   <div class="panel-heading">
     <p class="lead">Check license</p>
   </div>
-  <div class="panel-body" style="overflow:scroll;">
-    <form id="checklicenseform" enctype="multipart/form-data" class="form-horizontal" method="post">
+  <div class="panel-body">
+    <form id="checklicenseform" enctype="multipart/form-data" class="form-horizontal" method="post" aria-label="Check license text">
       {% csrf_token %}
       <p>Enter full license text in the text area below to check it against 
       <a href="https://spdx.org/licenses/">SPDX License List</a> and
       <a href="https://spdx.org/licenses/exceptions-index.html">License Exceptions</a>.</p>
-      <p>The result of the compare would be one of "Exact match", "Close match" or "No match".</p>
-      <textarea id="licensetext" name="licensetext" rows="18" style="width: 100%"></textarea>
-      <button id="checklicensebutton" class=" btn btn-md btn-info" type="submit">Check license</button>
+      <p>The result will be one of the following: <em>Perfect match</em>, <em>Standard License match</em>, <em>Close match</em>, or <em>Error (no match)</em>.</p>
+      <div class="form-group">
+        <label for="licensetext" class="sr-only">License text</label>
+        <textarea id="licensetext" name="licensetext" rows="12" style="width:100%; resize: vertical;" aria-required="true" placeholder="Paste the full license text here..."></textarea>
+      </div>
+      <button id="checklicensebutton" class="btn btn-md btn-info btn-submit-center" type="submit">Check license</button>
     </form>
-    {% include "app/modal.html" %}
+    <section id="result-section" class="result-section" role="region" aria-label="License check result" tabindex="-1" hidden>
+      <div id="result-header" class="result-header">
+        <h2 id="result-title" class="result-title"></h2>
+        <button type="button" class="result-close" aria-label="Close result" onclick="hideResult()">&times;</button>
+      </div>
+      <div id="result-body" class="result-body"></div>
+    </section>
   </div>
 </div>
 {% include "app/_tool_versions.html" with show_license_matcher=True %}
 {% endblock %}
 {% block script_block %}
+<script src="{% static 'js/utils.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/editor/difflib.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/editor/diffview.js' %}"></script>
 <script type="text/javascript">
 $(document).ready(function () {
     $("#checklicensepage").addClass('linkactive');
     });
 </script>
 <script type="text/javascript">
-function checkform() {
-  if ($('#licensetext').val() == "") {
-    $('#licensetext').focus();
-    return ("No text entered.");
+$('#checklicenseform').on('submit', function(event){
+  event.preventDefault();
+  if ($("#licensetext").val() == "") {
+    $("#licensetext").focus();
+    $("#messages").html(
+      '<div class="alert alert-danger" role="alert"><strong>Error:</strong> No text entered.</div>'
+    );
+    setTimeout(function() { $("#messages").html(""); }, 5000);
+    return;
   }
-  else {
-    return "1";
-  }
-}
-</script>
-<script type="text/javascript">
-  $('#checklicenseform').on('submit', function(event){
-    event.preventDefault();
-    var check = checkform();
-    if (check=="1"){
-      $("#checklicensebutton").text("Checking...");
-      $("#checklicensebutton").prop('disabled', true);
-      $("#messages").html("");
-      var form = new FormData($("#checklicenseform")[0]);
-      $.ajax({
-              type: "POST",
-              enctype: 'multipart/form-data',
-              url: "/app/check_license/",
-              processData: false,
-              contentType: false,
-              cache: false,
-              dataType: 'json',
-              data: form,
-              success: function (data) {
-                  console.log("SUCCESS : ", data);
-				  $("#modal-header").removeClass("red-modal");
-				  if (data["data"].toLowerCase().indexOf("perfect match") > -1 || data["data"].toLowerCase().indexOf("exact match") > -1) {
-                     $("#modal-header").addClass("green-modal");
-				  } else {
-				     $("#modal-header").addClass("yellow-modal");
-				  }
-                  $("#modal-title").html("Success!");
-                  $("#modal-body").html("<h3>"+data.data+"</h3>");
-                  $("#myModal").modal({
-                          backdrop: 'static',
-                          keyboard: true, 
-                          show: true
-                  });
-                  $("#checklicensebutton").text("Check license");
-                  $("#checklicensebutton").prop('disabled', false);
-              },
-              error: function (e) {
-                  console.log("ERROR : ", e);
-                  $("#modal-header").removeClass("green-modal");
-                  try {
-                    var obj = JSON.parse(e.responseText);
-                    $("#modal-header").addClass("red-modal");
-                    $("#modal-title").html("Error!");
-                    $("#modal-body").text(obj.data);
-                  }
-                  catch (e){
-                    $("#modal-header").addClass("red-modal");
-                    $("#modal-title").html("Error!");
-                    $("#modal-body").text("The application could not be connected. Please try later.");
-                  }
-                  $("#myModal").modal({
-                          backdrop: 'static',
-                          keyboard: true, 
-                          show: true
-                  });
-                  $("#checklicensebutton").text("Check license");
-                  $("#checklicensebutton").prop('disabled', false);
-              }
-          });
-    }
-    else{
-      $("#messages").html('<div class="alert alert-danger alert-dismissable fade in"><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a><strong>Error!</strong> '+check+'</div>');
-      setTimeout(function() {
-        $("#messages").html("");
-      }, 5000);
-    }
+  $("#checklicensebutton").text("Checking...").prop('disabled', true).attr('aria-disabled', 'true');
+  $("#messages").html("");
+  hideResult();
+  var form = new FormData($("#checklicenseform")[0]);
+  findLicenseMatch({
+    type: "POST",
+    enctype: 'multipart/form-data',
+    url: "/app/diff/",
+    processData: false,
+    contentType: false,
+    cache: false,
+    dataType: 'json',
+    data: form,
+  }, function() {
+    $("#checklicensebutton").text("Check license").prop('disabled', false).removeAttr('aria-disabled');
+  });
 });
-
 </script>
 {% endblock %}
