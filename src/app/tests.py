@@ -3,6 +3,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import datetime
+import logging
 import os
 import shutil
 from unittest import skipIf
@@ -42,7 +43,7 @@ def _init_selenium():
         if driver_path and os.path.isfile(driver_path) and os.access(driver_path, os.X_OK):
             return "firefox", driver_path
     except Exception as e:
-        print(f"Firefox initialization failed or geckodriver not found: {e}")
+        logging.warning(f"Firefox initialization failed or geckodriver not found: {e}")
 
     # Attempt Chrome
     try:
@@ -50,7 +51,7 @@ def _init_selenium():
         if driver_path and os.path.isfile(driver_path) and os.access(driver_path, os.X_OK):
             return "chrome", driver_path
     except Exception as e:
-        print(f"Chrome initialization failed or chromedriver not found: {e}")
+        logging.warning(f"Chrome initialization failed or chromedriver not found: {e}")
 
     return None, None
 
@@ -741,6 +742,8 @@ class BaseSeleniumTestCase(StaticLiveServerTestCase):
         super(BaseSeleniumTestCase, self).tearDown()
 
 
+# @skipIf is intentionally kept alongside the BaseSeleniumTestCase.setUp check to skip
+# the class before any fixtures are set up, which is faster.
 @skipIf(not SELENIUM_AVAILABLE, "Selenium not available (Firefox or Chrome required)")
 class LicenseXMLEditorTestCase(BaseSeleniumTestCase):
 
@@ -1268,6 +1271,8 @@ class ArchiveLicenseRequestsViewsTestCase(TestCase):
         self.assertEqual(resp.resolver_match.func.__name__,"licenseInformation")
 
 
+# @skipIf is intentionally kept alongside the BaseSeleniumTestCase.setUp check to skip
+# the class before any fixtures are set up, which is faster.
 @skipIf(not SELENIUM_AVAILABLE, "Selenium not available (Firefox or Chrome required)")
 class ArchiveLicenseRequestsSeleniumTestCase(BaseSeleniumTestCase):
 
@@ -1427,6 +1432,8 @@ class LicenseNamespaceViewsTestCase(TestCase):
         self.assertEqual(resp.resolver_match.func.__name__,"licenseNamespaceRequests")
 
 
+# @skipIf is intentionally kept alongside the BaseSeleniumTestCase.setUp check to skip
+# the class before any fixtures are set up, which is faster.
 @skipIf(not SELENIUM_AVAILABLE, "Selenium not available (Firefox or Chrome required)")
 class PromoteLicenseNamespaceViewsTestCase(BaseSeleniumTestCase):
 
@@ -1494,6 +1501,8 @@ class ArchiveLicenseNamespaceViewsTestCase(TestCase):
         self.assertEqual(resp.resolver_match.func.__name__,"licenseNamespaceInformation")
 
 
+# @skipIf is intentionally kept alongside the BaseSeleniumTestCase.setUp check to skip
+# the class before any fixtures are set up, which is faster.
 @skipIf(not SELENIUM_AVAILABLE, "Selenium not available (Firefox or Chrome required)")
 class ArchiveLicenseNamespaceSeleniumTestCase(BaseSeleniumTestCase):
 
